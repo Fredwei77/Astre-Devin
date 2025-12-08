@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商店购物车测试</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">🛒 商店购物车功能测试</h1>
+
+        <!-- 测试状态 -->
+        <div id="testStatus" class="mb-6 p-4 rounded-lg bg-blue-900/50">
+            <h2 class="text-xl font-bold mb-2">测试状态</h2>
+            <div id="statusList" class="space-y-2 text-sm"></div>
+        </div>
+
+        <!-- 用户登录状态 -->
+        <div class="mb-6 p-4 rounded-lg bg-gray-800">
+            <h2 class="text-xl font-bold mb-2">用户状态</h2>
+            <div id="userStatus" class="text-sm">检查中...</div>
+            <button id="loginTestBtn" class="mt-2 bg-blue-600 px-4 py-2 rounded hover:bg-blue-700">
+                测试登录
+            </button>
+        </div>
+
+        <!-- 商品列表 -->
+        <div class="mb-6 p-4 rounded-lg bg-gray-800">
+            <h2 class="text-xl font-bold mb-4">商品列表</h2>
+            <div id="productsList" class="space-y-2"></div>
+        </div>
+
+        <!-- 购物车 -->
+        <div class="mb-6 p-4 rounded-lg bg-gray-800">
+            <h2 class="text-xl font-bold mb-4">购物车内容</h2>
+            <div id="cartContent" class="space-y-2"></div>
+            <button id="refreshCartBtn" class="mt-4 bg-green-600 px-4 py-2 rounded hover:bg-green-700">
+                刷新购物车
+            </button>
+        </div>
+
+        <!-- 测试按钮 -->
+        <div class="grid grid-cols-2 gap-4">
+            <button id="testAddToCart" class="bg-yellow-600 px-6 py-3 rounded-lg hover:bg-yellow-700">
+                测试加入购物车
+            </button>
+            <button id="testGetProducts" class="bg-purple-600 px-6 py-3 rounded-lg hover:bg-purple-700">
+                测试获取商品
+            </button>
+        </div>
+    </div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script src="supabase-init.js"></script>
+    <script src="shop-service.js"></script>
+
+    <script>
+        // 测试日志
+        function addLog(message, type = 'info') {
+            const statusList = document.getElementById('statusList');
+            const colors = {
+                success: 'text-green-400',
+                error: 'text-red-400',
+                info: 'text-blue-400',
+                warning: 'text-yellow-400'
+            };
+            const icons = {
+                success: '✅',
+                error: '❌',
+                info: 'ℹ️',
+                warning: '⚠️'
+            };
+            const log = document.createElement('div');
+            log.className = colors[type];
+            log.textContent = `${icons[type]} ${new Date().toLocaleTimeString()} - ${message}`;
+            statusList.appendChild(log);
+            console.log(message);
+        }
+
+        // 等待初始化
+        async function waitForInit() {
+            let attempts = 0;
+            while (!window.supabaseClient && attempts < 50) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                attempts++;
+            }
+            if (!window.supabaseClient) {
+                throw new Error('Supabase 客户端初始化超时');
+            }
+        }
+
+        // 检查用户状态
+        async function checkUserStatus() {
+            try {
+                await waitForInit();
+                const user = await window.EnhancedAuthService.getCurrentUser();
+                const userStatus = document.getElementById('userStatus');
+                
+                if (user) {
+                    userStatus.innerHTML = `
+                        <div class="text-green-400">✅ 已登录</div>
+                        <div>邮箱: ${user.email}</div>
+                        <div>ID: ${user.id}</div>
+                    `;
+                    addLog('用户已登录: ' + user.email, 'success');
+                    return user;
+                } else {
+                    userStatus.innerHTML = '<div class="text-red-400">❌ 未登录</div>';
+                    addLog('用户未登录', 'warning');
+                    return null;
+                }
+            } catch (error) {
+                addLog('检查用户状态失败: ' + error.message, 'error');
+                return null;
+            }
+        }
+
+        // 测试获取商品
+        async function testGetProducts() {
+            try {
+                addLog('开始获取商品列表...', 'info');
+                const result = await window.ShopService.products.getAll();
+                
+                if (result.success) {
+                    addLog(`成功获取 ${result.data.length} 个商品`, 'success');
+                    displayProducts(result.data);
+                } else {
+                    addLog('获取商品失败: ' + result.error, 'error');
+                }
+            } catch (error) {
+                addLog('获取商品异常: ' + error.message, 'error');
+            }
+        }
+
+        // 显示商品
+        function displayProducts(products) {
+            const productsList = document.getElementById('productsList');
+            productsList.innerHTML = products.map(p => `
+                <div class="flex items-center justify-between bg-gray-700 p-3 rounded">
+                    <div>
+                        <span class="font-bold">${p.name_en || p.name}</span>
+                        <span class="text-gray-400 ml-2">$${p.price}</span>
+                        <span class="text-gray-500 ml-2">库存: ${p.stock}</span>
+                    </div>
+                    <button onclick="testAddProduct('${p.id}')" 
+                            class="bg-green-600 px-3 py-1 rounded text-sm hover:bg-green-700">
+                        加入购物车
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // 测试加入购物车
+        window.testAddProduct = async function(productId) {
+            try {
+                addLog(`尝试添加商品 ${productId} 到购物车...`, 'info');
+                const result = await window.ShopService.cart.add(productId, 1);
+                
+                if (result.success) {
+                    addLog('成功添加到购物车', 'success');
+                    await refreshCart();
+                } else {
+                    addLog('添加失败: ' + result.error, 'error');
+                }
+            } catch (error) {
+                addLog('添加异常: ' + error.message, 'error');
+            }
+        };
+
+        // 刷新购物车
+        async function refreshCart() {
+            try {
+                addLog('刷新购物车...', 'info');
+                const result = await window.ShopService.cart.get();
+                
+                if (result.success) {
+                    const cartContent = document.getElementById('cartContent');
+                    if (result.data && result.data.length > 0) {
+                        addLog(`购物车有 ${result.data.length} 个商品`, 'success');
+                        cartContent.innerHTML = result.data.map(item => `
+                            <div class="bg-gray-700 p-3 rounded">
+                                <div class="font-bold">${item.products.name_en || item.products.name}</div>
+                                <div class="text-sm text-gray-400">
+                                    数量: ${item.quantity} × $${item.products.price} = $${(item.quantity * item.products.price).toFixed(2)}
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        cartContent.innerHTML = '<div class="text-gray-400">购物车是空的</div>';
+                        addLog('购物车为空', 'info');
+                    }
+                } else {
+                    addLog('获取购物车失败: ' + result.error, 'error');
+                }
+            } catch (error) {
+                addLog('刷新购物车异常: ' + error.message, 'error');
+            }
+        }
+
+        // 测试登录
+        document.getElementById('loginTestBtn').addEventListener('click', async () => {
+            const email = prompt('请输入邮箱:');
+            const password = prompt('请输入密码:');
+            
+            if (email && password) {
+                try {
+                    addLog('尝试登录...', 'info');
+                    const result = await window.EnhancedAuthService.login(email, password);
+                    if (result.success) {
+                        addLog('登录成功', 'success');
+                        await checkUserStatus();
+                    } else {
+                        addLog('登录失败: ' + result.error, 'error');
+                    }
+                } catch (error) {
+                    addLog('登录异常: ' + error.message, 'error');
+                }
+            }
+        });
+
+        // 绑定测试按钮
+        document.getElementById('testGetProducts').addEventListener('click', testGetProducts);
+        document.getElementById('testAddToCart').addEventListener('click', async () => {
+            // 添加第一个商品
+            await testAddProduct('dragon');
+        });
+        document.getElementById('refreshCartBtn').addEventListener('click', refreshCart);
+
+        // 页面加载时初始化
+        window.addEventListener('load', async () => {
+            addLog('页面加载完成', 'info');
+            
+            try {
+                await waitForInit();
+                addLog('Supabase 初始化完成', 'success');
+                
+                // 检查服务
+                if (window.ShopService) {
+                    addLog('ShopService 已加载', 'success');
+                } else {
+                    addLog('ShopService 未加载', 'error');
+                }
+                
+                if (window.EnhancedAuthService) {
+                    addLog('EnhancedAuthService 已加载', 'success');
+                } else {
+                    addLog('EnhancedAuthService 未加载', 'error');
+                }
+                
+                // 检查用户状态
+                await checkUserStatus();
+                
+                // 自动获取商品
+                await testGetProducts();
+                
+                // 自动刷新购物车
+                await refreshCart();
+                
+            } catch (error) {
+                addLog('初始化失败: ' + error.message, 'error');
+            }
+        });
+    </script>
+</body>
+</html>

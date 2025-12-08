@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录注册功能测试 - Destiny AI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0d2626 0%, #1a4d4d 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fafafa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .header h1 {
+            color: #ffd700;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #c0c0c0;
+            font-size: 16px;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .test-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .test-card h2 {
+            color: #ffd700;
+            font-size: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .test-card h2 i {
+            font-size: 24px;
+        }
+        
+        .test-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .test-label {
+            color: #c0c0c0;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .test-input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 5px;
+            color: #fafafa;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .test-input:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+        
+        .test-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+            border: none;
+            border-radius: 8px;
+            color: #1a1a2e;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+        }
+        
+        .test-button:active {
+            transform: translateY(0);
+        }
+        
+        .test-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .result-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            min-height: 100px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .result-item {
+            padding: 8px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .result-success {
+            background: rgba(102, 187, 106, 0.2);
+            border-left: 3px solid #66bb6a;
+            color: #66bb6a;
+        }
+        
+        .result-error {
+            background: rgba(255, 107, 107, 0.2);
+            border-left: 3px solid #ff6b6b;
+            color: #ff6b6b;
+        }
+        
+        .result-info {
+            background: rgba(100, 181, 246, 0.2);
+            border-left: 3px solid #64b5f6;
+            color: #64b5f6;
+        }
+        
+        .quick-test {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .quick-test h2 {
+            color: #ffd700;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .quick-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .quick-button {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+            color: #fafafa;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .quick-button:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+            transform: translateY(-2px);
+        }
+        
+        .quick-button i {
+            font-size: 24px;
+            color: #ffd700;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .quick-button .title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .quick-button .desc {
+            font-size: 12px;
+            color: #c0c0c0;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #1a1a2e;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-vial"></i> 登录注册功能测试</h1>
+            <p>测试 login.js 的登录和注册功能</p>
+        </div>
+        
+        <!-- 快速测试 -->
+        <div class="quick-test">
+            <h2><i class="fas fa-bolt"></i> 快速测试</h2>
+            <div class="quick-buttons">
+                <div class="quick-button" onclick="openLoginPage()">
+                    <i class="fas fa-external-link-alt"></i>
+                    <div class="title">打开登录页面</div>
+                    <div class="desc">在新窗口打开 login.html</div>
+                </div>
+                <div class="quick-button" onclick="testDemoLogin()">
+                    <i class="fas fa-user-check"></i>
+                    <div class="title">测试演示登录</div>
+                    <div class="desc">使用演示账号登录</div>
+                </div>
+                <div class="quick-button" onclick="testRegistration()">
+                    <i class="fas fa-user-plus"></i>
+                    <div class="title">测试注册</div>
+                    <div class="desc">测试新用户注册</div>
+                </div>
+                <div class="quick-button" onclick="clearTestData()">
+                    <i class="fas fa-trash-alt"></i>
+                    <div class="title">清除测试数据</div>
+                    <div class="desc">清除所有测试用户</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 测试表单 -->
+        <div class="test-grid">
+            <!-- 登录测试 -->
+            <div class="test-card">
+                <h2><i class="fas fa-sign-in-alt"></i> 登录测试</h2>
+                <div class="test-item">
+                    <div class="test-label">邮箱地址</div>
+                    <input type="email" id="loginEmail" class="test-input" placeholder="test@example.com" value="test@example.com">
+                </div>
+                <div class="test-item">
+                    <div class="test-label">密码</div>
+                    <input type="password" id="loginPassword" class="test-input" placeholder="password123" value="password123">
+                </div>
+                <button class="test-button" onclick="testLogin()">
+                    <i class="fas fa-play"></i>
+                    <span>测试登录</span>
+                </button>
+                <div class="result-box" id="loginResult"></div>
+            </div>
+            
+            <!-- 注册测试 -->
+            <div class="test-card">
+                <h2><i class="fas fa-user-plus"></i> 注册测试</h2>
+                <div class="test-item">
+                    <div class="test-label">用户名</div>
+                    <input type="text" id="registerName" class="test-input" placeholder="测试用户" value="测试用户">
+                </div>
+                <div class="test-item">
+                    <div class="test-label">邮箱地址</div>
+                    <input type="email" id="registerEmail" class="test-input" placeholder="newuser@example.com" value="">
+                </div>
+                <div class="test-item">
+                    <div class="test-label">密码</div>
+                    <input type="password" id="registerPassword" class="test-input" placeholder="至少8个字符" value="password123">
+                </div>
+                <button class="test-button" onclick="testRegister()">
+                    <i class="fas fa-play"></i>
+                    <span>测试注册</span>
+                </button>
+                <div class="result-box" id="registerResult"></div>
+            </div>
+            
+            <!-- 验证测试 -->
+            <div class="test-card">
+                <h2><i class="fas fa-check-circle"></i> 验证测试</h2>
+                <div class="test-item">
+                    <div class="test-label">邮箱验证</div>
+                    <input type="email" id="validateEmail" class="test-input" placeholder="输入邮箱测试验证">
+                    <button class="test-button" onclick="testEmailValidation()">
+                        <i class="fas fa-check"></i>
+                        <span>验证邮箱</span>
+                    </button>
+                </div>
+                <div class="test-item">
+                    <div class="test-label">密码强度</div>
+                    <input type="password" id="validatePassword" class="test-input" placeholder="输入密码测试强度">
+                    <button class="test-button" onclick="testPasswordStrength()">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>检查强度</span>
+                    </button>
+                </div>
+                <div class="result-box" id="validateResult"></div>
+            </div>
+            
+            <!-- 会话测试 -->
+            <div class="test-card">
+                <h2><i class="fas fa-database"></i> 会话测试</h2>
+                <button class="test-button" onclick="checkSession()" style="margin-bottom: 10px;">
+                    <i class="fas fa-search"></i>
+                    <span>检查当前会话</span>
+                </button>
+                <button class="test-button" onclick="viewStoredUsers()" style="margin-bottom: 10px;">
+                    <i class="fas fa-users"></i>
+                    <span>查看已注册用户</span>
+                </button>
+                <button class="test-button" onclick="clearSession()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>清除会话</span>
+                </button>
+                <div class="result-box" id="sessionResult"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="login.js"></script>
+    <script>
+        // 打开登录页面
+        function openLoginPage() {
+            window.open('login.html', '_blank');
+            addResult('sessionResult', 'info', '已在新窗口打开 login.html');
+        }
+        
+        // 测试登录
+        async function testLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            clearResult('loginResult');
+            addResult('loginResult', 'info', '开始测试登录...');
+            addResult('loginResult', 'info', `邮箱: ${email}`);
+            
+            try {
+                const result = await simulateLoginAPI({ email, password });
+                
+                if (result.success) {
+                    addResult('loginResult', 'success', '✓ 登录成功！');
+                    addResult('loginResult', 'success', `用户: ${result.user.name}`);
+                    addResult('loginResult', 'success', `Token: ${result.token.substring(0, 20)}...`);
+                } else {
+                    addResult('loginResult', 'error', '✗ 登录失败');
+                    addResult('loginResult', 'error', result.message);
+                }
+            } catch (error) {
+                addResult('loginResult', 'error', '✗ 测试出错: ' + error.message);
+            }
+        }
+        
+        // 测试注册
+        async function testRegister() {
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            if (!email) {
+                addResult('registerResult', 'error', '请输入邮箱地址');
+                return;
+            }
+            
+            clearResult('registerResult');
+            addResult('registerResult', 'info', '开始测试注册...');
+            addResult('registerResult', 'info', `用户名: ${name}`);
+            addResult('registerResult', 'info', `邮箱: ${email}`);
+            
+            try {
+                const result = await simulateRegisterAPI({ name, email, password });
+                
+                if (result.success) {
+                    addResult('registerResult', 'success', '✓ 注册成功！');
+                    addResult('registerResult', 'success', result.message);
+                    // 清空邮箱输入框
+                    document.getElementById('registerEmail').value = '';
+                } else {
+                    addResult('registerResult', 'error', '✗ 注册失败');
+                    addResult('registerResult', 'error', result.message);
+                }
+            } catch (error) {
+                addResult('registerResult', 'error', '✗ 测试出错: ' + error.message);
+            }
+        }
+        
+        // 测试邮箱验证
+        function testEmailValidation() {
+            const email = document.getElementById('validateEmail').value;
+            clearResult('validateResult');
+            
+            if (!email) {
+                addResult('validateResult', 'error', '请输入邮箱地址');
+                return;
+            }
+            
+            const isValid = isValidEmail(email);
+            
+            if (isValid) {
+                addResult('validateResult', 'success', '✓ 邮箱格式正确');
+                addResult('validateResult', 'info', `邮箱: ${email}`);
+            } else {
+                addResult('validateResult', 'error', '✗ 邮箱格式不正确');
+                addResult('validateResult', 'info', '请输入有效的邮箱地址');
+            }
+        }
+        
+        // 测试密码强度
+        function testPasswordStrength() {
+            const password = document.getElementById('validatePassword').value;
+            clearResult('validateResult');
+            
+            if (!password) {
+                addResult('validateResult', 'error', '请输入密码');
+                return;
+            }
+            
+            const strength = calculatePasswordStrength(password);
+            
+            addResult('validateResult', 'info', `密码长度: ${password.length} 字符`);
+            addResult('validateResult', 'info', `强度评分: ${strength.score}/6`);
+            
+            if (strength.level === 'very-strong') {
+                addResult('validateResult', 'success', '✓ ' + strength.text);
+            } else if (strength.level === 'strong' || strength.level === 'medium') {
+                addResult('validateResult', 'info', strength.text);
+            } else {
+                addResult('validateResult', 'error', strength.text);
+            }
+            
+            // 显示建议
+            if (password.length < 8) {
+                addResult('validateResult', 'info', '建议: 密码至少8个字符');
+            }
+            if (!/[A-Z]/.test(password)) {
+                addResult('validateResult', 'info', '建议: 包含大写字母');
+            }
+            if (!/[a-z]/.test(password)) {
+                addResult('validateResult', 'info', '建议: 包含小写字母');
+            }
+            if (!/\d/.test(password)) {
+                addResult('validateResult', 'info', '建议: 包含数字');
+            }
+            if (!/[^a-zA-Z0-9]/.test(password)) {
+                addResult('validateResult', 'info', '建议: 包含特殊字符');
+            }
+        }
+        
+        // 检查会话
+        function checkSession() {
+            clearResult('sessionResult');
+            
+            const token = localStorage.getItem('destinyai_token') || sessionStorage.getItem('destinyai_token');
+            const userData = localStorage.getItem('destinyai_user') || sessionStorage.getItem('destinyai_user');
+            
+            if (token && userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    addResult('sessionResult', 'success', '✓ 找到活动会话');
+                    addResult('sessionResult', 'info', `用户: ${user.name}`);
+                    addResult('sessionResult', 'info', `邮箱: ${user.email}`);
+                    addResult('sessionResult', 'info', `Token: ${token.substring(0, 30)}...`);
+                } catch (error) {
+                    addResult('sessionResult', 'error', '✗ 会话数据解析失败');
+                }
+            } else {
+                addResult('sessionResult', 'info', '未找到活动会话');
+            }
+        }
+        
+        // 查看已注册用户
+        function viewStoredUsers() {
+            clearResult('sessionResult');
+            
+            const users = JSON.parse(localStorage.getItem('destinyai_demo_users') || '[]');
+            
+            if (users.length === 0) {
+                addResult('sessionResult', 'info', '暂无注册用户');
+            } else {
+                addResult('sessionResult', 'success', `找到 ${users.length} 个注册用户:`);
+                users.forEach((user, index) => {
+                    addResult('sessionResult', 'info', `${index + 1}. ${user.name} (${user.email})`);
+                });
+            }
+        }
+        
+        // 清除会话
+        function clearSession() {
+            localStorage.removeItem('destinyai_token');
+            localStorage.removeItem('destinyai_user');
+            sessionStorage.removeItem('destinyai_token');
+            sessionStorage.removeItem('destinyai_user');
+            
+            clearResult('sessionResult');
+            addResult('sessionResult', 'success', '✓ 会话已清除');
+        }
+        
+        // 清除测试数据
+        function clearTestData() {
+            if (confirm('确定要清除所有测试数据吗？')) {
+                localStorage.removeItem('destinyai_demo_users');
+                localStorage.removeItem('destinyai_token');
+                localStorage.removeItem('destinyai_user');
+                sessionStorage.removeItem('destinyai_token');
+                sessionStorage.removeItem('destinyai_user');
+                
+                addResult('sessionResult', 'success', '✓ 所有测试数据已清除');
+            }
+        }
+        
+        // 测试演示登录
+        async function testDemoLogin() {
+            document.getElementById('loginEmail').value = 'test@example.com';
+            document.getElementById('loginPassword').value = 'password123';
+            await testLogin();
+        }
+        
+        // 测试注册
+        function testRegistration() {
+            const randomEmail = `user${Date.now()}@example.com`;
+            document.getElementById('registerName').value = '测试用户';
+            document.getElementById('registerEmail').value = randomEmail;
+            document.getElementById('registerPassword').value = 'password123';
+            addResult('registerResult', 'info', '已填充测试数据，点击"测试注册"按钮继续');
+        }
+        
+        // 工具函数
+        function addResult(elementId, type, message) {
+            const resultBox = document.getElementById(elementId);
+            const resultItem = document.createElement('div');
+            resultItem.className = `result-item result-${type}`;
+            resultItem.textContent = message;
+            resultBox.appendChild(resultItem);
+            resultBox.scrollTop = resultBox.scrollHeight;
+        }
+        
+        function clearResult(elementId) {
+            document.getElementById(elementId).innerHTML = '';
+        }
+        
+        // 页面加载时显示欢迎信息
+        window.addEventListener('load', function() {
+            addResult('sessionResult', 'success', '✓ 测试页面加载完成');
+            addResult('sessionResult', 'info', '可以开始测试登录注册功能');
+        });
+    </script>
+</body>
+</html>

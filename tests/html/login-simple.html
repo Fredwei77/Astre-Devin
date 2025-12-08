@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - Destiny AI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="mystical-theme.css">
+    <link rel="stylesheet" href="login.css">
+</head>
+<body class="font-inter">
+    <!-- Background -->
+    <div class="login-background">
+        <div class="mandala-overlay"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-deep-purple/20 backdrop-blur-md border-b border-gold/20">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <span class="text-xl font-bold text-warm-white">九筮</span>
+                </div>
+                <a href="index.html" class="text-warm-white/80 hover:text-warm-white">
+                    <i class="fas fa-arrow-left mr-2"></i>返回首页
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="min-h-screen flex items-center justify-center pt-20 pb-12 px-4">
+        <div class="login-content-area">
+            <div class="login-container">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-bold text-warm-white mb-2">欢迎回到命运之境</h1>
+                    <p class="text-warm-white/70">登入您的账户，探索神秘的AI占卜世界</p>
+                </div>
+
+                <!-- Login Form -->
+                <form id="simpleLoginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope mr-2"></i>邮箱地址
+                        </label>
+                        <input type="email" id="email" class="form-input" 
+                               placeholder="test@example.com" 
+                               value="test@example.com"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock mr-2"></i>密码
+                        </label>
+                        <input type="password" id="password" class="form-input" 
+                               placeholder="password123"
+                               value="password123"
+                               required>
+                    </div>
+
+                    <div id="message" style="display:none; padding: 12px; border-radius: 8px; margin-bottom: 16px;"></div>
+
+                    <button type="submit" class="submit-btn" id="loginBtn">
+                        <i class="fas fa-sign-in-alt mr-2"></i>登入账户
+                    </button>
+                </form>
+
+                <div style="margin-top: 20px; text-align: center;">
+                    <p style="color: rgba(245, 245, 220, 0.7); font-size: 14px;">
+                        测试账户已预填<br>
+                        直接点击"登入账户"即可
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log('Simple login page loaded');
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            console.log('Login form submitted');
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const messageDiv = document.getElementById('message');
+            const loginBtn = document.getElementById('loginBtn');
+
+            // 显示加载状态
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>正在登入...';
+            messageDiv.style.display = 'none';
+
+            try {
+                console.log('Sending login request...');
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                console.log('Response received:', response.status);
+                const data = await response.json();
+                console.log('Response data:', data);
+
+                if (data.success) {
+                    // 成功
+                    messageDiv.style.display = 'block';
+                    messageDiv.style.background = 'rgba(102, 187, 106, 0.2)';
+                    messageDiv.style.border = '1px solid rgba(102, 187, 106, 0.3)';
+                    messageDiv.style.color = '#66bb6a';
+                    messageDiv.innerHTML = '<i class="fas fa-check-circle mr-2"></i>登入成功！正在跳转...';
+
+                    // 保存用户信息
+                    sessionStorage.setItem('destinyai_user', JSON.stringify(data.user));
+                    sessionStorage.setItem('destinyai_token', data.token);
+
+                    // 跳转
+                    setTimeout(() => {
+                        window.location.href = data.redirectUrl || 'index.html';
+                    }, 1500);
+                } else {
+                    // 失败
+                    messageDiv.style.display = 'block';
+                    messageDiv.style.background = 'rgba(255, 107, 107, 0.2)';
+                    messageDiv.style.border = '1px solid rgba(255, 107, 107, 0.3)';
+                    messageDiv.style.color = '#ff6b6b';
+                    messageDiv.innerHTML = '<i class="fas fa-exclamation-circle mr-2"></i>' + (data.message || '登入失败');
+
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>登入账户';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                messageDiv.style.display = 'block';
+                messageDiv.style.background = 'rgba(255, 107, 107, 0.2)';
+                messageDiv.style.border = '1px solid rgba(255, 107, 107, 0.3)';
+                messageDiv.style.color = '#ff6b6b';
+                messageDiv.innerHTML = '<i class="fas fa-exclamation-circle mr-2"></i>网络错误: ' + error.message;
+
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>登入账户';
+            }
+        }
+
+        // 测试API连接
+        fetch('/api/health')
+            .then(r => r.json())
+            .then(data => console.log('Server health:', data))
+            .catch(err => console.error('Server connection failed:', err));
+    </script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>翻译测试 - Destiny AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="i18n.js"></script>
+    <script src="验证翻译.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a237e 0%, #4a148c 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .test-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+        .success {
+            border-left: 4px solid #4caf50;
+        }
+        .warning {
+            border-left: 4px solid #ff9800;
+        }
+    </style>
+</head>
+<body>
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl font-bold mb-8 text-center">翻译系统测试</h1>
+        
+        <!-- Language Selector -->
+        <div class="test-section">
+            <h2 class="text-2xl font-bold mb-4">语言选择器</h2>
+            <select id="languageSelect" class="bg-gray-800 text-white px-4 py-2 rounded">
+                <option value="en">English</option>
+                <option value="zh-CN">简体中文</option>
+                <option value="zh-TW">繁體中文</option>
+            </select>
+        </div>
+        
+        <!-- Navigation Tests -->
+        <div class="test-section">
+            <h2 class="text-2xl font-bold mb-4">导航栏翻译</h2>
+            <div class="test-item success">
+                <strong>占卜:</strong> <span data-i18n="nav.divination">Divination</span>
+            </div>
+            <div class="test-item success">
+                <strong>风水:</strong> <span data-i18n="nav.fengshui">Feng Shui</span>
+            </div>
+            <div class="test-item success">
+                <strong>易经:</strong> <span data-i18n="nav.iching">I-Ching</span>
+            </div>
+            <div class="test-item success">
+                <strong>个人档案:</strong> <span data-i18n="nav.profile">Profile</span>
+            </div>
+            <div class="test-item success">
+                <strong>开始使用:</strong> <span data-i18n="nav.getStarted">Get Started</span>
+            </div>
+        </div>
+        
+        <!-- Hero Section Tests -->
+        <div class="test-section">
+            <h2 class="text-2xl font-bold mb-4">首页英雄区域</h2>
+            <div class="test-item success">
+                <strong>标题1:</strong> <span data-i18n="home.hero.title1">Discover Your Destiny</span>
+            </div>
+            <div class="test-item success">
+                <strong>标题2:</strong> <span data-i18n="home.hero.title2">Unlock Ancient Wisdom</span>
+            </div>
+            <div class="test-item success">
+                <strong>标题3:</strong> <span data-i18n="home.hero.title3">Navigate Life's Journey</span>
+            </div>
+            <div class="test-item success">
+                <strong>标题4:</strong> <span data-i18n="home.hero.title4">Find Your True Path</span>
+            </div>
+            <div class="test-item success">
+                <strong>描述:</strong> <span data-i18n="home.hero.description">Harness the power...</span>
+            </div>
+        </div>
+        
+        <!-- Features Section Tests -->
+        <div class="test-section">
+            <h2 class="text-2xl font-bold mb-4">特性部分</h2>
+            <div class="test-item success">
+                <strong>标题:</strong> <span data-i18n="home.features.title">Ancient Wisdom, Modern Technology</span>
+            </div>
+            <div class="test-item success">
+                <strong>副标题:</strong> <span data-i18n="home.features.subtitle">Our AI-powered platform...</span>
+            </div>
+            <div class="test-item success">
+                <strong>AI占卜标题:</strong> <span data-i18n="home.features.divination.title">AI Divination</span>
+            </div>
+            <div class="test-item success">
+                <strong>AI占卜描述:</strong> <span data-i18n="home.features.divination.desc">Get personalized readings...</span>
+            </div>
+            <div class="test-item success">
+                <strong>风水标题:</strong> <span data-i18n="home.features.fengshui.title">Feng Shui Analysis</span>
+            </div>
+            <div class="test-item success">
+                <strong>风水描述:</strong> <span data-i18n="home.features.fengshui.desc">Optimize your living...</span>
+            </div>
+            <div class="test-item success">
+                <strong>易经标题:</strong> <span data-i18n="home.features.iching.title">I-Ching Wisdom</span>
+            </div>
+            <div class="test-item success">
+                <strong>易经描述:</strong> <span data-i18n="home.features.iching.desc">Consult the ancient...</span>
+            </div>
+        </div>
+        
+        <!-- How It Works Tests -->
+        <div class="test-section">
+            <h2 class="text-2xl font-bold mb-4">使用流程</h2>
+            <div class="test-item success">
+                <strong>标题:</strong> <span data-i18n="home.howItWorks.title">Your Journey to Self-Discovery</span>
+            </div>
+            <div class="test-item success">
+                <strong>步骤1:</strong> <span data-i18n="home.howItWorks.step1.title">Share Your Info</span>
+            </div>
+            <div class="test-item success">
+                <strong>步骤2:</strong> <span data-i18n="home.howItWorks.step2.title">AI Analysis</span>
+            </div>
+            <div class="test-item success">
+                <strong>步骤3:</strong> <span data-i18n="home.howItWorks.step3.title">Get Insights</span>
+            </div>
+            <div class="test-item success">
+                <strong>步骤4:</strong> <span data-i18n="home.howItWorks.step4.title">Take Action</span>
+            </div>
+        </div>
+        
+        <!-- Page Titles Tests -->
+        <div class="test-section">
+            <h2 class="text-2xl font-bold mb-4">页面标题</h2>
+            <div class="test-item success">
+                <strong>风水页面:</strong> <span data-i18n="fengshui.title">Feng Shui Analysis & Compass</span>
+            </div>
+            <div class="test-item success">
+                <strong>风水副标题:</strong> <span data-i18n="fengshui.subtitle">Optimize your living...</span>
+            </div>
+            <div class="test-item success">
+                <strong>易经页面:</strong> <span data-i18n="iching.title">I-Ching Divination</span>
+            </div>
+            <div class="test-item success">
+                <strong>易经副标题:</strong> <span data-i18n="iching.subtitle">Consult the ancient...</span>
+            </div>
+        </div>
+        
+        <!-- Footer Tests -->
+        <div class="test-section">
+            <h2 class="text-2xl font-bold mb-4">页脚</h2>
+            <div class="test-item success">
+                <strong>描述:</strong> <span data-i18n="footer.description">Combining ancient Eastern wisdom...</span>
+            </div>
+            <div class="test-item success">
+                <strong>隐私政策:</strong> <span data-i18n="footer.privacy">Privacy Policy</span>
+            </div>
+            <div class="test-item success">
+                <strong>服务条款:</strong> <span data-i18n="footer.terms">Terms of Service</span>
+            </div>
+            <div class="test-item success">
+                <strong>版权:</strong> <span data-i18n="footer.copyright">© 2024 Destiny AI...</span>
+            </div>
+        </div>
+        
+        <!-- Test Results -->
+        <div class="test-section">
+            <h2 class="text-2xl font-bold mb-4">测试结果</h2>
+            <div id="testResults" class="test-item">
+                <p>切换语言选择器以测试翻译功能...</p>
+            </div>
+        </div>
+        
+        <!-- Validation Results -->
+        <div class="test-section">
+            <h2 class="text-2xl font-bold mb-4">自动验证</h2>
+            <button id="runValidation" class="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg font-bold">
+                🔍 运行完整验证
+            </button>
+            <div id="validationResults" class="mt-4"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Wait for i18n to initialize
+        setTimeout(() => {
+            const languageSelect = document.getElementById('languageSelect');
+            const testResults = document.getElementById('testResults');
+            
+            // Set initial language
+            if (window.i18n) {
+                languageSelect.value = i18n.getCurrentLanguage();
+            }
+            
+            // Test language switching
+            let testCount = 0;
+            languageSelect.addEventListener('change', () => {
+                testCount++;
+                testResults.innerHTML = `
+                    <p class="text-green-400">✓ 语言切换测试 #${testCount} 成功</p>
+                    <p>当前语言: ${languageSelect.value}</p>
+                    <p>所有文本应该已更新为选定的语言</p>
+                `;
+            });
+            
+            // 验证按钮
+            const runValidationBtn = document.getElementById('runValidation');
+            const validationResults = document.getElementById('validationResults');
+            
+            runValidationBtn.addEventListener('click', () => {
+                validationResults.innerHTML = '<p class="text-yellow-400">⏳ 正在运行验证...</p>';
+                
+                setTimeout(() => {
+                    const result = window.validateTranslations();
+                    
+                    let statusClass = result.passed ? 'text-green-400' : 'text-red-400';
+                    let statusIcon = result.passed ? '✅' : '❌';
+                    
+                    validationResults.innerHTML = `
+                        <div class="${statusClass} font-bold text-xl mb-4">
+                            ${statusIcon} 验证${result.passed ? '通过' : '失败'}
+                        </div>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="bg-green-900/30 p-4 rounded">
+                                <div class="text-2xl font-bold text-green-400">${result.success}</div>
+                                <div class="text-sm">成功项</div>
+                            </div>
+                            <div class="bg-yellow-900/30 p-4 rounded">
+                                <div class="text-2xl font-bold text-yellow-400">${result.warnings}</div>
+                                <div class="text-sm">警告项</div>
+                            </div>
+                            <div class="bg-red-900/30 p-4 rounded">
+                                <div class="text-2xl font-bold text-red-400">${result.errors}</div>
+                                <div class="text-sm">错误项</div>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-sm text-gray-400">
+                            💡 查看浏览器控制台以获取详细信息
+                        </p>
+                    `;
+                }, 100);
+            });
+        }, 500);
+    </script>
+</body>
+</html>

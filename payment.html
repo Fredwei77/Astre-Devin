@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing & Subscription - Destiny AI</title>
+    <meta name="description"
+        content="Choose your path with Destiny AI. Start with free readings or unlock premium features for deeper insights and personalized guidance.">
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif:wght@400;700&family=Noto+Sans+SC:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Mystical Eastern Theme -->
+    <link rel="stylesheet" href="mystical-theme.css">
+
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+
+    <!-- Language Switcher -->
+    <!-- Unified Translation System -->
+    <script src="translations.js"></script>
+    <script src="unified-i18n.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-navy': '#1a237e',
+                        'mystic-gold': '#ffd700',
+                        'moon-silver': '#c0c0c0',
+                        'ink-black': '#2c2c2c',
+                        'warm-white': '#fafafa',
+                        'pale-gold': '#fff8dc',
+                        'mystic-purple': '#4a148c'
+                    },
+                    fontFamily: {
+                        'serif-sc': ['Noto Serif SC', 'serif'],
+                        'serif': ['Noto Serif', 'serif'],
+                        'sans-sc': ['Noto Sans SC', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Body background now handled by mystical-theme.css */
+
+        .pricing-card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .pricing-card.featured {
+            background: rgba(255, 215, 0, 0.15);
+            border: 2px solid #ffd700;
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-5px);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .feature-check {
+            color: #2e7d32;
+            background: rgba(46, 125, 50, 0.2);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .feature-cross {
+            color: #c62828;
+            background: rgba(198, 40, 40, 0.2);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .payment-form {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            color: #fafafa;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .security-badge {
+            background: rgba(46, 125, 50, 0.2);
+            border: 1px solid #2e7d32;
+            color: #4caf50;
+        }
+
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #ffd700;
+        }
+
+        .comparison-table {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comparison-table th {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .money-back-badge {
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Mobile Music Controls Styling */
+        .touch-manipulation {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 80px;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(192, 192, 192, 0.3);
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ffd700;
+            cursor: pointer;
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ffd700;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Mobile-specific music notification */
+        .mobile-music-toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: #ffd700;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-music-toast.show {
+            opacity: 1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .mystical-particles {
+                display: none; /* Reduce GPU load on mobile */
+            }
+            
+            #musicControl button {
+                backdrop-filter: blur(8px); /* Reduce blur for performance */
+            }
+        }
+    </style>
+</head>
+
+<body class="font-inter text-warm-white">
+    <!-- Background Music -->
+    <audio id="backgroundMusic" loop preload="auto">
+        <source src="Music/Meditation.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Music Control Button with Mobile Optimization -->
+    <div id="musicControl" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
+        <button id="musicToggle" class="bg-mystic-gold/20 backdrop-blur-sm border border-mystic-gold/30 text-mystic-gold hover:bg-mystic-gold hover:text-deep-navy active:scale-95 transition-all duration-300 rounded-full w-14 h-14 sm:w-12 sm:h-12 flex items-center justify-center shadow-lg touch-manipulation" title="Toggle Background Music">
+            <span id="musicIcon" class="text-xl sm:text-lg">🎵</span>
+        </button>
+        <!-- Volume Control Slider for Mobile -->
+        <div id="volumeSlider" class="absolute bottom-16 right-0 bg-black/80 backdrop-blur-sm border border-mystic-gold/30 rounded-lg p-3 hidden">
+            <div class="flex items-center space-x-2">
+                <span class="text-xs text-mystic-gold">🔊</span>
+                <input type="range" id="volumeRange" min="0" max="100" value="30" class="volume-slider">
+                <span id="volumeDisplay" class="text-xs text-mystic-gold">30%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mystical Particle Effects -->
+    <div class="mystical-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 mystical-nav border-b border-moon-silver/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div
+                        class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border border-mystic-gold/50 bg-black/50">
+                        <img src="resources/dragon-logo.jpg" alt="Dragon Logo" class="w-full h-full object-cover">
+                    </div>
+                    <span class="text-xl font-serif font-bold glow-text">九 筮</span>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="hover:text-mystic-gold transition-colors" data-i18n="nav.home">Home</a>
+                    <a href="divination.html" class="hover:text-mystic-gold transition-colors"
+                        data-i18n="nav.divination">Divination</a>
+                    <a href="fengshui.html" class="hover:text-mystic-gold transition-colors"
+                        data-i18n="nav.fengshui">Feng Shui</a>
+                    <a href="iching.html" class="hover:text-mystic-gold transition-colors"
+                        data-i18n="nav.iching">I-Ching</a>
+                    <a href="profile.html" class="hover:text-mystic-gold transition-colors"
+                        data-i18n="nav.profile">Profile</a>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <select id="languageSelect"
+                        class="bg-transparent border border-moon-silver/30 rounded px-3 py-1 text-sm">
+                        <option value="en">English</option>
+                        <option value="zh-CN">简体中文</option>
+                        <option value="zh-TW">繁體中文</option>
+                    </select>
+                    <span class="text-mystic-gold font-semibold">Pricing</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20 pb-12">
+        <!-- Header Section -->
+        <section class="text-center mb-16">
+            <div class="max-w-4xl mx-auto px-4">
+                <h1 class="text-4xl md:text-6xl font-serif font-bold mb-6 glow-text" data-i18n="payment.title">
+                    Choose Your Path to Wisdom
+                </h1>
+                <p class="text-xl md:text-2xl text-moon-silver mb-8 max-w-3xl mx-auto" data-i18n="payment.subtitle">
+                    Start your journey with free readings or unlock the full power of ancient Eastern wisdom
+                    with premium features designed for deeper insights and personal growth.
+                </p>
+
+                <div class="flex justify-center mb-8">
+                    <div class="money-back-badge" data-i18n="payment.guarantee">
+                        🛡️ 30-Day Money-Back Guarantee
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Plans -->
+        <section class="max-w-7xl mx-auto px-4 mb-20">
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Free Plan -->
+                <div class="pricing-card rounded-xl p-8 text-center">
+                    <h3 class="text-2xl font-serif font-bold mb-4" data-i18n="payment.plan.free">Free</h3>
+                    <div class="text-5xl font-bold text-mystic-gold mb-2">$0</div>
+                    <div class="text-moon-silver mb-6" data-i18n="payment.plan.forever">Forever</div>
+
+                    <ul class="text-left space-y-3 mb-8">
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.basic">Basic fortune
+                                readings</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.daily">Daily horoscopes</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.fengshui">Simple feng shui
+                                tips</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.community">Community access</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.iching">Basic I-Ching
+                                readings</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-cross">✗</div>
+                            <span class="text-moon-silver/50">Detailed birth chart</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-cross">✗</div>
+                            <span class="text-moon-silver/50">Advanced feng shui</span>
+                        </li>
+                    </ul>
+
+                    <button
+                        class="w-full bg-moon-silver text-deep-navy py-3 rounded-lg font-semibold hover:bg-white transition-colors"
+                        data-i18n="payment.button.getStarted">
+                        Get Started Free
+                    </button>
+                </div>
+
+                <!-- Premium Plan -->
+                <div class="pricing-card featured rounded-xl p-8 text-center floating-animation">
+                    <div class="bg-mystic-gold text-deep-navy px-3 py-1 rounded-full text-sm font-semibold mb-4 inline-block"
+                        data-i18n="payment.plan.mostPopular">
+                        Most Popular
+                    </div>
+                    <h3 class="text-2xl font-serif font-bold mb-4" data-i18n="payment.plan.premium">Premium</h3>
+                    <div class="text-5xl font-bold text-mystic-gold mb-2">$19</div>
+                    <div class="text-moon-silver mb-6" data-i18n="payment.plan.perMonth">per month</div>
+
+                    <ul class="text-left space-y-3 mb-8">
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.allFree">All Free features</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.birthChart">Detailed birth chart
+                                analysis</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.advancedFengshui">Advanced feng
+                                shui compass</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.unlimitedIching">Unlimited I-Ching
+                                consultations</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.tracking">Personal growth
+                                tracking</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.consultations">Expert
+                                consultations (2/month)</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.support">Priority support</span>
+                        </li>
+                    </ul>
+
+                    <button
+                        class="w-full bg-mystic-gold text-deep-navy py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors"
+                        onclick="showPaymentForm('premium')" data-i18n="payment.button.choosePremium">
+                        Choose Premium
+                    </button>
+                </div>
+
+                <!-- Professional Plan -->
+                <div class="pricing-card rounded-xl p-8 text-center">
+                    <h3 class="text-2xl font-serif font-bold mb-4" data-i18n="payment.plan.professional">Professional
+                    </h3>
+                    <div class="text-5xl font-bold text-mystic-gold mb-2">$49</div>
+                    <div class="text-moon-silver mb-6" data-i18n="payment.plan.perMonth">per month</div>
+
+                    <ul class="text-left space-y-3 mb-8">
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.allPremium">All Premium
+                                features</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.business">Business
+                                consultations</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.reports">Custom reports &
+                                analysis</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.unlimitedExpert">Unlimited expert
+                                access</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.api">API access</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.whiteLabel">White-label
+                                solutions</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="feature-check">✓</div>
+                            <span class="text-moon-silver" data-i18n="payment.feature.dedicatedSupport">Dedicated
+                                support</span>
+                        </li>
+                    </ul>
+
+                    <button
+                        class="w-full bg-moon-silver text-deep-navy py-3 rounded-lg font-semibold hover:bg-white transition-colors"
+                        onclick="showContactForm()" data-i18n="payment.button.contactSales">
+                        Contact Sales
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature Comparison Table -->
+        <section class="max-w-6xl mx-auto px-4 mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold mb-6 glow-text"
+                    data-i18n="payment.comparison.title">
+                    Compare All Features
+                </h2>
+                <p class="text-xl text-moon-silver" data-i18n="payment.comparison.subtitle">
+                    See exactly what you get with each plan
+                </p>
+            </div>
+
+            <div class="comparison-table rounded-xl overflow-hidden">
+                <table class="w-full">
+                    <thead>
+                        <tr>
+                            <th class="text-left p-4" data-i18n="payment.comparison.features">Features</th>
+                            <th class="text-center p-4" data-i18n="payment.comparison.free">Free</th>
+                            <th class="text-center p-4" data-i18n="payment.comparison.premium">Premium</th>
+                            <th class="text-center p-4" data-i18n="payment.comparison.professional">Professional</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="p-4 font-semibold" data-i18n="payment.feature.basic">Basic Fortune Readings</td>
+                            <td class="p-4 text-center">
+                                <div class="feature-check mx-auto">✓</div>
+                            </td>
+                            <td class="p-4 text-center">
+                                <div class="feature-check mx-auto">✓</div>
+                            </td>
+                            <td class="p-4 text-center">
+                                <div class="feature-check mx-auto">✓</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-semibold" data-i18n="payment.feature.daily">Daily Horoscopes</td>
+                            <td class="p-4 text-center">
+                                <div class="feature-check mx-auto">✓</div>
+                            </td>
+                            <td class="p-4 text-center">
+                                <div class="feature-check mx-auto">✓</div>
+                            </td>
+                            <td class="p-4 text-center">
+                                <div class="feature-check mx-auto">✓</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-semibold" data-i18n="payment.feature.birthChart">Detailed Birth Chart
+                                Analysis</td>
+                            <td class="p-4 text-center">
+                                <div class="feature-cross mx-auto">✗</div>
+                            </td>
+                            <td class="p-4 text-center">
+                                <div class="feature-check mx-auto">✓</div>
+                            </td>
+                            <td class="p-4 text-center">
+                                <div class="feature-check mx-auto">✓</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-semibold" data-i18n="payment.feature.advancedFengshui">Advanced Feng
+                                Shui Compass</td>
+                            <td class="p-4 text-center">
+                                <div class="feature-cross mx-auto">✗</div>
+                            </td>
+                            <td class="p-4 text-center">
+                                <div class="feature-check mx-auto">✓</div>
+                            </td>
+                            <td class="p-4 text-center">
+                                <div class="feature-check mx-auto">✓</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-semibold" data-i18n="payment.feature.unlimitedIching">Unlimited I-Ching
+                                Consultations</td>
+                            <td class="p-4 text-center">
+                                <div class="feature-cross mx-auto">✗</div>
+                            </td>
+                            <td class="p-4 text-center">
+                                <div class="feature-check mx-auto">✓</div>
+                            </td>
+                            <td class="p-4 text-center">
+                                <div class="feature-check mx-auto">✓</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-semibold" data-i18n="payment.feature.tracking">Personal Growth Tracking
+                            </td>
+                            <td class="p-4 text-center">
+                                <div class="feature-cross mx-auto">✗</div>
+                            </td>
+                            <td class="p-4 text-center">
+                                <div class="feature-check mx-auto">✓</div>
+                            </td>
+                            <td class="p-4 text-center">
+                                <div class="feature-check mx-auto">✓</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-semibold" data-i18n="payment.feature.consultations">Expert Consultations
+                            </td>
+                            <td class="p-4 text-center">
+                                <div class="feature-cross mx-auto">✗</div>
+                            </td>
+                            <td class="p-4 text-center">2/month</td>
+                            <td class="p-4 text-center">Unlimited</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-semibold" data-i18n="payment.feature.api">API Access</td>
+                            <td class="p-4 text-center">
+                                <div class="feature-cross mx-auto">✗</div>
+                            </td>
+                            <td class="p-4 text-center">
+                                <div class="feature-cross mx-auto">✗</div>
+                            </td>
+                            <td class="p-4 text-center">
+                                <div class="feature-check mx-auto">✓</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="max-w-6xl mx-auto px-4 mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold mb-6 glow-text"
+                    data-i18n="payment.testimonials.title">
+                    What Our Users Say
+                </h2>
+                <p class="text-xl text-moon-silver" data-i18n="payment.testimonials.subtitle">
+                    Join thousands of satisfied wisdom seekers
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="testimonial-card rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div
+                            class="w-12 h-12 bg-mystic-gold rounded-full flex items-center justify-center text-deep-navy font-bold mr-4">
+                            S
+                        </div>
+                        <div>
+                            <h4 class="font-semibold" data-i18n="payment.testimonial.sarah.name">Sarah Chen</h4>
+                            <p class="text-sm text-moon-silver" data-i18n="payment.testimonial.sarah.title">Premium
+                                Member</p>
+                        </div>
+                    </div>
+                    <p class="text-moon-silver mb-4" data-i18n="payment.testimonial.sarah.quote">
+                        "The birth chart analysis was incredibly accurate. It helped me understand my career path
+                        and make better decisions about my future."
+                    </p>
+                    <div class="flex text-mystic-gold">
+                        ★★★★★
+                    </div>
+                </div>
+
+                <div class="testimonial-card rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div
+                            class="w-12 h-12 bg-moon-silver rounded-full flex items-center justify-center text-deep-navy font-bold mr-4">
+                            M
+                        </div>
+                        <div>
+                            <h4 class="font-semibold" data-i18n="payment.testimonial.michael.name">Michael Rodriguez
+                            </h4>
+                            <p class="text-sm text-moon-silver" data-i18n="payment.testimonial.michael.title">
+                                Professional Member</p>
+                        </div>
+                    </div>
+                    <p class="text-moon-silver mb-4" data-i18n="payment.testimonial.michael.quote">
+                        "The feng shui analysis transformed my workspace. I feel more focused and productive
+                        since implementing the recommendations."
+                    </p>
+                    <div class="flex text-mystic-gold">
+                        ★★★★★
+                    </div>
+                </div>
+
+                <div class="testimonial-card rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div
+                            class="w-12 h-12 bg-mystic-purple rounded-full flex items-center justify-center text-warm-white font-bold mr-4">
+                            A
+                        </div>
+                        <div>
+                            <h4 class="font-semibold" data-i18n="payment.testimonial.aisha.name">Aisha Patel</h4>
+                            <p class="text-sm text-moon-silver" data-i18n="payment.testimonial.aisha.title">Premium
+                                Member</p>
+                        </div>
+                    </div>
+                    <p class="text-moon-silver mb-4" data-i18n="payment.testimonial.aisha.quote">
+                        "The I-Ching consultations have provided profound guidance during difficult times.
+                        The AI interpretation is surprisingly insightful."
+                    </p>
+                    <div class="flex text-mystic-gold">
+                        ★★★★★
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="max-w-4xl mx-auto px-4 mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold mb-6 glow-text" data-i18n="payment.faq.title">
+                    Frequently Asked Questions
+                </h2>
+            </div>
+
+            <div class="space-y-6">
+                <div class="pricing-card rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-3 text-mystic-gold" data-i18n="payment.faq.q1">How accurate are
+                        the readings?</h3>
+                    <p class="text-moon-silver" data-i18n="payment.faq.a1">
+                        Our AI combines thousands of years of Eastern wisdom with modern data analysis to provide
+                        highly accurate and personalized insights. Our users report a 94% accuracy rate.
+                    </p>
+                </div>
+
+                <div class="pricing-card rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-3 text-mystic-gold" data-i18n="payment.faq.q2">Can I cancel my
+                        subscription anytime?</h3>
+                    <p class="text-moon-silver" data-i18n="payment.faq.a2">
+                        Yes, you can cancel your subscription at any time. You'll continue to have access to
+                        premium features until the end of your billing period.
+                    </p>
+                </div>
+
+                <div class="pricing-card rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-3 text-mystic-gold" data-i18n="payment.faq.q3">What payment
+                        methods do you accept?</h3>
+                    <p class="text-moon-silver" data-i18n="payment.faq.a3">
+                        We accept all major credit cards, PayPal, and various regional payment methods.
+                        All payments are processed securely with SSL encryption.
+                    </p>
+                </div>
+
+                <div class="pricing-card rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-3 text-mystic-gold" data-i18n="payment.faq.q4">Is my personal
+                        information secure?</h3>
+                    <p class="text-moon-silver" data-i18n="payment.faq.a4">
+                        Absolutely. We use bank-level security to protect your data and never share your
+                        personal information with third parties. Your privacy is our priority.
+                    </p>
+                </div>
+
+                <div class="pricing-card rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-3 text-mystic-gold" data-i18n="payment.faq.q5">Can I upgrade or
+                        downgrade my plan?</h3>
+                    <p class="text-moon-silver" data-i18n="payment.faq.a5">
+                        Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately,
+                        and we'll prorate any billing differences.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payment Form Modal -->
+        <div id="paymentModal" class="fixed inset-0 z-50 hidden">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" onclick="hidePaymentForm()"></div>
+
+                <div class="payment-form rounded-xl p-8 max-w-md w-full relative">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-serif font-bold mb-2" data-i18n="payment.modal.title">Complete Your
+                            Subscription</h3>
+                        <p class="text-moon-silver" data-i18n="payment.modal.subtitle">Secure payment powered by SSL
+                            encryption</p>
+                    </div>
+
+                    <form id="paymentForm" class="space-y-4">
+                        <div>
+                            <label class="block text-moon-silver mb-2 font-medium" data-i18n="payment.modal.card">Card
+                                Number</label>
+                            <input type="text" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-moon-silver mb-2 font-medium"
+                                    data-i18n="payment.modal.expiry">Expiry Date</label>
+                                <input type="text" class="form-input" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div>
+                                <label class="block text-moon-silver mb-2 font-medium"
+                                    data-i18n="payment.modal.cvv">CVV</label>
+                                <input type="text" class="form-input" placeholder="123" maxlength="4">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-moon-silver mb-2 font-medium"
+                                data-i18n="payment.modal.name">Cardholder Name</label>
+                            <input type="text" class="form-input" placeholder="John Doe"
+                                data-i18n-placeholder="payment.placeholder.name">
+                        </div>
+
+                        <div>
+                            <label class="block text-moon-silver mb-2 font-medium" data-i18n="payment.modal.email">Email
+                                Address</label>
+                            <input type="email" class="form-input" placeholder="john@example.com">
+                        </div>
+
+                        <div class="security-badge rounded-lg p-3 text-center text-sm" data-i18n="payment.modal.secure">
+                            🔒 Your payment information is secure and encrypted
+                        </div>
+
+                        <div class="flex space-x-4">
+                            <button type="button" onclick="hidePaymentForm()"
+                                class="flex-1 border border-moon-silver text-moon-silver py-3 rounded-lg font-semibold hover:bg-moon-silver hover:text-deep-navy transition-colors"
+                                data-i18n="payment.modal.cancel">
+                                Cancel
+                            </button>
+                            <button type="submit"
+                                class="flex-1 bg-mystic-gold text-deep-navy py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors"
+                                data-i18n="payment.modal.submit">
+                                Start Subscription
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-8" style="background: var(--jade-dark);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-moon-silver text-sm">
+                    © 2024 Destiny AI. All rights reserved. Empowering lives through ancient wisdom and modern
+                    technology.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        // Payment page specific functionality
+        class PaymentManager {
+            constructor() {
+                this.selectedPlan = null;
+                this.init();
+            }
+
+            init() {
+                this.setupPaymentForm();
+                this.setupAnimations();
+            }
+
+            setupPaymentForm() {
+                const form = document.getElementById('paymentForm');
+                if (form) {
+                    form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.processPayment();
+                    });
+
+                    // Format card number input
+                    const cardInput = form.querySelector('input[placeholder="1234 5678 9012 3456"]');
+                    if (cardInput) {
+                        cardInput.addEventListener('input', (e) => {
+                            let value = e.target.value.replace(/\s/g, '');
+                            let formattedValue = value.replace(/(.{4})/g, '$1 ').trim();
+                            e.target.value = formattedValue;
+                        });
+                    }
+
+                    // Format expiry date input
+                    const expiryInput = form.querySelector('input[placeholder="MM/YY"]');
+                    if (expiryInput) {
+                        expiryInput.addEventListener('input', (e) => {
+                            let value = e.target.value.replace(/\D/g, '');
+                            if (value.length >= 2) {
+                                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                            }
+                            e.target.value = value;
+                        });
+                    }
+                }
+            }
+
+            setupAnimations() {
+                // Animate pricing cards on scroll
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            anime({
+                                targets: entry.target,
+                                opacity: [0, 1],
+                                translateY: [30, 0],
+                                duration: 800,
+                                easing: 'easeOutQuart',
+                                delay: anime.stagger(200)
+                            });
+                        }
+                    });
+                }, observerOptions);
+
+                document.querySelectorAll('.pricing-card').forEach(card => {
+                    observer.observe(card);
+                });
+            }
+
+            processPayment() {
+                // Simulate payment processing
+                const submitBtn = document.querySelector('#paymentForm button[type="submit"]');
+                const originalText = submitBtn.textContent;
+
+                submitBtn.textContent = window.i18n.t('payment.message.processing');
+                submitBtn.disabled = true;
+
+                setTimeout(() => {
+                    this.showSuccessMessage();
+                    hidePaymentForm();
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }, 2000);
+            }
+
+            showSuccessMessage() {
+                // Create success notification
+                const notification = document.createElement('div');
+                notification.className = 'fixed top-20 right-4 z-50 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300';
+                notification.textContent = window.i18n.t('payment.message.success');
+
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                }, 100);
+
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+        }
+
+        // Global functions for payment form
+        function showPaymentForm(plan) {
+            document.getElementById('paymentModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hidePaymentForm() {
+            document.getElementById('paymentModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function showContactForm() {
+            alert(window.i18n.t('payment.message.contact'));
+        }
+
+        // Initialize payment manager when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new PaymentManager();
+        });
+    </script>
+</body>
+
+</html>

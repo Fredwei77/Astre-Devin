@@ -1,0 +1,18 @@
+{
+  "products": {
+    "premium": {
+      "productId": "prod_TYntvbmwAsdyBP",
+      "priceId": "price_1SbgHbPyLPASs4oMLbQtROoU",
+      "amount": 19,
+      "currency": "usd",
+      "interval": "month"
+    },
+    "professional": {
+      "productId": "prod_TYntmyDMVYARQa",
+      "priceId": "price_1SbgHbPyLPASs4oM82qQeGg9",
+      "amount": 49,
+      "currency": "usd",
+      "interval": "month"
+    }
+  }
+}

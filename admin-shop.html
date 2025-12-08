@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品管理后台 - Destiny AI</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a237e 0%, #4a148c 100%);
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body class="text-white">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold">🛍️ 商品管理后台</h1>
+                <a href="fengshui.html" class="bg-white/10 px-4 py-2 rounded-lg hover:bg-white/20">
+                    返回商店
+                </a>
+            </div>
+
+            <!-- Add Product Form -->
+            <div class="bg-white/10 rounded-xl p-6 mb-8">
+                <h2 class="text-xl font-bold mb-4">添加/编辑商品</h2>
+                <form id="productForm" class="grid md:grid-cols-2 gap-4">
+                    <input type="hidden" id="productId">
+                    
+                    <div>
+                        <label class="block mb-2">商品名称（中文）*</label>
+                        <input type="text" id="productName" required
+                            class="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-2">
+                    </div>
+                    
+                    <div>
+                        <label class="block mb-2">商品名称（英文）*</label>
+                        <input type="text" id="productNameEn" required
+                            class="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-2">
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <label class="block mb-2">商品描述</label>
+                        <textarea id="productDescription" rows="2"
+                            class="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-2"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block mb-2">分类*</label>
+                        <select id="productCategory" required
+                            class="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-2">
+                            <option value="dragon">龙雕像</option>
+                            <option value="crystal">水晶</option>
+                            <option value="bracelet">手环</option>
+                            <option value="compass">罗盘</option>
+                            <option value="mirror">镜子</option>
+                            <option value="coins">钱币</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block mb-2">图标 Emoji</label>
+                        <input type="text" id="productIcon" placeholder="🎁"
+                            class="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-2">
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <label class="block mb-2">商品图片</label>
+                        <div class="flex gap-4 items-start">
+                            <div class="flex-1">
+                                <input type="file" id="productImageFile" accept="image/*"
+                                    class="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-2 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-mystic-gold file:text-deep-navy file:cursor-pointer hover:file:bg-yellow-400">
+                                <p class="text-xs text-gray-400 mt-1">或输入图片URL</p>
+                                <input type="text" id="productImageUrl" placeholder="https://example.com/image.jpg"
+                                    class="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-2 mt-2">
+                            </div>
+                            <div id="imagePreview" class="w-32 h-32 bg-white/5 border border-white/30 rounded-lg flex items-center justify-center overflow-hidden">
+                                <span class="text-gray-500 text-sm">预览</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block mb-2">价格 ($)*</label>
+                        <input type="number" id="productPrice" step="0.01" required
+                            class="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-2">
+                    </div>
+                    
+                    <div>
+                        <label class="block mb-2">原价 ($)</label>
+                        <input type="number" id="productOriginalPrice" step="0.01"
+                            class="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-2">
+                    </div>
+                    
+                    <div>
+                        <label class="block mb-2">库存*</label>
+                        <input type="number" id="productStock" required
+                            class="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-2">
+                    </div>
+                    
+                    <div>
+                        <label class="block mb-2">排序</label>
+                        <input type="number" id="productSortOrder" value="0"
+                            class="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-2">
+                    </div>
+                    
+                    <div class="flex items-center gap-4">
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" id="productIsActive" checked>
+                            <span>启用</span>
+                        </label>
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" id="productIsFeatured">
+                            <span>推荐</span>
+                        </label>
+                    </div>
+                    
+                    <div class="md:col-span-2 flex gap-4">
+                        <button type="submit" class="bg-green-500 px-6 py-2 rounded-lg hover:bg-green-600">
+                            <i class="fas fa-save mr-2"></i>保存商品
+                        </button>
+                        <button type="button" onclick="adminShop.resetForm()" 
+                                class="bg-gray-500 px-6 py-2 rounded-lg hover:bg-gray-600">
+                            <i class="fas fa-redo mr-2"></i>重置
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Products List -->
+            <div class="bg-white/10 rounded-xl p-6">
+                <h2 class="text-xl font-bold mb-4">商品列表</h2>
+                <div id="productsList" class="space-y-4">
+                    <!-- Products will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Orders List -->
+            <div class="bg-white/10 rounded-xl p-6 mt-8">
+                <h2 class="text-xl font-bold mb-4">订单管理</h2>
+                <div id="ordersList" class="space-y-4">
+                    <!-- Orders will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script src="supabase-init.js"></script>
+    <script src="auth-service.js"></script>
+    <script src="shop-service.js"></script>
+    <script src="admin-shop.js"></script>
+</body>
+</html>

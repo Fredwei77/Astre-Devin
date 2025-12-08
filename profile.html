@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Profile - Destiny AI</title>
+    <meta name="description"
+        content="Track your personal growth journey with Destiny AI. View your readings history, set goals, and get personalized insights for continuous improvement.">
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif:wght@400;700&family=Noto+Sans+SC:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Mystical Eastern Theme -->
+    <link rel="stylesheet" href="mystical-theme.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- User Menu Styles -->
+    <link rel="stylesheet" href="user-menu.css">
+
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.2/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+
+    <!-- Language Switcher -->
+    <!-- Unified Translation System -->
+    <script src="translations.js"></script>
+    <script src="unified-i18n.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-navy': '#1a237e',
+                        'mystic-gold': '#ffd700',
+                        'moon-silver': '#c0c0c0',
+                        'ink-black': '#2c2c2c',
+                        'warm-white': '#fafafa',
+                        'pale-gold': '#fff8dc',
+                        'mystic-purple': '#4a148c'
+                    },
+                    fontFamily: {
+                        'serif-sc': ['Noto Serif SC', 'serif'],
+                        'serif': ['Noto Serif', 'serif'],
+                        'sans-sc': ['Noto Sans SC', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Body background now handled by mystical-theme.css */
+
+        .profile-card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .achievement-badge {
+            background: linear-gradient(135deg, #ffd700, #b8860b);
+            border: 2px solid #c0c0c0;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-circle {
+            stroke-dasharray: 251.2;
+            stroke-dashoffset: 251.2;
+            transition: stroke-dashoffset 0.5s ease-in-out;
+        }
+
+        .goal-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #ffd700;
+            transition: all 0.3s ease;
+        }
+
+        .goal-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .reading-history-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .reading-history-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        /* 历史记录卡片样式 */
+        .reading-card {
+            transition: all 0.3s ease;
+        }
+
+        .reading-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #c0c0c0;
+        }
+
+        .insight-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffd700, #c0c0c0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #1a237e;
+            font-weight: bold;
+            border: 4px solid #c0c0c0;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .level-badge {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            background: #ffd700;
+            color: #1a237e;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            border: 3px solid #c0c0c0;
+        }
+
+        .tab-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #ffd700;
+            color: #ffd700;
+        }
+
+        .tab-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile Music Controls Styling */
+        .touch-manipulation {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 80px;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(192, 192, 192, 0.3);
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ffd700;
+            cursor: pointer;
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ffd700;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Mobile-specific music notification */
+        .mobile-music-toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: #ffd700;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-music-toast.show {
+            opacity: 1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .mystical-particles {
+                display: none; /* Reduce GPU load on mobile */
+            }
+            
+            #musicControl button {
+                backdrop-filter: blur(8px); /* Reduce blur for performance */
+            }
+        }
+    </style>
+</head>
+
+<body class="font-inter text-warm-white">
+    <!-- Background Music -->
+    <audio id="backgroundMusic" loop preload="auto">
+        <source src="Music/Meditation.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Music Control Button with Mobile Optimization -->
+    <div id="musicControl" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
+        <button id="musicToggle" class="bg-mystic-gold/20 backdrop-blur-sm border border-mystic-gold/30 text-mystic-gold hover:bg-mystic-gold hover:text-deep-navy active:scale-95 transition-all duration-300 rounded-full w-14 h-14 sm:w-12 sm:h-12 flex items-center justify-center shadow-lg touch-manipulation" title="Toggle Background Music">
+            <span id="musicIcon" class="text-xl sm:text-lg">🎵</span>
+        </button>
+        <!-- Volume Control Slider for Mobile -->
+        <div id="volumeSlider" class="absolute bottom-16 right-0 bg-black/80 backdrop-blur-sm border border-mystic-gold/30 rounded-lg p-3 hidden">
+            <div class="flex items-center space-x-2">
+                <span class="text-xs text-mystic-gold">🔊</span>
+                <input type="range" id="volumeRange" min="0" max="100" value="30" class="volume-slider">
+                <span id="volumeDisplay" class="text-xs text-mystic-gold">30%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mystical Particle Effects -->
+    <div class="mystical-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 mystical-nav border-b border-moon-silver/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div
+                        class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border border-mystic-gold/50 bg-black/50">
+                        <img src="resources/dragon-logo.jpg" alt="Dragon Logo" class="w-full h-full object-cover">
+                    </div>
+                    <span class="text-xl font-serif font-bold glow-text">九 筮</span>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="hover:text-mystic-gold transition-colors" data-i18n="nav.home">Home</a>
+                    <a href="divination.html" class="hover:text-mystic-gold transition-colors"
+                        data-i18n="nav.divination">Divination</a>
+                    <a href="fengshui.html" class="hover:text-mystic-gold transition-colors"
+                        data-i18n="nav.fengshui">Feng Shui</a>
+                    <a href="iching.html" class="hover:text-mystic-gold transition-colors"
+                        data-i18n="nav.iching">I-Ching</a>
+                    <a href="profile.html" class="text-mystic-gold font-semibold" data-i18n="nav.profile">Profile</a>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <select id="languageSelect"
+                        class="bg-transparent border border-moon-silver/30 rounded px-3 py-1 text-sm">
+                        <option value="en">English</option>
+                        <option value="zh-CN">简体中文</option>
+                        <option value="zh-TW">繁體中文</option>
+                    </select>
+                    
+                    <!-- Login/User Section -->
+                    <div id="authSection" class="flex items-center space-x-3">
+                        <!-- Guest View (Not Logged In) -->
+                        <div id="guestView" class="flex items-center space-x-3">
+                            <button id="loginBtn" 
+                                class="text-moon-silver hover:text-mystic-gold transition-colors font-medium flex items-center gap-2"
+                                style="color: #c0c0c0;">
+                                <span data-i18n="nav.login">登入</span>
+                            </button>
+                            <a href="payment.html"
+                                class="bg-mystic-gold text-deep-navy px-4 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors"
+                                style="background: #ffd700; color: #1a237e;"
+                                data-i18n="nav.upgrade">
+                                Upgrade
+                            </a>
+                        </div>
+                        
+                        <!-- User View (Logged In) -->
+                        <div id="userView" class="hidden">
+                            <div class="flex items-center space-x-3">
+                                <!-- User Avatar and Name -->
+                                <div class="flex items-center space-x-2 user-avatar-container">
+                                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-mystic-gold to-moon-silver flex items-center justify-center border-2 border-mystic-gold/50 shadow-lg"
+                                        style="background: linear-gradient(135deg, #ffd700, #c0c0c0);">
+                                        <img id="userAvatar" src="" alt="User Avatar" class="w-full h-full rounded-full object-cover hidden">
+                                        <i id="userIcon" class="fas fa-user text-deep-navy text-sm" style="color: #1a237e;"></i>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span id="userName" class="text-moon-silver font-medium text-sm" style="color: #c0c0c0;"></span>
+                                        <span id="userLevel" class="text-mystic-gold text-xs hidden" style="color: #ffd700;">VIP</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Dropdown Menu Button -->
+                                <div class="relative">
+                                    <button id="userMenuBtn" class="text-moon-silver hover:text-mystic-gold transition-all duration-300 p-2 hover:bg-mystic-gold/10 rounded-full"
+                                        style="color: #c0c0c0;">
+                                        <i class="fas fa-chevron-down text-sm"></i>
+                                    </button>
+                                    
+                                    <!-- Dropdown Menu -->
+                                    <div id="userMenu" class="absolute right-0 mt-2 w-56 bg-black/95 backdrop-blur-md border-2 border-mystic-gold/30 rounded-xl shadow-2xl hidden z-50 overflow-hidden">
+                                        <!-- User Info Card -->
+                                        <div class="user-info-card">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-mystic-gold to-moon-silver flex items-center justify-center border-2 border-mystic-gold/50"
+                                                    style="background: linear-gradient(135deg, #ffd700, #c0c0c0);">
+                                                    <i class="fas fa-user text-deep-navy" style="color: #1a237e;"></i>
+                                                </div>
+                                                <div class="flex-1">
+                                                    <div id="menuUserName" class="text-warm-white font-semibold text-sm"></div>
+                                                    <div id="menuUserEmail" class="user-email"></div>
+                                                    <div id="menuUserStatus" class="user-status">免费会员</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Menu Items -->
+                                        <div class="py-2">
+                                            <a href="profile.html" class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-user-circle w-5"></i>
+                                                <span class="ml-3" data-i18n="nav.profile">个人信息</span>
+                                            </a>
+                                            
+                                            <a href="profile.html#readings" class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-history w-5"></i>
+                                                <span class="ml-3" data-i18n="nav.myReadings">我的占卜</span>
+                                            </a>
+                                            
+                                            <a href="payment.html" class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-crown w-5"></i>
+                                                <span class="ml-3" data-i18n="nav.upgrade">会员升级</span>
+                                                <span class="ml-auto text-xs bg-mystic-gold text-deep-navy px-2 py-1 rounded-full font-bold"
+                                                    style="background: #ffd700; color: #1a237e;">HOT</span>
+                                            </a>
+                                            
+                                            <a href="profile.html#settings" class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-cog w-5"></i>
+                                                <span class="ml-3" data-i18n="nav.settings">设置</span>
+                                            </a>
+                                        </div>
+                                        
+                                        <hr class="border-mystic-gold/20 mx-3">
+                                        
+                                        <!-- Logout Button -->
+                                        <div class="py-2">
+                                            <button id="logoutBtn" class="w-full flex items-center px-4 py-3 text-moon-silver hover:text-red-400 hover:bg-red-400/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-sign-out-alt w-5"></i>
+                                                <span class="ml-3" data-i18n="nav.logout">退出登录</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Profile Header -->
+            <div class="profile-card rounded-xl p-8 mb-8">
+                <div class="flex flex-col lg:flex-row items-center lg:items-start space-y-6 lg:space-y-0 lg:space-x-8">
+                    <!-- Avatar -->
+                    <div class="avatar-container">
+                        <div class="avatar" id="userAvatar">命</div>
+                        <div class="level-badge" id="userLevel">5</div>
+                    </div>
+
+                    <!-- User Info -->
+                    <div class="flex-1 text-center lg:text-left">
+                        <h1 class="text-3xl font-serif font-bold mb-2 glow-text" id="userName">Wisdom Seeker</h1>
+                        <p class="text-moon-silver mb-4" id="userTitle">Destiny Explorer • Level 5</p>
+
+                        <!-- Stats -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-mystic-gold" id="totalReadings">47</div>
+                                <div class="text-sm text-moon-silver" data-i18n="profile.stats.readings">Total Readings
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-mystic-gold" id="accuracyRate">94%</div>
+                                <div class="text-sm text-moon-silver" data-i18n="profile.stats.accuracy">Accuracy Rate
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-mystic-gold" id="streakDays">12</div>
+                                <div class="text-sm text-moon-silver" data-i18n="profile.stats.streak">Day Streak</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-mystic-gold" id="achievements">8</div>
+                                <div class="text-sm text-moon-silver" data-i18n="profile.stats.achievements">
+                                    Achievements</div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm text-moon-silver mb-2">
+                                <span data-i18n="profile.progress">Level Progress</span>
+                                <span id="levelProgress">2,340 / 3,000 XP</span>
+                            </div>
+                            <div class="w-full bg-white/20 rounded-full h-3">
+                                <div class="bg-gradient-to-r from-mystic-gold to-moon-silver h-3 rounded-full"
+                                    style="width: 78%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="flex flex-col space-y-3">
+                        <button
+                            class="bg-mystic-gold text-deep-navy px-6 py-2 rounded-lg font-semibold hover:bg-yellow-400 transition-colors"
+                            data-i18n="profile.button.edit">
+                            Edit Profile
+                        </button>
+                        <button
+                            class="border border-moon-silver text-moon-silver px-6 py-2 rounded-lg font-semibold hover:bg-moon-silver hover:text-deep-navy transition-colors"
+                            data-i18n="profile.button.settings">
+                            Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="flex flex-wrap justify-center gap-2 mb-8">
+                <button class="tab-button active px-6 py-3 rounded-lg font-semibold" data-tab="dashboard"
+                    data-i18n="profile.tab.dashboard">
+                    Dashboard
+                </button>
+                <button class="tab-button px-6 py-3 rounded-lg font-semibold" data-tab="readings"
+                    data-i18n="profile.tab.readings">
+                    Reading History
+                </button>
+                <button class="tab-button px-6 py-3 rounded-lg font-semibold" data-tab="goals"
+                    data-i18n="profile.tab.goals">
+                    Goals & Progress
+                </button>
+                <button class="tab-button px-6 py-3 rounded-lg font-semibold" data-tab="achievements"
+                    data-i18n="profile.tab.achievements">
+                    Achievements
+                </button>
+                <button class="tab-button px-6 py-3 rounded-lg font-semibold" data-tab="insights"
+                    data-i18n="profile.tab.insights">
+                    Personal Insights
+                </button>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Personality Radar Chart -->
+                    <div class="profile-card rounded-xl p-6">
+                        <h3 class="text-xl font-serif font-bold mb-4 text-center" data-i18n="profile.personality">
+                            Personality Traits</h3>
+                        <div id="personalityChart" style="height: 300px;"></div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="profile-card rounded-xl p-6">
+                        <h3 class="text-xl font-serif font-bold mb-4" data-i18n="profile.activity.recent">Recent
+                            Activity</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
+                                <div
+                                    class="w-10 h-10 bg-mystic-gold rounded-full flex items-center justify-center text-deep-navy font-bold">
+                                    命</div>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-sm" data-i18n="profile.activity.birthChart">Birth
+                                        Chart Analysis</div>
+                                    <div class="text-xs text-moon-silver" data-i18n="profile.time.hoursAgo">2 hours ago
+                                    </div>
+                                </div>
+                                <div class="text-mystic-gold text-xs">+50 XP</div>
+                            </div>
+
+                            <div class="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
+                                <div
+                                    class="w-10 h-10 bg-moon-silver rounded-full flex items-center justify-center text-deep-navy font-bold">
+                                    易</div>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-sm" data-i18n="profile.activity.iching">I-Ching
+                                        Consultation</div>
+                                    <div class="text-xs text-moon-silver" data-i18n="profile.time.dayAgo">1 day ago
+                                    </div>
+                                </div>
+                                <div class="text-mystic-gold text-xs">+30 XP</div>
+                            </div>
+
+                            <div class="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
+                                <div
+                                    class="w-10 h-10 bg-mystic-purple rounded-full flex items-center justify-center text-warm-white font-bold">
+                                    风</div>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-sm" data-i18n="profile.activity.fengshui">Feng Shui
+                                        Analysis</div>
+                                    <div class="text-xs text-moon-silver" data-i18n="profile.time.daysAgo">3 days ago
+                                    </div>
+                                </div>
+                                <div class="text-mystic-gold text-xs">+40 XP</div>
+                            </div>
+
+                            <div class="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
+                                <div
+                                    class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-warm-white font-bold">
+                                    目</div>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-sm" data-i18n="profile.activity.goalCompleted">Goal
+                                        Completed</div>
+                                    <div class="text-xs text-moon-silver" data-i18n="profile.time.weekAgo">1 week ago
+                                    </div>
+                                </div>
+                                <div class="text-mystic-gold text-xs">+100 XP</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Insights -->
+                    <div class="profile-card rounded-xl p-6">
+                        <h3 class="text-xl font-serif font-bold mb-4" data-i18n="profile.insights.today">Today's
+                            Insights</h3>
+                        <div class="space-y-4">
+                            <div class="insight-card rounded-lg p-4">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <span class="text-mystic-gold text-lg">🌟</span>
+                                    <span class="font-semibold text-sm" data-i18n="profile.insights.lucky">Lucky
+                                        Element</span>
+                                </div>
+                                <p class="text-moon-silver text-sm" data-i18n="profile.insight.metal">Metal energy is
+                                    strong today. Focus on precision and
+                                    clarity in your decisions.</p>
+                            </div>
+
+                            <div class="insight-card rounded-lg p-4">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <span class="text-mystic-gold text-lg">💫</span>
+                                    <span class="font-semibold text-sm" data-i18n="profile.insights.career">Career
+                                        Outlook</span>
+                                </div>
+                                <p class="text-moon-silver text-sm" data-i18n="profile.insight.leadership">Excellent day
+                                    for leadership opportunities. Trust
+                                    your instincts.</p>
+                            </div>
+
+                            <div class="insight-card rounded-lg p-4">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <span class="text-mystic-gold text-lg">❤️</span>
+                                    <span class="font-semibold text-sm"
+                                        data-i18n="profile.insights.relationships">Relationships</span>
+                                </div>
+                                <p class="text-moon-silver text-sm" data-i18n="profile.insight.harmony">Harmony in
+                                    relationships. Good time to strengthen
+                                    bonds.</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 text-center">
+                            <button
+                                class="bg-mystic-gold text-deep-navy px-4 py-2 rounded-lg font-semibold hover:bg-yellow-400 transition-colors text-sm"
+                                data-i18n="profile.button.fullReading">
+                                Get Full Reading
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reading History Tab -->
+            <div id="readings" class="tab-content">
+                <div class="profile-card rounded-xl p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-serif font-bold" data-i18n="profile.history.title">Reading History</h3>
+                        <div class="flex space-x-2">
+                            <button id="refreshReadings" 
+                                    class="bg-mystic-gold/20 hover:bg-mystic-gold/30 text-mystic-gold px-4 py-2 rounded-lg transition-colors"
+                                    title="刷新">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                            <select class="bg-white/10 border border-moon-silver/30 rounded px-3 py-1 text-sm">
+                                <option data-i18n="profile.history.allTypes">All Types</option>
+                                <option data-i18n="nav.divination">Divination</option>
+                                <option data-i18n="nav.fengshui">Feng Shui</option>
+                                <option data-i18n="nav.iching">I-Ching</option>
+                            </select>
+                            <select class="bg-white/10 border border-moon-silver/30 rounded px-3 py-1 text-sm">
+                                <option data-i18n="profile.history.last30">Last 30 Days</option>
+                                <option data-i18n="profile.history.last3months">Last 3 Months</option>
+                                <option data-i18n="profile.history.lastYear">Last Year</option>
+                                <option data-i18n="profile.history.allTime">All Time</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 历史记录容器 -->
+                    <div id="readingsHistoryContainer" class="space-y-4">
+                        <!-- 动态加载的历史记录将显示在这里 -->
+                        <div class="text-center py-12">
+                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-mystic-gold mx-auto mb-4"></div>
+                            <p class="text-moon-silver">加载中...</p>
+                        </div>
+                    </div>
+
+                    <!-- 分页 -->
+                    <div class="flex justify-center space-x-4 mt-6">
+                        <button id="prevPage" 
+                                class="bg-white/10 hover:bg-white/20 text-moon-silver px-4 py-2 rounded-lg transition-colors">
+                            <i class="fas fa-chevron-left mr-2"></i>上一页
+                        </button>
+                        <button id="nextPage" 
+                                class="bg-white/10 hover:bg-white/20 text-moon-silver px-4 py-2 rounded-lg transition-colors">
+                            下一页<i class="fas fa-chevron-right ml-2"></i>
+                        </button>
+                    </div>
+
+                    <div class="space-y-4 hidden">
+                        <div class="reading-history-item rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div
+                                        class="w-12 h-12 bg-mystic-gold rounded-full flex items-center justify-center text-deep-navy font-bold">
+                                        命</div>
+                                    <div>
+                                        <h4 class="font-semibold" data-i18n="profile.history.birthChart.title">Birth
+                                            Chart Analysis</h4>
+                                        <p class="text-sm text-moon-silver" data-i18n="profile.history.birthChart.desc">
+                                            Career and relationship insights</p>
+                                        <p class="text-xs text-moon-silver/70">October 26, 2024 • 2:30 PM</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-mystic-gold font-semibold"
+                                        data-i18n="profile.history.rating.highlyAccurate">Highly Accurate</span>
+                                    <button class="text-moon-silver hover:text-mystic-gold transition-colors">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                            <path fill-rule="evenodd"
+                                                d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="reading-history-item rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div
+                                        class="w-12 h-12 bg-moon-silver rounded-full flex items-center justify-center text-deep-navy font-bold">
+                                        易</div>
+                                    <div>
+                                        <h4 class="font-semibold" data-i18n="profile.history.iching.title">I-Ching
+                                            Consultation</h4>
+                                        <p class="text-sm text-moon-silver" data-i18n="profile.history.iching.desc">
+                                            Decision guidance for career change</p>
+                                        <p class="text-xs text-moon-silver/70">October 25, 2024 • 7:15 PM</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-mystic-gold font-semibold"
+                                        data-i18n="profile.history.rating.veryHelpful">Very Helpful</span>
+                                    <button class="text-moon-silver hover:text-mystic-gold transition-colors">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                            <path fill-rule="evenodd"
+                                                d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="reading-history-item rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div
+                                        class="w-12 h-12 bg-mystic-purple rounded-full flex items-center justify-center text-warm-white font-bold">
+                                        风</div>
+                                    <div>
+                                        <h4 class="font-semibold" data-i18n="profile.history.fengshui.title">Feng Shui
+                                            Analysis</h4>
+                                        <p class="text-sm text-moon-silver" data-i18n="profile.history.fengshui.desc">
+                                            Home office optimization</p>
+                                        <p class="text-xs text-moon-silver/70">October 23, 2024 • 11:45 AM</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-mystic-gold font-semibold"
+                                        data-i18n="profile.history.rating.accurate">Accurate</span>
+                                    <button class="text-moon-silver hover:text-mystic-gold transition-colors">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                            <path fill-rule="evenodd"
+                                                d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 text-center">
+                        <button
+                            class="bg-mystic-gold text-deep-navy px-6 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors"
+                            data-i18n="profile.history.loadMore">
+                            Load More History
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Goals Tab -->
+            <div id="goals" class="tab-content">
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <!-- Current Goals -->
+                    <div class="profile-card rounded-xl p-8">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-serif font-bold" data-i18n="profile.goals.current">Current Goals
+                            </h3>
+                            <button
+                                class="bg-mystic-gold text-deep-navy px-4 py-2 rounded-lg font-semibold hover:bg-yellow-400 transition-colors text-sm"
+                                data-i18n="profile.goals.add">
+                                Add Goal
+                            </button>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="goal-card rounded-lg p-4">
+                                <div class="flex justify-between items-start mb-3">
+                                    <h4 class="font-semibold" data-i18n="profile.goals.meditation.title">Daily
+                                        Meditation Practice</h4>
+                                    <span class="text-xs text-moon-silver">15/30 days</span>
+                                </div>
+                                <div class="w-full bg-white/20 rounded-full h-2 mb-2">
+                                    <div class="bg-gradient-to-r from-mystic-gold to-moon-silver h-2 rounded-full"
+                                        style="width: 50%"></div>
+                                </div>
+                                <p class="text-sm text-moon-silver" data-i18n="profile.goals.meditation.desc">Build
+                                    mindfulness and inner peace through daily
+                                    practice</p>
+                            </div>
+
+                            <div class="goal-card rounded-lg p-4">
+                                <div class="flex justify-between items-start mb-3">
+                                    <h4 class="font-semibold" data-i18n="profile.goals.career.title">Career Development
+                                    </h4>
+                                    <span class="text-xs text-moon-silver">8/12 weeks</span>
+                                </div>
+                                <div class="w-full bg-white/20 rounded-full h-2 mb-2">
+                                    <div class="bg-gradient-to-r from-mystic-gold to-moon-silver h-2 rounded-full"
+                                        style="width: 67%"></div>
+                                </div>
+                                <p class="text-sm text-moon-silver" data-i18n="profile.goals.career.desc">Complete skill
+                                    development program and seek
+                                    promotion</p>
+                            </div>
+
+                            <div class="goal-card rounded-lg p-4">
+                                <div class="flex justify-between items-start mb-3">
+                                    <h4 class="font-semibold" data-i18n="profile.goals.relationship.title">Relationship
+                                        Harmony</h4>
+                                    <span class="text-xs text-moon-silver">3/6 months</span>
+                                </div>
+                                <div class="w-full bg-white/20 rounded-full h-2 mb-2">
+                                    <div class="bg-gradient-to-r from-mystic-gold to-moon-silver h-2 rounded-full"
+                                        style="width: 50%"></div>
+                                </div>
+                                <p class="text-sm text-moon-silver" data-i18n="profile.goals.relationship.desc">Improve
+                                    communication and deepen connections</p>
+                            </div>
+
+                            <div class="goal-card rounded-lg p-4">
+                                <div class="flex justify-between items-start mb-3">
+                                    <h4 class="font-semibold" data-i18n="profile.goals.financial.title">Financial
+                                        Planning</h4>
+                                    <span class="text-xs text-moon-silver">90/100 days</span>
+                                </div>
+                                <div class="w-full bg-white/20 rounded-full h-2 mb-2">
+                                    <div class="bg-gradient-to-r from-mystic-gold to-moon-silver h-2 rounded-full"
+                                        style="width: 90%"></div>
+                                </div>
+                                <p class="text-sm text-moon-silver" data-i18n="profile.goals.financial.desc">Establish
+                                    emergency fund and investment strategy</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Overview -->
+                    <div class="profile-card rounded-xl p-8">
+                        <h3 class="text-2xl font-serif font-bold mb-6" data-i18n="profile.goals.overview">Progress
+                            Overview</h3>
+
+                        <div class="space-y-6">
+                            <!-- Circular Progress -->
+                            <div class="flex justify-center">
+                                <div class="relative w-32 h-32">
+                                    <svg class="progress-ring w-32 h-32">
+                                        <circle class="progress-ring-circle stroke-moon-silver/30" stroke-width="8"
+                                            fill="transparent" r="40" cx="64" cy="64" />
+                                        <circle class="progress-ring-circle stroke-mystic-gold" stroke-width="8"
+                                            fill="transparent" r="40" cx="64" cy="64" style="stroke-dashoffset: 62.8" />
+                                    </svg>
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="text-center">
+                                            <div class="text-2xl font-bold text-mystic-gold">75%</div>
+                                            <div class="text-xs text-moon-silver"
+                                                data-i18n="profile.goals.progress.overall">Overall</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Monthly Progress -->
+                            <div>
+                                <h4 class="font-semibold mb-3" data-i18n="profile.goals.progress.monthly">This Month's
+                                    Progress</h4>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm"
+                                            data-i18n="profile.goals.progress.readingsCompleted">Readings
+                                            Completed</span>
+                                        <span class="text-mystic-gold font-semibold">12/15</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm" data-i18n="profile.goals.progress.goalsAchieved">Goals
+                                            Achieved</span>
+                                        <span class="text-mystic-gold font-semibold">3/5</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm"
+                                            data-i18n="profile.goals.progress.insightsApplied">Insights Applied</span>
+                                        <span class="text-mystic-gold font-semibold">8/10</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Streak Counter -->
+                            <div class="text-center p-4 bg-white/5 rounded-lg">
+                                <div class="text-3xl font-bold text-mystic-gold mb-1">12</div>
+                                <div class="text-moon-silver text-sm" data-i18n="profile.goals.streak.title">Day Streak
+                                </div>
+                                <div class="text-xs text-moon-silver/70 mt-1" data-i18n="profile.goals.streak.message">
+                                    Keep it up! 🔥</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Achievements Tab -->
+            <div id="achievements" class="tab-content">
+                <div class="profile-card rounded-xl p-8">
+                    <h3 class="text-2xl font-serif font-bold mb-6">Achievements</h3>
+
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="achievement-badge rounded-lg p-6 text-center">
+                            <div class="text-4xl mb-3">🏆</div>
+                            <h4 class="font-serif font-bold mb-2">First Reading</h4>
+                            <p class="text-sm text-deep-navy">Completed your first destiny analysis</p>
+                            <div class="text-xs text-deep-navy/70 mt-2">Unlocked Oct 15, 2024</div>
+                        </div>
+
+                        <div class="achievement-badge rounded-lg p-6 text-center">
+                            <div class="text-4xl mb-3">🔮</div>
+                            <h4 class="font-serif font-bold mb-2">Divination Master</h4>
+                            <p class="text-sm text-deep-navy">Completed 10 divination readings</p>
+                            <div class="text-xs text-deep-navy/70 mt-2">Unlocked Oct 22, 2024</div>
+                        </div>
+
+                        <div class="achievement-badge rounded-lg p-6 text-center">
+                            <div class="text-4xl mb-3">🧭</div>
+                            <h4 class="font-serif font-bold mb-2">Feng Shui Explorer</h4>
+                            <p class="text-sm text-deep-navy">Analyzed 5 different spaces</p>
+                            <div class="text-xs text-deep-navy/70 mt-2">Unlocked Oct 25, 2024</div>
+                        </div>
+
+                        <div class="achievement-badge rounded-lg p-6 text-center">
+                            <div class="text-4xl mb-3">☯</div>
+                            <h4 class="font-serif font-bold mb-2">I-Ching Scholar</h4>
+                            <p class="text-sm text-deep-navy">Consulted the Book of Changes 10 times</p>
+                            <div class="text-xs text-deep-navy/70 mt-2">Unlocked Oct 28, 2024</div>
+                        </div>
+
+                        <div class="achievement-badge rounded-lg p-6 text-center">
+                            <div class="text-4xl mb-3">🔥</div>
+                            <h4 class="font-serif font-bold mb-2">Streak Keeper</h4>
+                            <p class="text-sm text-deep-navy">Maintained a 7-day reading streak</p>
+                            <div class="text-xs text-deep-navy/70 mt-2">Unlocked Oct 30, 2024</div>
+                        </div>
+
+                        <div class="achievement-badge rounded-lg p-6 text-center">
+                            <div class="text-4xl mb-3">⭐</div>
+                            <h4 class="font-serif font-bold mb-2">Wisdom Seeker</h4>
+                            <p class="text-sm text-deep-navy">Reached Level 5 mastery</p>
+                            <div class="text-xs text-deep-navy/70 mt-2">Unlocked Nov 2, 2024</div>
+                        </div>
+
+                        <div class="bg-white/10 rounded-lg p-6 text-center opacity-50">
+                            <div class="text-4xl mb-3">🎯</div>
+                            <h4 class="font-serif font-bold mb-2">Goal Achiever</h4>
+                            <p class="text-sm text-moon-silver">Complete 5 personal goals</p>
+                            <div class="text-xs text-moon-silver/70 mt-2">Progress: 3/5</div>
+                        </div>
+
+                        <div class="bg-white/10 rounded-lg p-6 text-center opacity-50">
+                            <div class="text-4xl mb-3">💎</div>
+                            <h4 class="font-serif font-bold mb-2">Premium Member</h4>
+                            <p class="text-sm text-moon-silver">Subscribe to premium features</p>
+                            <div class="text-xs text-moon-silver/70 mt-2">Locked</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personal Insights Tab -->
+            <div id="insights" class="tab-content">
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <!-- Personality Analysis -->
+                    <div class="profile-card rounded-xl p-8">
+                        <h3 class="text-2xl font-serif font-bold mb-6" data-i18n="profile.insights.personalityAnalysis">
+                            Personality Analysis</h3>
+
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="font-semibold mb-3 text-mystic-gold"
+                                    data-i18n="profile.insights.dominantTraits">Dominant Traits</h4>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm"
+                                            data-i18n="profile.insights.trait.leadership">Leadership</span>
+                                        <div class="flex items-center">
+                                            <div class="w-24 bg-white/20 rounded-full h-2 mr-2">
+                                                <div class="bg-mystic-gold h-2 rounded-full" style="width: 85%"></div>
+                                            </div>
+                                            <span class="text-mystic-gold text-sm">85%</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm"
+                                            data-i18n="profile.insights.trait.creativity">Creativity</span>
+                                        <div class="flex items-center">
+                                            <div class="w-24 bg-white/20 rounded-full h-2 mr-2">
+                                                <div class="bg-mystic-gold h-2 rounded-full" style="width: 78%"></div>
+                                            </div>
+                                            <span class="text-mystic-gold text-sm">78%</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm"
+                                            data-i18n="profile.insights.trait.intuition">Intuition</span>
+                                        <div class="flex items-center">
+                                            <div class="w-24 bg-white/20 rounded-full h-2 mr-2">
+                                                <div class="bg-mystic-gold h-2 rounded-full" style="width: 92%"></div>
+                                            </div>
+                                            <span class="text-mystic-gold text-sm">92%</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm"
+                                            data-i18n="profile.insights.trait.diplomacy">Diplomacy</span>
+                                        <div class="flex items-center">
+                                            <div class="w-24 bg-white/20 rounded-full h-2 mr-2">
+                                                <div class="bg-mystic-gold h-2 rounded-full" style="width: 70%"></div>
+                                            </div>
+                                            <span class="text-mystic-gold text-sm">70%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="font-semibold mb-3 text-mystic-gold"
+                                    data-i18n="profile.insights.fiveElements">Five Elements Balance</h4>
+                                <div id="elementsBalanceChart" style="height: 200px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Growth Recommendations -->
+                    <div class="profile-card rounded-xl p-8">
+                        <h3 class="text-2xl font-serif font-bold mb-6"
+                            data-i18n="profile.insights.growthRecommendations">Growth Recommendations</h3>
+
+                        <div class="space-y-4">
+                            <div class="insight-card rounded-lg p-4">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <span class="text-mystic-gold text-lg">🌱</span>
+                                    <span class="font-semibold text-sm"
+                                        data-i18n="profile.insights.personalDevelopment.title">Personal
+                                        Development</span>
+                                </div>
+                                <p class="text-moon-silver text-sm mb-2"
+                                    data-i18n="profile.insights.personalDevelopment.desc">
+                                    Your leadership qualities are strong, but consider developing more diplomatic skills
+                                    to better navigate complex social situations.
+                                </p>
+                                <button class="text-mystic-gold text-xs hover:underline"
+                                    data-i18n="profile.insights.personalDevelopment.button">Learn More</button>
+                            </div>
+
+                            <div class="insight-card rounded-lg p-4">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <span class="text-mystic-gold text-lg">💼</span>
+                                    <span class="font-semibold text-sm"
+                                        data-i18n="profile.insights.careerGuidance.title">Career Guidance</span>
+                                </div>
+                                <p class="text-moon-silver text-sm mb-2"
+                                    data-i18n="profile.insights.careerGuidance.desc">
+                                    Based on your birth chart, you're entering a favorable period for career
+                                    advancement.
+                                    Consider taking on more leadership responsibilities.
+                                </p>
+                                <button class="text-mystic-gold text-xs hover:underline"
+                                    data-i18n="profile.insights.careerGuidance.button">Get Career Reading</button>
+                            </div>
+
+                            <div class="insight-card rounded-lg p-4">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <span class="text-mystic-gold text-lg">❤️</span>
+                                    <span class="font-semibold text-sm"
+                                        data-i18n="profile.insights.relationships.title">Relationships</span>
+                                </div>
+                                <p class="text-moon-silver text-sm mb-2"
+                                    data-i18n="profile.insights.relationships.desc">
+                                    Your relationship sector shows positive energy. This is a good time to strengthen
+                                    existing bonds or form new meaningful connections.
+                                </p>
+                                <button class="text-mystic-gold text-xs hover:underline"
+                                    data-i18n="profile.insights.relationships.button">Relationship Analysis</button>
+                            </div>
+
+                            <div class="insight-card rounded-lg p-4">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <span class="text-mystic-gold text-lg">🧘</span>
+                                    <span class="font-semibold text-sm"
+                                        data-i18n="profile.insights.wellness.title">Wellness</span>
+                                </div>
+                                <p class="text-moon-silver text-sm mb-2" data-i18n="profile.insights.wellness.desc">
+                                    Incorporate more metal element activities (precision, organization) to balance
+                                    your strong fire energy and maintain better health.
+                                </p>
+                                <button class="text-mystic-gold text-xs hover:underline"
+                                    data-i18n="profile.insights.wellness.button">Wellness Tips</button>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 text-center">
+                            <button
+                                class="bg-mystic-gold text-deep-navy px-6 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors"
+                                data-i18n="profile.insights.detailedAnalysis">
+                                Get Detailed Analysis
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-ink-black py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-moon-silver text-sm" data-i18n="profile.footer">
+                    © 2024 Destiny AI. All rights reserved. Track your destiny journey.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        // Profile page specific functionality
+        class ProfileManager {
+            constructor() {
+                this.currentTab = 'dashboard';
+                this.init();
+            }
+
+            init() {
+                this.setupTabNavigation();
+                this.initializeCharts();
+                this.loadUserData();
+            }
+
+            setupTabNavigation() {
+                document.querySelectorAll('.tab-button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const tabId = e.target.dataset.tab;
+                        this.switchTab(tabId);
+                    });
+                });
+            }
+
+            switchTab(tabId) {
+                // Update button states
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+
+                // Update content visibility
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabId).classList.add('active');
+
+                this.currentTab = tabId;
+
+                // Initialize tab-specific content
+                if (tabId === 'dashboard') {
+                    this.initializeDashboard();
+                } else if (tabId === 'insights') {
+                    this.initializeInsights();
+                }
+            }
+
+            initializeDashboard() {
+                // Initialize personality radar chart
+                const chartElement = document.getElementById('personalityChart');
+                if (chartElement) {
+                    const chart = echarts.init(chartElement);
+
+                    const option = {
+                        backgroundColor: 'transparent',
+                        radar: {
+                            indicator: [
+                                { name: 'Leadership', max: 100 },
+                                { name: 'Creativity', max: 100 },
+                                { name: 'Intuition', max: 100 },
+                                { name: 'Diplomacy', max: 100 },
+                                { name: 'Wisdom', max: 100 },
+                                { name: 'Adaptability', max: 100 }
+                            ],
+                            axisName: {
+                                color: '#c0c0c0',
+                                fontSize: 12
+                            },
+                            splitLine: {
+                                lineStyle: {
+                                    color: 'rgba(255, 255, 255, 0.2)'
+                                }
+                            },
+                            splitArea: {
+                                areaStyle: {
+                                    color: ['rgba(255, 255, 255, 0.05)', 'rgba(255, 255, 255, 0.1)']
+                                }
+                            }
+                        },
+                        series: [{
+                            type: 'radar',
+                            data: [{
+                                value: [85, 78, 92, 70, 88, 75],
+                                name: 'Your Traits',
+                                itemStyle: {
+                                    color: '#ffd700'
+                                },
+                                lineStyle: {
+                                    color: '#ffd700',
+                                    width: 3
+                                },
+                                areaStyle: {
+                                    color: 'rgba(255, 215, 0, 0.3)'
+                                }
+                            }]
+                        }]
+                    };
+
+                    chart.setOption(option);
+                }
+            }
+
+            initializeInsights() {
+                // Initialize elements balance chart
+                const chartElement = document.getElementById('elementsBalanceChart');
+                if (chartElement) {
+                    const chart = echarts.init(chartElement);
+
+                    const option = {
+                        backgroundColor: 'transparent',
+                        tooltip: {
+                            trigger: 'item'
+                        },
+                        series: [{
+                            type: 'pie',
+                            radius: ['40%', '70%'],
+                            data: [
+                                { value: 25, name: 'Wood', itemStyle: { color: '#2e7d32' } },
+                                { value: 20, name: 'Fire', itemStyle: { color: '#f57c00' } },
+                                { value: 30, name: 'Earth', itemStyle: { color: '#8d6e63' } },
+                                { value: 15, name: 'Metal', itemStyle: { color: '#c0c0c0' } },
+                                { value: 10, name: 'Water', itemStyle: { color: '#1565c0' } }
+                            ],
+                            label: {
+                                color: '#fafafa',
+                                fontSize: 12
+                            },
+                            labelLine: {
+                                lineStyle: {
+                                    color: 'rgba(255, 255, 255, 0.5)'
+                                }
+                            }
+                        }]
+                    };
+
+                    chart.setOption(option);
+                }
+            }
+
+            initializeCharts() {
+                // Initialize all charts when page loads
+                setTimeout(() => {
+                    this.initializeDashboard();
+                }, 100);
+            }
+
+            loadUserData() {
+                // Simulate loading user data
+                const userData = {
+                    name: 'Wisdom Seeker',
+                    level: 5,
+                    totalReadings: 47,
+                    accuracyRate: 94,
+                    streakDays: 12,
+                    achievements: 8,
+                    levelProgress: '2,340 / 3,000 XP'
+                };
+
+                // Update UI with user data
+                document.getElementById('userName').textContent = userData.name;
+                document.getElementById('userLevel').textContent = userData.level;
+                document.getElementById('totalReadings').textContent = userData.totalReadings;
+                document.getElementById('accuracyRate').textContent = userData.accuracyRate + '%';
+                document.getElementById('streakDays').textContent = userData.streakDays;
+                document.getElementById('achievements').textContent = userData.achievements;
+                document.getElementById('levelProgress').textContent = userData.levelProgress;
+
+                // Update avatar based on level
+                const avatar = document.getElementById('userAvatar');
+                const avatars = ['命', '易', '风', '占', '悟'];
+                avatar.textContent = avatars[(userData.level - 1) % avatars.length];
+            }
+        }
+
+        // Initialize profile manager when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new ProfileManager();
+        });
+    </script>
+
+    <!-- Supabase Integration -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script src="supabase-init.js"></script>
+    
+    <!-- 认证系统 - 页面访问控制 -->
+    <script src="auth-service.js"></script>
+    <script src="auth-guard-enhanced.js"></script>
+    
+    <!-- 用户菜单 -->
+    <script src="user-menu.js"></script>
+    
+    <!-- 历史记录管理 -->
+    <script src="profile-readings.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,160 @@
+========================================
+Stripe 支付集成 - 快速参考
+========================================
+
+✅ 已完成功能：
+- 会员订阅支付 (Premium $19/月, Professional $49/月)
+- 商品购买支付
+- 订阅管理和取消
+- Webhook 事件处理
+- 安全支付验证
+
+========================================
+快速开始
+========================================
+
+1. 安装依赖
+   npm install
+
+2. 设置 Stripe 产品
+   node setup-stripe-products.js
+
+3. 更新价格 ID
+   打开 stripe-client.js
+   替换 priceIds 中的价格 ID
+
+4. 启动服务器
+   npm start
+
+5. 测试支付
+   打开 test-stripe-payment.html
+
+或者直接运行：
+   start-stripe-test.bat
+
+========================================
+测试卡片信息
+========================================
+
+成功支付: 4242 4242 4242 4242
+需要验证: 4000 0025 0000 3155
+支付失败: 4000 0000 0000 9995
+
+过期日期: 任意未来日期 (如 12/34)
+CVC: 任意3位数字 (如 123)
+邮编: 任意5位数字 (如 12345)
+
+========================================
+前端使用
+========================================
+
+1. 引入脚本
+   <script src="https://js.stripe.com/v3/"></script>
+   <script src="stripe-client.js"></script>
+   <script src="payment-ui.js"></script>
+
+2. 显示订阅支付
+   showPaymentForm('premium');
+
+3. 显示商品支付
+   showProductPaymentForm(product, quantity);
+
+========================================
+API 端点
+========================================
+
+创建支付意图:
+POST /api/stripe/create-payment-intent
+
+创建订阅:
+POST /api/stripe/create-subscription
+
+取消订阅:
+POST /api/stripe/cancel-subscription
+
+获取订阅状态:
+GET /api/stripe/subscription/:id
+
+Webhook:
+POST /api/stripe/webhook
+
+========================================
+配置 Webhook (本地测试)
+========================================
+
+1. 安装 Stripe CLI
+   https://stripe.com/docs/stripe-cli
+
+2. 登录
+   stripe login
+
+3. 转发 Webhook
+   stripe listen --forward-to localhost:3000/api/stripe/webhook
+
+4. 复制签名密钥到 .env
+   STRIPE_WEBHOOK_SECRET=whsec_xxxxx
+
+========================================
+文件说明
+========================================
+
+前端:
+- stripe-client.js - Stripe 客户端和支付服务
+- payment-ui.js - 支付 UI 组件
+- test-stripe-payment.html - 测试页面
+
+后端:
+- stripe-api.js - API 路由
+- setup-stripe-products.js - 产品设置脚本
+
+配置:
+- .env - Stripe 密钥配置
+- stripe-config.json - 产品配置 (自动生成)
+
+========================================
+故障排除
+========================================
+
+问题: Stripe 未初始化
+解决: 检查 Stripe.js 是否正确加载
+
+问题: API Key 无效
+解决: 检查 .env 中的 STRIPE_SECRET_KEY
+
+问题: Webhook 验证失败
+解决: 检查 STRIPE_WEBHOOK_SECRET
+
+问题: 卡片元素不显示
+解决: 确认容器 ID 正确，Stripe 已初始化
+
+========================================
+下一步
+========================================
+
+□ 测试会员订阅支付
+□ 测试商品购买支付
+□ 配置 Webhook
+□ 更新 payment.html 集成支付
+□ 测试完整购物流程
+□ 部署到生产环境
+
+========================================
+相关资源
+========================================
+
+文档: STRIPE_集成完成.md
+测试: test-stripe-payment.html
+启动: start-stripe-test.bat
+
+Stripe Dashboard:
+https://dashboard.stripe.com/test/dashboard
+
+Stripe 文档:
+https://stripe.com/docs
+
+测试卡号:
+https://stripe.com/docs/testing
+
+========================================
+✨ 支付集成已完成，开始测试吧！
+========================================

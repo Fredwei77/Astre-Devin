@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase 认证问题修复</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .problem {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .solution {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .step h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .link-button {
+            display: inline-block;
+            background: #17a2b8;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        
+        .link-button:hover {
+            background: #138496;
+            transform: translateY(-2px);
+        }
+        
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .checklist li {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .checklist li::before {
+            content: '☐';
+            margin-right: 10px;
+            font-size: 20px;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Supabase 认证问题修复</h1>
+        
+        <div class="problem">
+            <h2>❌ 当前问题</h2>
+            <p><strong>症状</strong>: 注册成功但无法登录</p>
+            <p><strong>错误</strong>: Invalid login credentials</p>
+            <p><strong>原因</strong>: Supabase要求邮箱验证后才能登录</p>
+        </div>
+        
+        <div class="solution">
+            <h2>✅ 解决方案</h2>
+            <p>有两种方法可以解决这个问题：</p>
+            <ol>
+                <li><strong>方法1</strong>: 禁用邮箱验证（推荐用于开发测试）</li>
+                <li><strong>方法2</strong>: 手动验证已注册的用户</li>
+            </ol>
+        </div>
+        
+        <div class="step">
+            <h3>方法1: 禁用邮箱验证（最简单）</h3>
+            
+            <div class="alert alert-info">
+                <strong>📍 操作步骤：</strong><br>
+                1. 访问Supabase Dashboard<br>
+                2. 点击 Authentication → Settings<br>
+                3. 找到 "Confirm email" 选项<br>
+                4. 关闭这个开关<br>
+                5. 点击 Save 保存
+            </div>
+            
+            <a href="https://supabase.com/dashboard/project/izkcgqvxecfxqtgxpmaj/auth/settings" 
+               target="_blank" class="link-button">
+                🔗 打开认证设置
+            </a>
+            
+            <div class="alert alert-warning" style="margin-top: 15px;">
+                ⚠️ 注意：这个设置只适用于开发测试环境。生产环境应该启用邮箱验证！
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3>方法2: 手动验证用户</h3>
+            
+            <div class="alert alert-info">
+                <strong>📍 操作步骤：</strong><br>
+                1. 访问Supabase Dashboard<br>
+                2. 点击 Authentication → Users<br>
+                3. 找到用户 weiming5311@163.com<br>
+                4. 点击用户进入详情页<br>
+                5. 点击 "Confirm Email" 按钮
+            </div>
+            
+            <a href="https://supabase.com/dashboard/project/izkcgqvxecfxqtgxpmaj/auth/users" 
+               target="_blank" class="link-button">
+                🔗 打开用户管理
+            </a>
+        </div>
+        
+        <div class="step">
+            <h3>完成后的测试步骤</h3>
+            
+            <ul class="checklist">
+                <li>已在Dashboard中完成上述操作</li>
+                <li>已保存设置</li>
+                <li>已刷新测试页面</li>
+            </ul>
+            
+            <button onclick="window.location.href='test-supabase.html'" class="btn-success">
+                🧪 重新测试登录
+            </button>
+        </div>
+        
+        <div class="step">
+            <h3>如果仍然无法登录</h3>
+            
+            <p>尝试以下操作：</p>
+            
+            <h4>选项1: 删除用户重新注册</h4>
+            <ol>
+                <li>在Dashboard的Users中删除现有用户</li>
+                <li>使用新邮箱重新注册</li>
+                <li>如果已禁用邮箱验证，应该能直接登录</li>
+            </ol>
+            
+            <h4>选项2: 使用不同的邮箱</h4>
+            <p>尝试使用其他邮箱地址注册和登录</p>
+            
+            <h4>选项3: 检查密码</h4>
+            <p>确保密码至少6个字符，包含字母和数字</p>
+        </div>
+        
+        <div class="step">
+            <h3>验证配置是否生效</h3>
+            
+            <p>在浏览器控制台（F12）运行以下代码：</p>
+            
+            <div class="code">
+// 检查认证设置
+const { data, error } = await window.supabaseClient.auth.getSession();
+console.log('当前会话:', data);
+
+// 尝试登录
+const result = await window.supabaseClient.auth.signInWithPassword({
+    email: 'weiming5311@163.com',
+    password: '你的密码'
+});
+console.log('登录结果:', result);
+            </div>
+        </div>
+        
+        <div class="alert alert-info">
+            <strong>💡 提示</strong><br>
+            完成配置后，建议：
+            <ul style="margin: 10px 0 0 20px;">
+                <li>完全关闭浏览器</li>
+                <li>重新打开测试页面</li>
+                <li>使用新邮箱测试注册和登录</li>
+            </ul>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="test-supabase.html" class="link-button">
+                ← 返回测试页面
+            </a>
+            <a href="setup-supabase.html" class="link-button">
+                🔧 重新配置Supabase
+            </a>
+        </div>
+    </div>
+</body>
+</html>

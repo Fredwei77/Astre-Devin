@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>风水功能测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .box {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .upload-area {
+            border: 2px dashed #4CAF50;
+            padding: 40px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .upload-area:hover {
+            background: #f0f0f0;
+            border-color: #45a049;
+        }
+        .upload-area.dragover {
+            background: #e8f5e9;
+            border-color: #2e7d32;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover { background: #45a049; }
+        .result {
+            background: #f9f9f9;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .hidden { display: none; }
+        h1 { color: #333; }
+        h2 { color: #666; }
+    </style>
+</head>
+<body>
+    <h1>🧭 风水功能测试</h1>
+    
+    <div class="box">
+        <h2>测试文件上传</h2>
+        <div id="uploadArea" class="upload-area">
+            <div style="font-size: 48px; margin-bottom: 10px;">📸</div>
+            <h3>上传房间照片</h3>
+            <p>拖拽图片到这里或点击选择文件</p>
+            <input type="file" id="roomPhoto" accept="image/*" style="display: none;">
+            <button id="browseBtn">选择照片</button>
+        </div>
+    </div>
+    
+    <div class="box hidden" id="analysisResults">
+        <h2>分析结果</h2>
+        <div class="result">
+            <strong>整体能量流动:</strong> <span id="energyPercent">0%</span>
+            <div style="background: #ddd; height: 20px; border-radius: 10px; margin-top: 5px;">
+                <div id="energyScore" style="background: #4CAF50; height: 100%; border-radius: 10px; width: 0%;"></div>
+            </div>
+        </div>
+        <div class="result">
+            <strong>财富角:</strong> <span id="wealthPercent">0%</span>
+            <div style="background: #ddd; height: 20px; border-radius: 10px; margin-top: 5px;">
+                <div id="wealthScore" style="background: #4CAF50; height: 100%; border-radius: 10px; width: 0%;"></div>
+            </div>
+        </div>
+        <div class="result">
+            <strong>健康区域:</strong> <span id="healthPercent">0%</span>
+            <div style="background: #ddd; height: 20px; border-radius: 10px; margin-top: 5px;">
+                <div id="healthScore" style="background: #4CAF50; height: 100%; border-radius: 10px; width: 0%;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="box">
+        <h2>控制台日志</h2>
+        <div id="console" style="background: #f9f9f9; padding: 15px; font-family: monospace; font-size: 12px; max-height: 300px; overflow-y: auto;"></div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    
+    <script>
+        // 重定向 console.log
+        const originalLog = console.log;
+        const consoleDiv = document.getElementById('console');
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            consoleDiv.innerHTML += `<div>[LOG] ${args.join(' ')}</div>`;
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        };
+        
+        console.error = function(...args) {
+            originalLog.apply(console, args);
+            consoleDiv.innerHTML += `<div style="color: red;">[ERROR] ${args.join(' ')}</div>`;
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        };
+        
+        // 文件上传功能
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('roomPhoto');
+        const browseBtn = document.getElementById('browseBtn');
+        
+        console.log('初始化文件上传功能');
+        
+        // 点击按钮
+        browseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            console.log('点击选择文件按钮');
+            fileInput.click();
+        });
+        
+        // 点击上传区域
+        uploadArea.addEventListener('click', () => {
+            console.log('点击上传区域');
+            fileInput.click();
+        });
+        
+        // 文件选择
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                console.log('选择了文件:', file.name, file.type, file.size + ' bytes');
+                handleFileUpload(file);
+            }
+        });
+        
+        // 拖拽
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+            console.log('拖拽中...');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                console.log('拖拽了文件:', file.name, file.type);
+                handleFileUpload(file);
+            }
+        });
+        
+        // 处理文件上传
+        function handleFileUpload(file) {
+            console.log('处理文件上传:', file.name);
+            
+            // 验证文件类型
+            if (!file.type.startsWith('image/')) {
+                console.error('不是图片文件');
+                alert('请选择图片文件');
+                return;
+            }
+            
+            // 验证文件大小
+            if (file.size > 5 * 1024 * 1024) {
+                console.error('文件太大');
+                alert('图片大小不能超过 5MB');
+                return;
+            }
+            
+            // 读取图片
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                console.log('图片读取成功');
+                uploadArea.innerHTML = `
+                    <img src="${e.target.result}" alt="上传的图片" style="max-width: 100%; max-height: 300px; border-radius: 8px;">
+                    <p style="margin-top: 10px; color: #4CAF50;">图片已上传，正在分析...</p>
+                `;
+            };
+            reader.readAsDataURL(file);
+            
+            // 模拟分析
+            setTimeout(() => {
+                console.log('显示分析结果');
+                document.getElementById('analysisResults').classList.remove('hidden');
+                
+                // 动画
+                const scores = [
+                    { id: 'energyScore', percent: 'energyPercent', value: 75 },
+                    { id: 'wealthScore', percent: 'wealthPercent', value: 60 },
+                    { id: 'healthScore', percent: 'healthPercent', value: 85 }
+                ];
+                
+                scores.forEach(score => {
+                    anime({
+                        targets: document.getElementById(score.id),
+                        width: score.value + '%',
+                        duration: 1000,
+                        easing: 'easeOutQuart'
+                    });
+                    
+                    anime({
+                        targets: { value: 0 },
+                        value: score.value,
+                        duration: 1000,
+                        easing: 'easeOutQuart',
+                        update: function(anim) {
+                            document.getElementById(score.percent).textContent = 
+                                Math.round(anim.animatables[0].target.value) + '%';
+                        }
+                    });
+                });
+                
+                console.log('分析完成！');
+            }, 2000);
+        }
+        
+        console.log('文件上传功能初始化完成');
+    </script>
+</body>
+</html>

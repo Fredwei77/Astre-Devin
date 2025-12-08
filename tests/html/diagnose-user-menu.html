@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户菜单诊断工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a237e;
+            color: #fff;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #ffd700;
+            text-align: center;
+        }
+        
+        .section {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .check-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 3px solid #ffd700;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .success {
+            border-left-color: #4caf50;
+            color: #4caf50;
+        }
+        
+        .error {
+            border-left-color: #f44336;
+            color: #f44336;
+        }
+        
+        .warning {
+            border-left-color: #ff9800;
+            color: #ff9800;
+        }
+        
+        button {
+            background: #ffd700;
+            color: #1a237e;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: #daa520;
+        }
+        
+        .code {
+            background: #000;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 用户菜单诊断工具</h1>
+    
+    <div class="section">
+        <h2>📋 系统检查</h2>
+        <div id="systemChecks"></div>
+    </div>
+    
+    <div class="section">
+        <h2>🎮 快速操作</h2>
+        <button onclick="simulateLogin()">模拟登录</button>
+        <button onclick="clearLogin()">清除登录</button>
+        <button onclick="runDiagnostics()">重新诊断</button>
+        <button onclick="openConsole()">打开控制台</button>
+    </div>
+    
+    <div class="section">
+        <h2>📊 当前状态</h2>
+        <div id="currentStatus"></div>
+    </div>
+    
+    <div class="section">
+        <h2>🔧 修复建议</h2>
+        <div id="fixSuggestions"></div>
+    </div>
+
+    <script>
+        function checkItem(name, condition, successMsg, errorMsg) {
+            const div = document.createElement('div');
+            div.className = 'check-item ' + (condition ? 'success' : 'error');
+            div.innerHTML = `
+                <strong>${condition ? '✅' : '❌'} ${name}</strong><br>
+                <small>${condition ? successMsg : errorMsg}</small>
+            `;
+            return div;
+        }
+        
+        function runDiagnostics() {
+            const systemChecks = document.getElementById('systemChecks');
+            systemChecks.innerHTML = '';
+            
+            // 检查文件加载
+            systemChecks.appendChild(checkItem(
+                'Font Awesome',
+                typeof FontAwesome !== 'undefined' || document.querySelector('link[href*="font-awesome"]'),
+                'Font Awesome 已加载',
+                'Font Awesome 未加载 - 图标将无法显示'
+            ));
+            
+            systemChecks.appendChild(checkItem(
+                'user-menu.css',
+                document.querySelector('link[href*="user-menu.css"]'),
+                'user-menu.css 已加载',
+                'user-menu.css 未加载 - 样式可能不正确'
+            ));
+            
+            systemChecks.appendChild(checkItem(
+                'auth-service.js',
+                typeof window.AuthService !== 'undefined',
+                'AuthService 已加载',
+                'AuthService 未加载 - 认证功能将无法工作'
+            ));
+            
+            systemChecks.appendChild(checkItem(
+                'user-menu.js',
+                typeof window.UserMenuManager !== 'undefined',
+                'UserMenuManager 已加载',
+                'UserMenuManager 未加载 - 用户菜单将无法工作'
+            ));
+            
+            // 检查DOM元素
+            systemChecks.appendChild(checkItem(
+                'userView 元素',
+                document.getElementById('userView'),
+                'userView 元素存在',
+                'userView 元素不存在 - 检查HTML结构'
+            ));
+            
+            systemChecks.appendChild(checkItem(
+                'guestView 元素',
+                document.getElementById('guestView'),
+                'guestView 元素存在',
+                'guestView 元素不存在 - 检查HTML结构'
+            ));
+            
+            systemChecks.appendChild(checkItem(
+                'userMenuBtn 元素',
+                document.getElementById('userMenuBtn'),
+                'userMenuBtn 元素存在',
+                'userMenuBtn 元素不存在 - 下拉按钮将无法显示'
+            ));
+            
+            systemChecks.appendChild(checkItem(
+                'userMenu 元素',
+                document.getElementById('userMenu'),
+                'userMenu 元素存在',
+                'userMenu 元素不存在 - 下拉菜单将无法显示'
+            ));
+            
+            // 更新当前状态
+            updateCurrentStatus();
+            
+            // 生成修复建议
+            generateFixSuggestions();
+        }
+        
+        function updateCurrentStatus() {
+            const statusDiv = document.getElementById('currentStatus');
+            const isAuth = window.AuthService ? window.AuthService.isAuthenticated() : false;
+            const user = window.AuthService ? window.AuthService.getCurrentUser() : null;
+            
+            statusDiv.innerHTML = `
+                <div class="check-item">
+                    <strong>登录状态:</strong> ${isAuth ? '✅ 已登录' : '❌ 未登录'}<br>
+                    <strong>用户名:</strong> ${user ? (user.name || user.email) : '-'}<br>
+                    <strong>用户邮箱:</strong> ${user ? user.email : '-'}<br>
+                    <strong>Token:</strong> ${window.AuthService ? (window.AuthService.getToken() ? '存在' : '不存在') : '-'}
+                </div>
+            `;
+        }
+        
+        function generateFixSuggestions() {
+            const suggestionsDiv = document.getElementById('fixSuggestions');
+            const suggestions = [];
+            
+            // 检查Font Awesome
+            if (!document.querySelector('link[href*="font-awesome"]')) {
+                suggestions.push({
+                    title: '添加 Font Awesome',
+                    description: '在 index.html 的 &lt;head&gt; 部分添加：',
+                    code: '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">'
+                });
+            }
+            
+            // 检查user-menu.css
+            if (!document.querySelector('link[href*="user-menu.css"]')) {
+                suggestions.push({
+                    title: '添加 user-menu.css',
+                    description: '在 index.html 的 &lt;head&gt; 部分添加：',
+                    code: '<link rel="stylesheet" href="user-menu.css">'
+                });
+            }
+            
+            // 检查auth-service.js
+            if (typeof window.AuthService === 'undefined') {
+                suggestions.push({
+                    title: '添加 auth-service.js',
+                    description: '在 index.html 的 &lt;/body&gt; 标签前添加：',
+                    code: '<script src="auth-service.js"></script>'
+                });
+            }
+            
+            // 检查user-menu.js
+            if (typeof window.UserMenuManager === 'undefined') {
+                suggestions.push({
+                    title: '添加 user-menu.js',
+                    description: '在 index.html 的 &lt;/body&gt; 标签前添加：',
+                    code: '<script src="user-menu.js"></script>'
+                });
+            }
+            
+            if (suggestions.length === 0) {
+                suggestionsDiv.innerHTML = '<div class="check-item success">✅ 所有检查都通过了！</div>';
+            } else {
+                suggestionsDiv.innerHTML = suggestions.map(s => `
+                    <div class="check-item warning">
+                        <strong>⚠️ ${s.title}</strong><br>
+                        <small>${s.description}</small><br>
+                        <div class="code">${s.code}</div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function simulateLogin() {
+            const testUser = {
+                email: 'test@destinyai.com',
+                name: 'Test User',
+                id: '12345'
+            };
+            
+            const testToken = 'test_token_' + Date.now();
+            
+            if (window.AuthService) {
+                window.AuthService.setAuth(testToken, testUser, true);
+            } else {
+                localStorage.setItem('destinyai_token', testToken);
+                localStorage.setItem('destinyai_user', JSON.stringify(testUser));
+            }
+            
+            alert('✅ 模拟登录成功！\n\n请刷新页面查看效果。');
+            runDiagnostics();
+        }
+        
+        function clearLogin() {
+            if (window.AuthService) {
+                window.AuthService.clearAuth();
+            } else {
+                localStorage.clear();
+                sessionStorage.clear();
+            }
+            
+            alert('❌ 登录状态已清除！\n\n请刷新页面查看效果。');
+            runDiagnostics();
+        }
+        
+        function openConsole() {
+            alert('请按 F12 打开浏览器开发者工具，查看控制台日志。');
+        }
+        
+        // 页面加载时自动运行诊断
+        window.addEventListener('DOMContentLoaded', runDiagnostics);
+    </script>
+</body>
+</html>

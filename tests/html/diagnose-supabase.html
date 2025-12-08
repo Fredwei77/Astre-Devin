@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase 诊断工具</title>
+    
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .section h2 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        .check-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .check-item.pass {
+            background: #d4edda;
+        }
+        .check-item.fail {
+            background: #f8d7da;
+        }
+        .icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Supabase 诊断工具</h1>
+        <p class="subtitle">检测和修复Supabase连接问题</p>
+
+        <!-- 步骤1: 检查当前配置 -->
+        <div class="section">
+            <h2>步骤1: 检查当前配置</h2>
+            <button onclick="checkCurrentConfig()">检查配置</button>
+            <div id="configResult"></div>
+        </div>
+
+        <!-- 步骤2: 输入正确的密钥 -->
+        <div class="section">
+            <h2>步骤2: 测试新的API密钥</h2>
+            <p style="color: #666; font-size: 14px;">
+                从Supabase Dashboard获取: Settings → API → Project API keys → anon public
+            </p>
+            <div class="input-group">
+                <label>Project URL:</label>
+                <input type="text" id="testUrl" value="https://izkcgqvxecfxqtgxpmaj.supabase.co">
+            </div>
+            <div class="input-group">
+                <label>Anon Key (应该以 eyJ 开头):</label>
+                <input type="text" id="testKey" placeholder="粘贴你的anon key">
+            </div>
+            <button onclick="testNewKey()">测试密钥</button>
+            <div id="testResult"></div>
+        </div>
+
+        <!-- 步骤3: 生成更新代码 -->
+        <div class="section">
+            <h2>步骤3: 生成更新代码</h2>
+            <p style="color: #666; font-size: 14px;">
+                如果测试成功，点击下方按钮生成需要更新的代码
+            </p>
+            <button onclick="generateUpdateCode()">生成更新代码</button>
+            <div id="updateCode"></div>
+        </div>
+
+        <!-- 步骤4: 常见问题 -->
+        <div class="section">
+            <h2>常见问题</h2>
+            <div class="check-item info">
+                <span class="icon">💡</span>
+                <div>
+                    <strong>密钥格式错误</strong><br>
+                    正确的anon key应该以 <code>eyJ</code> 开头，长度约200-300字符
+                </div>
+            </div>
+            <div class="check-item info">
+                <span class="icon">💡</span>
+                <div>
+                    <strong>项目已暂停</strong><br>
+                    免费计划长期不用会暂停，需要在Dashboard中重新激活
+                </div>
+            </div>
+            <div class="check-item info">
+                <span class="icon">💡</span>
+                <div>
+                    <strong>使用了service_role key</strong><br>
+                    前端只能使用anon key，不能使用service_role key
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let validatedUrl = '';
+        let validatedKey = '';
+
+        function checkCurrentConfig() {
+            const result = document.getElementById('configResult');
+            result.innerHTML = '<div class="result info">正在检查...</div>';
+
+            setTimeout(() => {
+                let html = '<div class="result">';
+                let hasIssues = false;
+
+                // 检查Supabase库
+                if (typeof supabase !== 'undefined') {
+                    html += '<div class="check-item pass"><span class="icon">✅</span> Supabase库已加载</div>';
+                } else {
+                    html += '<div class="check-item fail"><span class="icon">❌</span> Supabase库未加载</div>';
+                    hasIssues = true;
+                }
+
+                // 检查配置文件
+                if (typeof window.supabaseClient !== 'undefined') {
+                    html += '<div class="check-item pass"><span class="icon">✅</span> 客户端已初始化</div>';
+                } else {
+                    html += '<div class="check-item fail"><span class="icon">❌</span> 客户端未初始化</div>';
+                    hasIssues = true;
+                }
+
+                html += '</div>';
+
+                if (hasIssues) {
+                    html += '<div class="result warning" style="margin-top: 10px;">⚠️ 发现配置问题，请继续下一步测试</div>';
+                } else {
+                    html += '<div class="result success" style="margin-top: 10px;">✅ 基础配置正常，但可能密钥有误</div>';
+                }
+
+                result.innerHTML = html;
+            }, 500);
+        }
+
+        async function testNewKey() {
+            const url = document.getElementById('testUrl').value.trim();
+            const key = document.getElementById('testKey').value.trim();
+            const result = document.getElementById('testResult');
+
+            if (!url || !key) {
+                result.innerHTML = '<div class="result error">❌ 请填写URL和密钥</div>';
+                return;
+            }
+
+            // 检查密钥格式
+            if (!key.startsWith('eyJ')) {
+                result.innerHTML = '<div class="result error">❌ 密钥格式错误：应该以 eyJ 开头</div>';
+                return;
+            }
+
+            if (key.length < 100) {
+                result.innerHTML = '<div class="result warning">⚠️ 密钥长度可能不正确（太短）</div>';
+                return;
+            }
+
+            result.innerHTML = '<div class="result info">⏳ 正在测试连接...</div>';
+
+            try {
+                // 创建测试客户端
+                const testClient = supabase.createClient(url, key);
+
+                // 测试连接
+                const { data, error } = await testClient.auth.getSession();
+
+                if (error) {
+                    result.innerHTML = `<div class="result error">❌ 测试失败: ${error.message}</div>`;
+                } else {
+                    validatedUrl = url;
+                    validatedKey = key;
+                    result.innerHTML = `
+                        <div class="result success">
+                            ✅ 密钥验证成功！<br>
+                            <small>URL: ${url}</small><br>
+                            <small>密钥前缀: ${key.substring(0, 20)}...</small>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="result error">❌ 测试出错: ${error.message}</div>`;
+            }
+        }
+
+        function generateUpdateCode() {
+            const result = document.getElementById('updateCode');
+
+            if (!validatedUrl || !validatedKey) {
+                result.innerHTML = '<div class="result warning">⚠️ 请先在步骤2中测试并验证密钥</div>';
+                return;
+            }
+
+            const code = `
+<!-- 更新 .env 文件 -->
+NEXT_PUBLIC_SUPABASE_URL=${validatedUrl}
+NEXT_PUBLIC_SUPABASE_ANON_KEY=${validatedKey}
+
+<!-- 或者更新 supabase-client.js -->
+const SUPABASE_URL = '${validatedUrl}';
+const SUPABASE_ANON_KEY = '${validatedKey}';
+
+<!-- 或者更新 supabase-init.js -->
+const SUPABASE_CONFIG = {
+    url: '${validatedUrl}',
+    anonKey: '${validatedKey}'
+};
+            `.trim();
+
+            result.innerHTML = `
+                <div class="result success">
+                    ✅ 已生成更新代码，请复制并更新相应文件：
+                </div>
+                <div class="code">${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
+                <div class="result info" style="margin-top: 10px;">
+                    📝 更新后请刷新页面并重新测试
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

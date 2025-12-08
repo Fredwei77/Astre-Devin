@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户菜单集成验证 - Destiny AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a237e 0%, #0d1b2a 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        .page-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        .page-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-success {
+            background: #4caf50;
+            color: white;
+        }
+        .status-pending {
+            background: #ff9800;
+            color: white;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            color: #c0c0c0;
+        }
+        .checklist-item i {
+            margin-right: 10px;
+            color: #ffd700;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #ffd700, #daa520);
+            color: #1a237e;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.5);
+        }
+        .iframe-container {
+            width: 100%;
+            height: 400px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-4" style="color: #ffd700;">
+                <i class="fas fa-check-circle"></i> 用户菜单集成验证
+            </h1>
+            <p class="text-xl" style="color: #c0c0c0;">
+                验证四个页面的用户菜单集成状态
+            </p>
+        </div>
+
+        <!-- Summary -->
+        <div class="page-card mb-8">
+            <h2 class="text-2xl font-bold mb-4" style="color: #ffd700;">
+                <i class="fas fa-clipboard-check"></i> 集成概览
+            </h2>
+            <div class="grid md:grid-cols-4 gap-4">
+                <div class="text-center p-4 bg-white/5 rounded-lg">
+                    <div class="text-3xl mb-2">✅</div>
+                    <div class="font-bold">divination.html</div>
+                    <div class="text-sm text-green-400">已集成</div>
+                </div>
+                <div class="text-center p-4 bg-white/5 rounded-lg">
+                    <div class="text-3xl mb-2">✅</div>
+                    <div class="font-bold">fengshui.html</div>
+                    <div class="text-sm text-green-400">已集成</div>
+                </div>
+                <div class="text-center p-4 bg-white/5 rounded-lg">
+                    <div class="text-3xl mb-2">✅</div>
+                    <div class="font-bold">iching.html</div>
+                    <div class="text-sm text-green-400">已集成</div>
+                </div>
+                <div class="text-center p-4 bg-white/5 rounded-lg">
+                    <div class="text-3xl mb-2">✅</div>
+                    <div class="font-bold">profile.html</div>
+                    <div class="text-sm text-green-400">已集成</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Checklist -->
+        <div class="page-card mb-8">
+            <h2 class="text-2xl font-bold mb-4" style="color: #ffd700;">
+                <i class="fas fa-tasks"></i> 测试清单
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-bold mb-3" style="color: #ffd700;">未登录状态测试</h3>
+                    <div class="checklist-item">
+                        <i class="fas fa-square"></i>
+                        <span>显示"登入"按钮</span>
+                    </div>
+                    <div class="checklist-item">
+                        <i class="fas fa-square"></i>
+                        <span>显示"Upgrade"按钮</span>
+                    </div>
+                    <div class="checklist-item">
+                        <i class="fas fa-square"></i>
+                        <span>点击"登入"跳转到登录页面</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-3" style="color: #ffd700;">登录状态测试</h3>
+                    <div class="checklist-item">
+                        <i class="fas fa-square"></i>
+                        <span>显示用户头像和名称</span>
+                    </div>
+                    <div class="checklist-item">
+                        <i class="fas fa-square"></i>
+                        <span>点击下拉箭头展开菜单</span>
+                    </div>
+                    <div class="checklist-item">
+                        <i class="fas fa-square"></i>
+                        <span>菜单显示用户信息</span>
+                    </div>
+                    <div class="checklist-item">
+                        <i class="fas fa-square"></i>
+                        <span>菜单项可点击跳转</span>
+                    </div>
+                    <div class="checklist-item">
+                        <i class="fas fa-square"></i>
+                        <span>点击外部关闭菜单</span>
+                    </div>
+                    <div class="checklist-item">
+                        <i class="fas fa-square"></i>
+                        <span>退出登录功能正常</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Tests -->
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- Divination Page -->
+            <div class="page-card">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold" style="color: #ffd700;">
+                        <i class="fas fa-crystal-ball"></i> 占卜页面
+                    </h3>
+                    <span class="status-badge status-success">已集成</span>
+                </div>
+                <p class="text-sm mb-4" style="color: #c0c0c0;">
+                    divination.html - AI占卜和命理分析页面
+                </p>
+                <button class="test-button" onclick="openPage('divination.html')">
+                    <i class="fas fa-external-link-alt"></i> 打开测试
+                </button>
+            </div>
+
+            <!-- Feng Shui Page -->
+            <div class="page-card">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold" style="color: #ffd700;">
+                        <i class="fas fa-yin-yang"></i> 风水页面
+                    </h3>
+                    <span class="status-badge status-success">已集成</span>
+                </div>
+                <p class="text-sm mb-4" style="color: #c0c0c0;">
+                    fengshui.html - 风水分析和罗盘工具页面
+                </p>
+                <button class="test-button" onclick="openPage('fengshui.html')">
+                    <i class="fas fa-external-link-alt"></i> 打开测试
+                </button>
+            </div>
+
+            <!-- I-Ching Page -->
+            <div class="page-card">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold" style="color: #ffd700;">
+                        <i class="fas fa-book"></i> 易经页面
+                    </h3>
+                    <span class="status-badge status-success">已集成</span>
+                </div>
+                <p class="text-sm mb-4" style="color: #c0c0c0;">
+                    iching.html - 易经占卜和卦象解读页面
+                </p>
+                <button class="test-button" onclick="openPage('iching.html')">
+                    <i class="fas fa-external-link-alt"></i> 打开测试
+                </button>
+            </div>
+
+            <!-- Profile Page -->
+            <div class="page-card">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold" style="color: #ffd700;">
+                        <i class="fas fa-user-circle"></i> 个人档案页面
+                    </h3>
+                    <span class="status-badge status-success">已集成</span>
+                </div>
+                <p class="text-sm mb-4" style="color: #c0c0c0;">
+                    profile.html - 用户个人信息和历史记录页面
+                </p>
+                <button class="test-button" onclick="openPage('profile.html')">
+                    <i class="fas fa-external-link-alt"></i> 打开测试
+                </button>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="page-card mt-8">
+            <h2 class="text-2xl font-bold mb-4" style="color: #ffd700;">
+                <i class="fas fa-bolt"></i> 快速操作
+            </h2>
+            <div class="flex flex-wrap gap-4">
+                <button class="test-button" onclick="openAllPages()">
+                    <i class="fas fa-folder-open"></i> 打开所有页面
+                </button>
+                <button class="test-button" onclick="window.location.href='test-user-menu.html'">
+                    <i class="fas fa-vial"></i> 用户菜单测试页面
+                </button>
+                <button class="test-button" onclick="window.location.href='login.html'">
+                    <i class="fas fa-sign-in-alt"></i> 登录页面
+                </button>
+                <button class="test-button" onclick="clearStorage()">
+                    <i class="fas fa-trash-alt"></i> 清除登录状态
+                </button>
+            </div>
+        </div>
+
+        <!-- Documentation -->
+        <div class="page-card mt-8">
+            <h2 class="text-2xl font-bold mb-4" style="color: #ffd700;">
+                <i class="fas fa-book-open"></i> 相关文档
+            </h2>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-white/5 p-4 rounded-lg">
+                    <h4 class="font-bold mb-2">📋 集成报告</h4>
+                    <p class="text-sm text-gray-400 mb-3">详细的集成说明和功能列表</p>
+                    <a href="用户菜单集成完成报告.md" class="text-yellow-400 hover:text-yellow-300 text-sm">
+                        查看文档 →
+                    </a>
+                </div>
+                <div class="bg-white/5 p-4 rounded-lg">
+                    <h4 class="font-bold mb-2">🚀 快速参考</h4>
+                    <p class="text-sm text-gray-400 mb-3">快速测试和常见问题解答</p>
+                    <a href="用户菜单快速参考.md" class="text-yellow-400 hover:text-yellow-300 text-sm">
+                        查看文档 →
+                    </a>
+                </div>
+                <div class="bg-white/5 p-4 rounded-lg">
+                    <h4 class="font-bold mb-2">🔧 修复指南</h4>
+                    <p class="text-sm text-gray-400 mb-3">问题排查和解决方案</p>
+                    <a href="用户菜单修复指南.md" class="text-yellow-400 hover:text-yellow-300 text-sm">
+                        查看文档 →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openPage(page) {
+            window.open(page, '_blank');
+        }
+
+        function openAllPages() {
+            const pages = ['divination.html', 'fengshui.html', 'iching.html', 'profile.html'];
+            pages.forEach((page, index) => {
+                setTimeout(() => {
+                    window.open(page, '_blank');
+                }, index * 500);
+            });
+        }
+
+        function clearStorage() {
+            if (confirm('确定要清除所有登录状态吗？')) {
+                localStorage.clear();
+                sessionStorage.clear();
+                alert('✅ 登录状态已清除！\n\n请刷新页面查看未登录状态。');
+            }
+        }
+
+        // 显示当前登录状态
+        window.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('destinyai_token');
+            const user = localStorage.getItem('destinyai_user');
+            
+            if (token && user) {
+                const userData = JSON.parse(user);
+                console.log('✅ 当前登录状态：已登录');
+                console.log('用户信息：', userData);
+            } else {
+                console.log('❌ 当前登录状态：未登录');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>九筮 - API配置向导</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
+        .glass { background: rgba(26, 26, 46, 0.9); backdrop-filter: blur(15px); }
+        .gold { color: #daa520; }
+        .gold-bg { background: linear-gradient(135deg, #daa520, #e6b82a); }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold gold mb-4">
+                    <i class="fas fa-cog mr-3"></i>九筮 API配置向导
+                </h1>
+                <p class="text-gray-300">完成以下配置，启用完整的用户认证功能</p>
+            </div>
+
+            <!-- Progress Steps -->
+            <div class="flex justify-between mb-8">
+                <div class="step active flex flex-col items-center">
+                    <div class="w-10 h-10 rounded-full gold-bg flex items-center justify-center text-black font-bold mb-2">1</div>
+                    <span class="text-sm">后端API</span>
+                </div>
+                <div class="step flex flex-col items-center">
+                    <div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white font-bold mb-2">2</div>
+                    <span class="text-sm">Google OAuth</span>
+                </div>
+                <div class="step flex flex-col items-center">
+                    <div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white font-bold mb-2">3</div>
+                    <span class="text-sm">GitHub OAuth</span>
+                </div>
+                <div class="step flex flex-col items-center">
+                    <div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white font-bold mb-2">4</div>
+                    <span class="text-sm">完成</span>
+                </div>
+            </div>
+
+            <!-- Step 1: Backend API -->
+            <div id="step1" class="step-content glass rounded-2xl p-8 border border-yellow-500/30">
+                <h2 class="text-2xl font-bold gold mb-6">
+                    <i class="fas fa-server mr-3"></i>步骤 1: 配置后端API
+                </h2>
+                
+                <div class="space-y-6">
+                    <div class="bg-blue-500/20 border border-blue-500/30 rounded-lg p-4">
+                        <h3 class="font-bold text-blue-300 mb-2">📋 后端API要求</h3>
+                        <p class="text-gray-300 text-sm mb-3">您的后端API需要支持以下端点：</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <strong class="gold">认证端点:</strong>
+                                <ul class="list-disc list-inside text-gray-400 mt-1">
+                                    <li>POST /api/v1/auth/login</li>
+                                    <li>POST /api/v1/auth/register</li>
+                                    <li>POST /api/v1/auth/logout</li>
+                                    <li>POST /api/v1/auth/forgot-password</li>
+                                    <li>POST /api/v1/auth/refresh</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <strong class="gold">用户端点:</strong>
+                                <ul class="list-disc list-inside text-gray-400 mt-1">
+                                    <li>GET /api/v1/user/profile</li>
+                                    <li>PUT /api/v1/user/update</li>
+                                    <li>POST /api/v1/user/upload-avatar</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-300 font-medium mb-2">
+                            <i class="fas fa-link mr-2"></i>API基础URL
+                        </label>
+                        <input type="url" id="apiUrl" 
+                               class="w-full p-3 bg-black/50 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:border-yellow-500 focus:outline-none"
+                               placeholder="https://api.jiushiai.com" 
+                               value="https://api.jiushiai.com">
+                        <p class="text-sm text-gray-400 mt-1">输入您的后端API基础URL地址</p>
+                    </div>
+
+                    <div class="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-4">
+                        <h3 class="font-bold text-yellow-300 mb-2">⚠️ 开发模式说明</h3>
+                        <p class="text-gray-300 text-sm">
+                            当检测到本地开发环境时（localhost/127.0.0.1），系统会自动使用模拟API，
+                            无需真实后端即可测试所有功能。
+                        </p>
+                    </div>
+
+                    <button onclick="nextStep()" class="w-full gold-bg text-black font-bold py-3 rounded-lg hover:opacity-90 transition-opacity">
+                        下一步：配置 Google OAuth
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Google OAuth -->
+            <div id="step2" class="step-content glass rounded-2xl p-8 border border-yellow-500/30 hidden">
+                <h2 class="text-2xl font-bold gold mb-6">
+                    <i class="fab fa-google mr-3"></i>步骤 2: 配置 Google OAuth
+                </h2>
+                
+                <div class="space-y-6">
+                    <div class="bg-blue-500/20 border border-blue-500/30 rounded-lg p-4">
+                        <h3 class="font-bold text-blue-300 mb-2">📋 设置步骤</h3>
+                        <ol class="list-decimal list-inside text-gray-300 text-sm space-y-1">
+                            <li>访问 <a href="https://console.developers.google.com" target="_blank" class="gold hover:underline">Google Cloud Console</a></li>
+                            <li>创建新项目或选择现有项目</li>
+                            <li>启用 Google+ API 和 Google OAuth2 API</li>
+                            <li>创建 OAuth 2.0 客户端ID</li>
+                            <li>将回调URL设置为：<code class="bg-black/30 px-2 py-1 rounded text-yellow-300">${window.location.origin}/auth/google/callback</code></li>
+                            <li>复制客户端ID到下方输入框</li>
+                        </ol>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-300 font-medium mb-2">
+                            <i class="fab fa-google mr-2"></i>Google Client ID
+                        </label>
+                        <input type="text" id="googleClientId" 
+                               class="w-full p-3 bg-black/50 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:border-yellow-500 focus:outline-none"
+                               placeholder="123456789-abcdefg.apps.googleusercontent.com">
+                        <p class="text-sm text-gray-400 mt-1">从 Google Cloud Console 获取的客户端ID</p>
+                    </div>
+
+                    <div class="flex space-x-4">
+                        <button onclick="prevStep()" class="flex-1 bg-gray-600 text-white font-bold py-3 rounded-lg hover:bg-gray-700 transition-colors">
+                            上一步
+                        </button>
+                        <button onclick="nextStep()" class="flex-1 gold-bg text-black font-bold py-3 rounded-lg hover:opacity-90 transition-opacity">
+                            下一步：配置 GitHub OAuth
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: GitHub OAuth -->
+            <div id="step3" class="step-content glass rounded-2xl p-8 border border-yellow-500/30 hidden">
+                <h2 class="text-2xl font-bold gold mb-6">
+                    <i class="fab fa-github mr-3"></i>步骤 3: 配置 GitHub OAuth
+                </h2>
+                
+                <div class="space-y-6">
+                    <div class="bg-blue-500/20 border border-blue-500/30 rounded-lg p-4">
+                        <h3 class="font-bold text-blue-300 mb-2">📋 设置步骤</h3>
+                        <ol class="list-decimal list-inside text-gray-300 text-sm space-y-1">
+                            <li>访问 <a href="https://github.com/settings/applications/new" target="_blank" class="gold hover:underline">GitHub Developer Settings</a></li>
+                            <li>点击 "New OAuth App"</li>
+                            <li>填写应用信息：
+                                <ul class="list-disc list-inside ml-4 mt-1">
+                                    <li>Application name: 九筮</li>
+                                    <li>Homepage URL: <code class="bg-black/30 px-1 rounded text-yellow-300">${window.location.origin}</code></li>
+                                    <li>Authorization callback URL: <code class="bg-black/30 px-1 rounded text-yellow-300">${window.location.origin}/auth/github/callback</code></li>
+                                </ul>
+                            </li>
+                            <li>创建应用后复制 Client ID</li>
+                        </ol>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-300 font-medium mb-2">
+                            <i class="fab fa-github mr-2"></i>GitHub Client ID
+                        </label>
+                        <input type="text" id="githubClientId" 
+                               class="w-full p-3 bg-black/50 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:border-yellow-500 focus:outline-none"
+                               placeholder="abcdef1234567890">
+                        <p class="text-sm text-gray-400 mt-1">从 GitHub OAuth Apps 获取的客户端ID</p>
+                    </div>
+
+                    <div class="flex space-x-4">
+                        <button onclick="prevStep()" class="flex-1 bg-gray-600 text-white font-bold py-3 rounded-lg hover:bg-gray-700 transition-colors">
+                            上一步
+                        </button>
+                        <button onclick="nextStep()" class="flex-1 gold-bg text-black font-bold py-3 rounded-lg hover:opacity-90 transition-opacity">
+                            完成配置
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Complete -->
+            <div id="step4" class="step-content glass rounded-2xl p-8 border border-yellow-500/30 hidden">
+                <h2 class="text-2xl font-bold gold mb-6">
+                    <i class="fas fa-check-circle mr-3"></i>配置完成！
+                </h2>
+                
+                <div class="space-y-6">
+                    <div class="bg-green-500/20 border border-green-500/30 rounded-lg p-4">
+                        <h3 class="font-bold text-green-300 mb-2">🎉 恭喜！配置已完成</h3>
+                        <p class="text-gray-300 text-sm">
+                            您的九筮网站现在已经完全配置好了用户认证功能。
+                            配置信息已自动保存，您可以开始使用所有功能了！
+                        </p>
+                    </div>
+
+                    <div class="bg-blue-500/20 border border-blue-500/30 rounded-lg p-4">
+                        <h3 class="font-bold text-blue-300 mb-3">📝 配置摘要</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">API地址:</span>
+                                <span class="gold" id="summaryApiUrl">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Google OAuth:</span>
+                                <span id="summaryGoogle" class="text-green-400">✓ 已配置</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">GitHub OAuth:</span>
+                                <span id="summaryGitHub" class="text-green-400">✓ 已配置</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-4">
+                        <h3 class="font-bold text-yellow-300 mb-2">🔧 下一步建议</h3>
+                        <ul class="text-gray-300 text-sm space-y-1">
+                            <li>• 测试登入和注册功能</li>
+                            <li>• 验证社交登入是否正常工作</li>
+                            <li>• 检查忘记密码功能</li>
+                            <li>• 配置邮件服务（用于密码重置）</li>
+                        </ul>
+                    </div>
+
+                    <div class="flex space-x-4">
+                        <button onclick="prevStep()" class="flex-1 bg-gray-600 text-white font-bold py-3 rounded-lg hover:bg-gray-700 transition-colors">
+                            返回修改
+                        </button>
+                        <a href="index.html" class="flex-1 gold-bg text-black font-bold py-3 rounded-lg hover:opacity-90 transition-opacity text-center">
+                            前往网站首页
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        function updateStepIndicator() {
+            document.querySelectorAll('.step').forEach((step, index) => {
+                const stepNumber = index + 1;
+                const circle = step.querySelector('div');
+                
+                if (stepNumber < currentStep) {
+                    circle.className = 'w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white font-bold mb-2';
+                    circle.innerHTML = '<i class="fas fa-check"></i>';
+                } else if (stepNumber === currentStep) {
+                    circle.className = 'w-10 h-10 rounded-full gold-bg flex items-center justify-center text-black font-bold mb-2';
+                    circle.textContent = stepNumber;
+                } else {
+                    circle.className = 'w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white font-bold mb-2';
+                    circle.textContent = stepNumber;
+                }
+            });
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById(`step${step}`).classList.remove('hidden');
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                if (currentStep === 1) {
+                    saveApiConfig();
+                } else if (currentStep === 2) {
+                    saveGoogleConfig();
+                } else if (currentStep === 3) {
+                    saveGitHubConfig();
+                    showConfigSummary();
+                }
+                
+                currentStep++;
+                showStep(currentStep);
+                updateStepIndicator();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+                updateStepIndicator();
+            }
+        }
+
+        function saveApiConfig() {
+            const apiUrl = document.getElementById('apiUrl').value || 'https://api.jiushiai.com';
+            
+            // 更新 api-config.js 文件（这里演示如何生成配置）
+            const config = {
+                API_BASE_URL: apiUrl,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('jiushiai_api_config', JSON.stringify(config));
+            console.log('✅ API配置已保存:', apiUrl);
+        }
+
+        function saveGoogleConfig() {
+            const clientId = document.getElementById('googleClientId').value;
+            
+            if (clientId) {
+                const config = JSON.parse(localStorage.getItem('jiushiai_oauth_config') || '{}');
+                config.google = {
+                    clientId: clientId,
+                    enabled: true
+                };
+                localStorage.setItem('jiushiai_oauth_config', JSON.stringify(config));
+                console.log('✅ Google OAuth配置已保存');
+            }
+        }
+
+        function saveGitHubConfig() {
+            const clientId = document.getElementById('githubClientId').value;
+            
+            if (clientId) {
+                const config = JSON.parse(localStorage.getItem('jiushiai_oauth_config') || '{}');
+                config.github = {
+                    clientId: clientId,
+                    enabled: true
+                };
+                localStorage.setItem('jiushiai_oauth_config', JSON.stringify(config));
+                console.log('✅ GitHub OAuth配置已保存');
+            }
+        }
+
+        function showConfigSummary() {
+            const apiConfig = JSON.parse(localStorage.getItem('jiushiai_api_config') || '{}');
+            const oauthConfig = JSON.parse(localStorage.getItem('jiushiai_oauth_config') || '{}');
+            
+            document.getElementById('summaryApiUrl').textContent = apiConfig.API_BASE_URL || 'https://api.jiushiai.com';
+            
+            const googleStatus = oauthConfig.google?.enabled ? '✓ 已配置' : '⚠️ 跳过';
+            const githubStatus = oauthConfig.github?.enabled ? '✓ 已配置' : '⚠️ 跳过';
+            
+            document.getElementById('summaryGoogle').textContent = googleStatus;
+            document.getElementById('summaryGoogle').className = oauthConfig.google?.enabled ? 'text-green-400' : 'text-yellow-400';
+            
+            document.getElementById('summaryGitHub').textContent = githubStatus;
+            document.getElementById('summaryGitHub').className = oauthConfig.github?.enabled ? 'text-green-400' : 'text-yellow-400';
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStepIndicator();
+            
+            // 检查是否已有配置
+            const apiConfig = localStorage.getItem('jiushiai_api_config');
+            const oauthConfig = localStorage.getItem('jiushiai_oauth_config');
+            
+            if (apiConfig || oauthConfig) {
+                const showExisting = confirm('检测到已有配置，是否要重新配置？\n点击"确定"重新配置，点击"取消"继续使用现有配置');
+                if (!showExisting) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+            }
+            
+            // 自动填充当前域名
+            const origin = window.location.origin;
+            document.querySelectorAll('code').forEach(code => {
+                code.textContent = code.textContent.replace('${window.location.origin}', origin);
+            });
+        });
+
+        // 生成配置文件下载
+        function downloadConfig() {
+            const apiConfig = JSON.parse(localStorage.getItem('jiushiai_api_config') || '{}');
+            const oauthConfig = JSON.parse(localStorage.getItem('jiushiai_oauth_config') || '{}');
+            
+            const configContent = `// 九筮 API 配置
+// 自动生成于: ${new Date().toLocaleString()}
+
+// 请将以下配置更新到 api-config.js 文件中
+
+const API_CONFIG = {
+    BASE_URL: '${apiConfig.API_BASE_URL || 'https://api.jiushiai.com'}',
+    
+    OAUTH: {
+        GOOGLE: {
+            CLIENT_ID: '${oauthConfig.google?.clientId || '你的Google客户端ID'}',
+        },
+        GITHUB: {
+            CLIENT_ID: '${oauthConfig.github?.clientId || '你的GitHub客户端ID'}',
+        }
+    }
+};`;
+
+            const blob = new Blob([configContent], { type: 'text/javascript' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'api-config-generated.js';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stripe 支付诊断</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">🔍 Stripe 支付诊断工具</h1>
+
+        <div id="results" class="space-y-4"></div>
+
+        <button id="runDiagnostics" class="mt-6 bg-blue-600 px-6 py-3 rounded-lg hover:bg-blue-700">
+            运行诊断
+        </button>
+    </div>
+
+    <script>
+        function addResult(title, status, message, details = '') {
+            const results = document.getElementById('results');
+            const colors = {
+                success: 'bg-green-900/50 border-green-600',
+                error: 'bg-red-900/50 border-red-600',
+                warning: 'bg-yellow-900/50 border-yellow-600',
+                info: 'bg-blue-900/50 border-blue-600'
+            };
+            
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+
+            const div = document.createElement('div');
+            div.className = `p-4 rounded-lg border-2 ${colors[status]}`;
+            div.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">${icons[status]}</span>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-lg mb-1">${title}</h3>
+                        <p class="text-sm mb-2">${message}</p>
+                        ${details ? `<pre class="text-xs bg-black/30 p-2 rounded overflow-auto">${details}</pre>` : ''}
+                    </div>
+                </div>
+            `;
+            results.appendChild(div);
+        }
+
+        async function runDiagnostics() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="text-center text-gray-400">正在运行诊断...</div>';
+
+            // 1. 检查服务器连接
+            try {
+                const response = await fetch('http://localhost:3000/api/health');
+                if (response.ok) {
+                    addResult('服务器连接', 'success', '服务器正在运行');
+                } else {
+                    addResult('服务器连接', 'error', `服务器响应异常: ${response.status}`);
+                }
+            } catch (error) {
+                addResult('服务器连接', 'error', '无法连接到服务器', error.message);
+                addResult('解决方案', 'info', '请确保服务器正在运行', 'npm start');
+                return;
+            }
+
+            // 2. 检查 Stripe API 路由
+            try {
+                const response = await fetch('http://localhost:3000/api/stripe/test', {
+                    method: 'GET'
+                });
+                
+                if (response.status === 404) {
+                    addResult('Stripe 路由', 'error', 'Stripe API 路由未找到', 
+                        '可能原因:\n1. stripe-api.js 未正确加载\n2. server.js 中未正确引入路由');
+                } else {
+                    addResult('Stripe 路由', 'success', 'Stripe API 路由可访问');
+                }
+            } catch (error) {
+                addResult('Stripe 路由', 'error', '检查 Stripe 路由失败', error.message);
+            }
+
+            // 3. 测试创建支付意图
+            try {
+                const response = await fetch('http://localhost:3000/api/stripe/create-payment-intent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        amount: 1000,
+                        currency: 'usd'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.clientSecret) {
+                    addResult('创建支付意图', 'success', '支付意图创建成功', 
+                        JSON.stringify(data, null, 2));
+                } else {
+                    addResult('创建支付意图', 'error', '创建支付意图失败', 
+                        JSON.stringify(data, null, 2));
+                }
+            } catch (error) {
+                addResult('创建支付意图', 'error', '请求失败', error.message);
+            }
+
+            // 4. 检查 Stripe 密钥
+            addResult('Stripe 密钥', 'info', '请检查 .env 文件', 
+                'STRIPE_SECRET_KEY=sk_test_...\nNEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...');
+
+            // 5. 检查 CORS
+            addResult('CORS 配置', 'info', '如果从文件系统打开页面，可能会遇到 CORS 问题', 
+                '建议:\n1. 通过 http://localhost:3000 访问\n2. 或使用 Live Server 扩展');
+        }
+
+        document.getElementById('runDiagnostics').addEventListener('click', runDiagnostics);
+
+        // 自动运行
+        window.addEventListener('load', runDiagnostics);
+    </script>
+</body>
+</html>

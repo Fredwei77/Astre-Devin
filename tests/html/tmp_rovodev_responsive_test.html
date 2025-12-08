@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登入对话框响应式测试 - 九筮</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Inter', sans-serif;
+        }
+        .glass { 
+            background: rgba(26, 26, 46, 0.9); 
+            backdrop-filter: blur(15px); 
+        }
+        .gold { color: #daa520; }
+        .gold-bg { background: linear-gradient(135deg, #daa520, #e6b82a); }
+        
+        .test-viewport {
+            border: 2px solid #daa520;
+            margin: 10px;
+            overflow: hidden;
+            position: relative;
+            border-radius: 10px;
+        }
+        
+        .test-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            transform-origin: 0 0;
+        }
+        
+        .viewport-label {
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            background: rgba(218, 165, 32, 0.9);
+            color: black;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white p-4">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-bold gold mb-2">
+                <i class="fas fa-mobile-alt mr-3"></i>登入对话框响应式测试
+            </h1>
+            <p class="text-gray-300">测试不同屏幕尺寸下的登入对话框显示效果</p>
+        </div>
+
+        <!-- Test Controls -->
+        <div class="glass rounded-xl p-6 mb-6 border border-yellow-500/30">
+            <h2 class="text-xl font-bold gold mb-4">测试控制</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <button onclick="openModalInViewport('mobile')" class="gold-bg text-black px-4 py-2 rounded font-medium hover:opacity-90">
+                    📱 移动端测试
+                </button>
+                <button onclick="openModalInViewport('tablet')" class="gold-bg text-black px-4 py-2 rounded font-medium hover:opacity-90">
+                    📟 平板测试
+                </button>
+                <button onclick="openModalInViewport('desktop')" class="gold-bg text-black px-4 py-2 rounded font-medium hover:opacity-90">
+                    🖥️ 桌面测试
+                </button>
+                <button onclick="window.open('index.html', '_blank')" class="bg-blue-600 text-white px-4 py-2 rounded font-medium hover:bg-blue-700">
+                    🌐 原始页面
+                </button>
+            </div>
+            
+            <div class="bg-green-500/20 border border-green-500/30 rounded-lg p-4">
+                <h3 class="font-bold text-green-300 mb-2">✅ 修复内容</h3>
+                <ul class="text-sm text-gray-300 space-y-1">
+                    <li>• <strong>断点调整:</strong> 极小屏幕断点从380px调整到320px</li>
+                    <li>• <strong>文字修复:</strong> 登入按钮显示"登"而不是"入"</li>
+                    <li>• <strong>文字修复:</strong> 注册按钮显示"注"而不是"册"</li>
+                    <li>• <strong>社交按钮:</strong> 极小屏幕显示"Google"和"GitHub"</li>
+                    <li>• <strong>触摸优化:</strong> 最小44px触摸目标</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Viewports Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <!-- iPhone SE (375x667) -->
+            <div class="glass rounded-xl p-4 border border-yellow-500/30">
+                <h3 class="font-bold gold mb-4">📱 iPhone SE (375×667)</h3>
+                <div class="test-viewport" style="width: 375px; height: 400px;">
+                    <div class="viewport-label">375px × 667px</div>
+                    <iframe id="iphone-frame" class="test-iframe" src="index.html"></iframe>
+                </div>
+                <div class="mt-2 text-sm text-gray-400">
+                    <strong>预期效果:</strong> 全屏显示，标签显示"登"和"注"
+                </div>
+            </div>
+
+            <!-- Galaxy S8+ (360x740) -->
+            <div class="glass rounded-xl p-4 border border-yellow-500/30">
+                <h3 class="font-bold gold mb-4">📱 Galaxy S8+ (360×740)</h3>
+                <div class="test-viewport" style="width: 360px; height: 400px;">
+                    <div class="viewport-label">360px × 740px</div>
+                    <iframe id="galaxy-frame" class="test-iframe" src="index.html"></iframe>
+                </div>
+                <div class="mt-2 text-sm text-gray-400">
+                    <strong>预期效果:</strong> 全屏显示，完整文字
+                </div>
+            </div>
+
+            <!-- iPhone 5/SE (320x568) -->
+            <div class="glass rounded-xl p-4 border border-yellow-500/30">
+                <h3 class="font-bold gold mb-4">📱 iPhone 5 (320×568)</h3>
+                <div class="test-viewport" style="width: 320px; height: 400px;">
+                    <div class="viewport-label">320px × 568px</div>
+                    <iframe id="iphone5-frame" class="test-iframe" src="index.html"></iframe>
+                </div>
+                <div class="mt-2 text-sm text-gray-400">
+                    <strong>预期效果:</strong> 极小屏优化，简化文字
+                </div>
+            </div>
+
+            <!-- iPad (768x1024) -->
+            <div class="glass rounded-xl p-4 border border-yellow-500/30">
+                <h3 class="font-bold gold mb-4">📟 iPad (768×1024)</h3>
+                <div class="test-viewport" style="width: 400px; height: 300px;">
+                    <div class="viewport-label">768px × 1024px</div>
+                    <iframe id="ipad-frame" class="test-iframe" src="index.html" style="transform: scale(0.52);"></iframe>
+                </div>
+                <div class="mt-2 text-sm text-gray-400">
+                    <strong>预期效果:</strong> 居中弹窗，完整功能
+                </div>
+            </div>
+
+            <!-- Desktop (1200x800) -->
+            <div class="glass rounded-xl p-4 border border-yellow-500/30">
+                <h3 class="font-bold gold mb-4">🖥️ Desktop (1200×800)</h3>
+                <div class="test-viewport" style="width: 400px; height: 267px;">
+                    <div class="viewport-label">1200px × 800px</div>
+                    <iframe id="desktop-frame" class="test-iframe" src="index.html" style="transform: scale(0.33);"></iframe>
+                </div>
+                <div class="mt-2 text-sm text-gray-400">
+                    <strong>预期效果:</strong> 居中弹窗，最佳体验
+                </div>
+            </div>
+
+            <!-- Ultra Wide (1440x900) -->
+            <div class="glass rounded-xl p-4 border border-yellow-500/30">
+                <h3 class="font-bold gold mb-4">🖥️ Ultra Wide (1440×900)</h3>
+                <div class="test-viewport" style="width: 400px; height: 250px;">
+                    <div class="viewport-label">1440px × 900px</div>
+                    <iframe id="ultrawide-frame" class="test-iframe" src="index.html" style="transform: scale(0.28);"></iframe>
+                </div>
+                <div class="mt-2 text-sm text-gray-400">
+                    <strong>预期效果:</strong> 居中弹窗，精美效果
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Instructions -->
+        <div class="glass rounded-xl p-6 mt-6 border border-yellow-500/30">
+            <h2 class="text-xl font-bold gold mb-4">🧪 测试说明</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-bold text-blue-300 mb-2">📋 测试步骤</h3>
+                    <ol class="list-decimal list-inside text-sm text-gray-300 space-y-1">
+                        <li>在每个视窗中点击页眉的"登入"按钮</li>
+                        <li>观察弹窗的显示效果</li>
+                        <li>检查标签按钮的文字显示</li>
+                        <li>测试不同标签页的切换</li>
+                        <li>验证社交登入按钮的文字</li>
+                    </ol>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-green-300 mb-2">✅ 验证要点</h3>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li><strong>≤320px:</strong> 显示"登"、"注"、"Google"、"GitHub"</li>
+                        <li><strong>321px-640px:</strong> 显示"登入"、"注册"、完整社交按钮文字</li>
+                        <li><strong>≥641px:</strong> 居中弹窗，完整功能</li>
+                        <li><strong>动画效果:</strong> 流畅的打开/关闭动画</li>
+                        <li><strong>触摸友好:</strong> 按钮易于点击</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-open login modal in specific viewport
+        function openModalInViewport(type) {
+            const frames = {
+                'mobile': 'iphone-frame',
+                'tablet': 'ipad-frame', 
+                'desktop': 'desktop-frame'
+            };
+            
+            const frameId = frames[type];
+            const frame = document.getElementById(frameId);
+            
+            if (frame && frame.contentWindow) {
+                try {
+                    // Try to trigger login modal
+                    frame.contentWindow.postMessage('openLoginModal', '*');
+                    
+                    // Fallback: simulate click
+                    setTimeout(() => {
+                        const loginBtn = frame.contentDocument?.getElementById('loginBtn');
+                        if (loginBtn) {
+                            loginBtn.click();
+                        }
+                    }, 1000);
+                } catch (error) {
+                    console.warn('Cannot access iframe:', error);
+                    alert('请手动点击对应视窗中的"登入"按钮进行测试');
+                }
+            }
+        }
+
+        // Listen for iframe load events
+        document.addEventListener('DOMContentLoaded', function() {
+            const iframes = document.querySelectorAll('.test-iframe');
+            
+            iframes.forEach(iframe => {
+                iframe.onload = function() {
+                    console.log('Iframe loaded:', iframe.id);
+                    
+                    // Add message listener for cross-frame communication
+                    try {
+                        iframe.contentWindow.addEventListener('message', function(event) {
+                            if (event.data === 'openLoginModal' && iframe.contentWindow.openLoginModal) {
+                                iframe.contentWindow.openLoginModal();
+                            }
+                        });
+                    } catch (error) {
+                        console.warn('Cannot set up iframe communication:', error);
+                    }
+                };
+            });
+            
+            console.log('📱 响应式测试页面已加载');
+            console.log('🎯 点击测试按钮或手动点击各视窗中的登入按钮');
+        });
+        
+        // Test function to verify breakpoints
+        function testBreakpoints() {
+            console.log('🧪 Testing breakpoints...');
+            
+            const breakpoints = {
+                'xxs': '320px',
+                'xs': '640px', 
+                'sm': '768px',
+                'md': '1024px',
+                'lg': '1280px'
+            };
+            
+            Object.entries(breakpoints).forEach(([name, width]) => {
+                console.log(`📏 ${name}: ${width}`);
+            });
+        }
+        
+        // Auto-test on page load
+        setTimeout(testBreakpoints, 1000);
+    </script>
+</body>
+</html>

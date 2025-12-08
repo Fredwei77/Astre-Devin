@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录问题诊断</title>
+    
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .test-section {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: #5568d3;
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 登录问题诊断工具</h1>
+        
+        <div class="test-section">
+            <h2>步骤1: 检查Supabase连接</h2>
+            <button onclick="checkConnection()">检查连接</button>
+            <div id="connectionResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>步骤2: 测试注册</h2>
+            <input type="email" id="regEmail" placeholder="邮箱" value="test@example.com">
+            <input type="password" id="regPassword" placeholder="密码" value="test123456">
+            <button onclick="testRegister()">测试注册</button>
+            <div id="registerResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>步骤3: 测试登录</h2>
+            <input type="email" id="loginEmail" placeholder="邮箱" value="fredweir7@gmail.com">
+            <input type="password" id="loginPassword" placeholder="密码">
+            <button onclick="testLogin()">测试登录</button>
+            <div id="loginResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>步骤4: 检查用户状态</h2>
+            <button onclick="checkUserStatus()">检查用户</button>
+            <div id="userResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>步骤5: 查看所有用户</h2>
+            <p style="color: #666; font-size: 14px;">
+                请访问Supabase Dashboard查看所有用户：
+            </p>
+            <a href="https://supabase.com/dashboard/project/izkcgqvxecfxqtgxpmaj/auth/users" 
+               target="_blank" style="color: #667eea;">
+                🔗 打开用户管理
+            </a>
+        </div>
+    </div>
+    
+    <script src="supabase-client.js"></script>
+    <script src="supabase-init.js"></script>
+    
+    <script>
+        async function checkConnection() {
+            const result = document.getElementById('connectionResult');
+            result.innerHTML = '<div class="result info">检查中...</div>';
+            
+            try {
+                if (!window.supabaseClient) {
+                    result.innerHTML = '<div class="result error">❌ Supabase客户端未初始化</div>';
+                    return;
+                }
+                
+                const { data, error } = await window.supabaseClient.auth.getSession();
+                
+                if (error) {
+                    result.innerHTML = `<div class="result error">❌ 连接失败: ${error.message}</div>`;
+                } else {
+                    result.innerHTML = '<div class="result success">✅ Supabase连接正常</div>';
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="result error">❌ 错误: ${error.message}</div>`;
+            }
+        }
+        
+        async function testRegister() {
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const result = document.getElementById('registerResult');
+            
+            result.innerHTML = '<div class="result info">注册中...</div>';
+            
+            try {
+                const { data, error } = await window.supabaseClient.auth.signUp({
+                    email,
+                    password
+                });
+                
+                if (error) {
+                    result.innerHTML = `<div class="result error">❌ 注册失败: ${error.message}</div>`;
+                } else {
+                    result.innerHTML = `
+                        <div class="result success">
+                            ✅ 注册成功！<br>
+                            用户ID: ${data.user.id}<br>
+                            邮箱: ${data.user.email}<br>
+                            邮箱已验证: ${data.user.email_confirmed_at ? '是' : '否'}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="result error">❌ 错误: ${error.message}</div>`;
+            }
+        }
+        
+        async function testLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const result = document.getElementById('loginResult');
+            
+            if (!email || !password) {
+                result.innerHTML = '<div class="result error">❌ 请填写邮箱和密码</div>';
+                return;
+            }
+            
+            result.innerHTML = '<div class="result info">登录中...</div>';
+            
+            try {
+                const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+                    email,
+                    password
+                });
+                
+                if (error) {
+                    result.innerHTML = `
+                        <div class="result error">
+                            ❌ 登录失败: ${error.message}<br><br>
+                            <strong>可能的原因：</strong><br>
+                            1. 密码错误<br>
+                            2. 邮箱未验证（需要在Dashboard中手动验证）<br>
+                            3. 用户不存在<br><br>
+                            <strong>解决方案：</strong><br>
+                            1. 检查密码是否正确<br>
+                            2. 访问Dashboard手动验证邮箱<br>
+                            3. 或者禁用邮箱验证功能
+                        </div>
+                    `;
+                } else {
+                    result.innerHTML = `
+                        <div class="result success">
+                            ✅ 登录成功！<br>
+                            用户ID: ${data.user.id}<br>
+                            邮箱: ${data.user.email}<br>
+                            Token: ${data.session.access_token.substring(0, 20)}...
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="result error">❌ 错误: ${error.message}</div>`;
+            }
+        }
+        
+        async function checkUserStatus() {
+            const result = document.getElementById('userResult');
+            result.innerHTML = '<div class="result info">检查中...</div>';
+            
+            try {
+                const { data: { user }, error } = await window.supabaseClient.auth.getUser();
+                
+                if (error) {
+                    result.innerHTML = `<div class="result error">❌ 错误: ${error.message}</div>`;
+                } else if (user) {
+                    result.innerHTML = `
+                        <div class="result success">
+                            ✅ 当前已登录<br>
+                            用户ID: ${user.id}<br>
+                            邮箱: ${user.email}<br>
+                            邮箱已验证: ${user.email_confirmed_at ? '是 (' + new Date(user.email_confirmed_at).toLocaleString() + ')' : '否'}
+                        </div>
+                    `;
+                } else {
+                    result.innerHTML = '<div class="result info">ℹ️ 当前未登录</div>';
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="result error">❌ 错误: ${error.message}</div>`;
+            }
+        }
+        
+        // 页面加载时自动检查连接
+        window.addEventListener('load', () => {
+            setTimeout(checkConnection, 1000);
+        });
+    </script>
+</body>
+</html>

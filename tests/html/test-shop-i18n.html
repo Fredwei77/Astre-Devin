@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商店多语言测试 - Shop i18n Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="mystical-theme.css">
+</head>
+<body class="bg-gradient-to-br from-deep-navy via-mystic-purple to-deep-navy min-h-screen text-warm-white">
+    
+    <!-- 语言切换器 -->
+    <div class="fixed top-4 right-4 z-50 flex gap-2">
+        <button onclick="switchLanguage('zh')" 
+                class="bg-mystic-gold/20 hover:bg-mystic-gold/30 text-mystic-gold px-4 py-2 rounded-lg transition-colors">
+            中文
+        </button>
+        <button onclick="switchLanguage('en')" 
+                class="bg-mystic-gold/20 hover:bg-mystic-gold/30 text-mystic-gold px-4 py-2 rounded-lg transition-colors">
+            English
+        </button>
+    </div>
+
+    <!-- 购物车按钮 -->
+    <div class="fixed top-4 right-48 z-50">
+        <button id="viewCartBtn" 
+                class="bg-mystic-gold/20 hover:bg-mystic-gold/30 text-mystic-gold px-4 py-2 rounded-lg transition-colors">
+            <i class="fas fa-shopping-cart mr-2"></i>
+            <span id="cartCount">0</span>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- 标题 -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-serif font-bold text-mystic-gold mb-4">
+                <span id="pageTitle">商店多语言测试</span>
+            </h1>
+            <p class="text-moon-silver" id="pageSubtitle">
+                测试商品显示和购物功能的多语言支持
+            </p>
+        </div>
+
+        <!-- 当前语言显示 -->
+        <div class="bg-white/10 rounded-lg p-4 mb-8 text-center">
+            <p class="text-moon-silver">
+                当前语言 / Current Language: 
+                <span id="currentLang" class="text-mystic-gold font-bold"></span>
+            </p>
+        </div>
+
+        <!-- 商品网格 -->
+        <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- 商品将在这里动态加载 -->
+        </div>
+
+        <!-- 测试说明 -->
+        <div class="mt-12 bg-white/10 rounded-lg p-6">
+            <h2 class="text-2xl font-serif font-bold text-mystic-gold mb-4">测试说明 / Test Instructions</h2>
+            <div class="space-y-2 text-moon-silver">
+                <p>✅ 点击顶部按钮切换语言 / Click top buttons to switch language</p>
+                <p>✅ 观察商品名称和描述的变化 / Observe product names and descriptions change</p>
+                <p>✅ 点击"加入购物车"测试提示消息 / Click "Add to Cart" to test toast messages</p>
+                <p>✅ 点击"立即购买"测试按钮文本 / Click "Buy Now" to test button text</p>
+                <p>✅ 检查库存文本是否正确翻译 / Check if stock text is correctly translated</p>
+            </div>
+        </div>
+
+        <!-- 功能测试区 -->
+        <div class="mt-8 bg-white/10 rounded-lg p-6">
+            <h2 class="text-2xl font-serif font-bold text-mystic-gold mb-4">功能测试 / Function Tests</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button onclick="testAddToCart()" 
+                        class="bg-mystic-gold/20 hover:bg-mystic-gold/30 text-mystic-gold px-6 py-3 rounded-lg transition-colors">
+                    <i class="fas fa-cart-plus mr-2"></i>
+                    测试添加购物车 / Test Add to Cart
+                </button>
+                <button onclick="testBuyNow()" 
+                        class="bg-mystic-gold/20 hover:bg-mystic-gold/30 text-mystic-gold px-6 py-3 rounded-lg transition-colors">
+                    <i class="fas fa-shopping-bag mr-2"></i>
+                    测试立即购买 / Test Buy Now
+                </button>
+                <button onclick="testViewCart()" 
+                        class="bg-mystic-gold/20 hover:bg-mystic-gold/30 text-mystic-gold px-6 py-3 rounded-lg transition-colors">
+                    <i class="fas fa-shopping-cart mr-2"></i>
+                    测试查看购物车 / Test View Cart
+                </button>
+                <button onclick="showCurrentLanguage()" 
+                        class="bg-mystic-gold/20 hover:bg-mystic-gold/30 text-mystic-gold px-6 py-3 rounded-lg transition-colors">
+                    <i class="fas fa-language mr-2"></i>
+                    显示当前语言 / Show Current Language
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载脚本 -->
+    <script src="translations.js"></script>
+    <script src="shop-ui-i18n.js"></script>
+
+    <script>
+        // 语言切换函数
+        function switchLanguage(lang) {
+            localStorage.setItem('preferredLanguage', lang);
+            updatePageLanguage();
+            // 触发语言切换事件
+            window.dispatchEvent(new Event('languageChanged'));
+        }
+
+        // 更新页面语言
+        function updatePageLanguage() {
+            const lang = localStorage.getItem('preferredLanguage') || 'zh';
+            document.getElementById('currentLang').textContent = lang === 'zh' ? '中文' : 'English';
+            
+            if (lang === 'en') {
+                document.getElementById('pageTitle').textContent = 'Shop i18n Test';
+                document.getElementById('pageSubtitle').textContent = 'Test multilingual support for product display and shopping features';
+            } else {
+                document.getElementById('pageTitle').textContent = '商店多语言测试';
+                document.getElementById('pageSubtitle').textContent = '测试商品显示和购物功能的多语言支持';
+            }
+        }
+
+        // 测试函数
+        function testAddToCart() {
+            if (window.shopUI) {
+                window.shopUI.addToCart('dragon');
+            } else {
+                alert('ShopUI not initialized');
+            }
+        }
+
+        function testBuyNow() {
+            if (window.shopUI) {
+                window.shopUI.buyNow('crystal');
+            } else {
+                alert('ShopUI not initialized');
+            }
+        }
+
+        function testViewCart() {
+            const lang = localStorage.getItem('preferredLanguage') || 'zh';
+            const msg = lang === 'en' ? 'Cart feature in development...' : '购物车功能开发中...';
+            alert(msg);
+        }
+
+        function showCurrentLanguage() {
+            const lang = localStorage.getItem('preferredLanguage') || 'zh';
+            const msg = lang === 'en' 
+                ? `Current language: ${lang}\nTranslations loaded: ${window.TRANSLATIONS ? 'Yes' : 'No'}`
+                : `当前语言: ${lang}\n翻译已加载: ${window.TRANSLATIONS ? '是' : '否'}`;
+            alert(msg);
+        }
+
+        // 页面加载时初始化
+        updatePageLanguage();
+
+        // 监听语言切换事件
+        window.addEventListener('languageChanged', () => {
+            updatePageLanguage();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>退出按钮测试 - Destiny AI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="mystical-theme.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #0d2626 0%, #1a4d4d 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .test-header h1 {
+            color: #ffd700;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .test-section h2 {
+            color: #ffd700;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .test-button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+            border: none;
+            border-radius: 8px;
+            color: #1a1a2e;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+        }
+        
+        .result-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: #fafafa;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .result-item {
+            padding: 8px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+        
+        .result-success {
+            background: rgba(102, 187, 106, 0.2);
+            border-left: 3px solid #66bb6a;
+            color: #66bb6a;
+        }
+        
+        .result-error {
+            background: rgba(255, 107, 107, 0.2);
+            border-left: 3px solid #ff6b6b;
+            color: #ff6b6b;
+        }
+        
+        .result-info {
+            background: rgba(100, 181, 246, 0.2);
+            border-left: 3px solid #64b5f6;
+            color: #64b5f6;
+        }
+        
+        .demo-nav {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .demo-nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        #demoGuestView, #demoUserView {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        #demoUserView {
+            display: none;
+        }
+        
+        #demoUserView.show {
+            display: flex;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .user-menu-btn {
+            background: none;
+            border: none;
+            color: #c0c0c0;
+            cursor: pointer;
+            padding: 5px 10px;
+            transition: color 0.3s;
+        }
+        
+        .user-menu-btn:hover {
+            color: #ffd700;
+        }
+        
+        .user-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 8px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            padding: 8px 0;
+            min-width: 180px;
+            display: none;
+            z-index: 1000;
+        }
+        
+        .user-menu.show {
+            display: block;
+        }
+        
+        .user-menu a, .user-menu button {
+            display: block;
+            width: 100%;
+            padding: 10px 16px;
+            text-align: left;
+            background: none;
+            border: none;
+            color: #c0c0c0;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .user-menu a:hover, .user-menu button:hover {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+        }
+        
+        .user-menu hr {
+            border: none;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+            margin: 4px 0;
+        }
+        
+        .logout-btn:hover {
+            color: #ff6b6b !important;
+            background: rgba(255, 107, 107, 0.1) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1><i class="fas fa-sign-out-alt"></i> 退出按钮测试</h1>
+            <p style="color: #c0c0c0;">测试登录后的用户菜单和退出功能</p>
+        </div>
+        
+        <!-- 演示导航栏 -->
+        <div class="test-section">
+            <h2><i class="fas fa-desktop"></i> 导航栏演示</h2>
+            <div class="demo-nav">
+                <div class="demo-nav-content">
+                    <div style="color: #ffd700; font-weight: bold;">九筮</div>
+                    
+                    <!-- 未登录视图 -->
+                    <div id="demoGuestView">
+                        <button class="test-button" onclick="simulateLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i> 登入
+                        </button>
+                    </div>
+                    
+                    <!-- 已登录视图 -->
+                    <div id="demoUserView">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div class="user-avatar">
+                                <i class="fas fa-user" style="color: #ffd700; font-size: 14px;"></i>
+                            </div>
+                            <span id="demoUserName" style="color: #c0c0c0; font-weight: 500;"></span>
+                        </div>
+                        <div style="position: relative;">
+                            <button class="user-menu-btn" onclick="toggleDemoMenu()">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div id="demoUserMenu" class="user-menu">
+                                <a href="#"><i class="fas fa-user mr-2"></i> 个人资料</a>
+                                <a href="#"><i class="fas fa-crown mr-2"></i> 会员服务</a>
+                                <hr>
+                                <button class="logout-btn" onclick="simulateLogout()">
+                                    <i class="fas fa-sign-out-alt mr-2"></i> 退出登入
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="color: #c0c0c0; font-size: 14px; margin-top: 10px;">
+                <i class="fas fa-info-circle"></i> 点击"登入"按钮模拟登录，然后点击下拉箭头查看用户菜单
+            </div>
+        </div>
+        
+        <!-- 测试控制 -->
+        <div class="test-section">
+            <h2><i class="fas fa-flask"></i> 测试控制</h2>
+            <button class="test-button" onclick="simulateLogin()">
+                <i class="fas fa-sign-in-alt"></i> 模拟登录
+            </button>
+            <button class="test-button" onclick="simulateLogout()">
+                <i class="fas fa-sign-out-alt"></i> 模拟退出
+            </button>
+            <button class="test-button" onclick="checkCurrentState()">
+                <i class="fas fa-search"></i> 检查当前状态
+            </button>
+            <button class="test-button" onclick="testRealPage()">
+                <i class="fas fa-external-link-alt"></i> 测试真实页面
+            </button>
+            <button class="test-button" onclick="clearTestData()">
+                <i class="fas fa-trash-alt"></i> 清除测试数据
+            </button>
+        </div>
+        
+        <!-- 测试结果 -->
+        <div class="test-section">
+            <h2><i class="fas fa-clipboard-list"></i> 测试结果</h2>
+            <div class="result-box" id="resultBox"></div>
+        </div>
+        
+        <!-- 检查清单 -->
+        <div class="test-section">
+            <h2><i class="fas fa-check-square"></i> 检查清单</h2>
+            <div style="color: #c0c0c0; line-height: 2;">
+                <div><input type="checkbox" id="check1"> 登录后显示用户头像和名称</div>
+                <div><input type="checkbox" id="check2"> 显示下拉箭头按钮</div>
+                <div><input type="checkbox" id="check3"> 点击下拉箭头显示用户菜单</div>
+                <div><input type="checkbox" id="check4"> 用户菜单包含"个人资料"链接</div>
+                <div><input type="checkbox" id="check5"> 用户菜单包含"会员服务"链接</div>
+                <div><input type="checkbox" id="check6"> 用户菜单包含"退出登入"按钮</div>
+                <div><input type="checkbox" id="check7"> 点击"退出登入"可以退出</div>
+                <div><input type="checkbox" id="check8"> 退出后恢复到未登录状态</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let isLoggedIn = false;
+        let menuOpen = false;
+        
+        function addResult(type, message) {
+            const resultBox = document.getElementById('resultBox');
+            const resultItem = document.createElement('div');
+            resultItem.className = `result-item result-${type}`;
+            resultItem.innerHTML = `<i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'times' : 'info'}-circle"></i> ${message}`;
+            resultBox.appendChild(resultItem);
+            resultBox.scrollTop = resultBox.scrollHeight;
+        }
+        
+        function clearResults() {
+            document.getElementById('resultBox').innerHTML = '';
+        }
+        
+        function simulateLogin() {
+            if (isLoggedIn) {
+                addResult('info', '已经处于登录状态');
+                return;
+            }
+            
+            addResult('info', '开始模拟登录...');
+            
+            // 隐藏未登录视图
+            document.getElementById('demoGuestView').style.display = 'none';
+            
+            // 显示已登录视图
+            const userView = document.getElementById('demoUserView');
+            userView.classList.add('show');
+            
+            // 设置用户名
+            document.getElementById('demoUserName').textContent = 'test@example.com';
+            
+            isLoggedIn = true;
+            
+            addResult('success', '✓ 登录成功');
+            addResult('success', '✓ 用户视图已显示');
+            addResult('info', '现在可以点击下拉箭头查看用户菜单');
+        }
+        
+        function simulateLogout() {
+            if (!isLoggedIn) {
+                addResult('info', '当前未登录');
+                return;
+            }
+            
+            if (confirm('确定要退出登录吗？')) {
+                addResult('info', '开始退出登录...');
+                
+                // 隐藏用户菜单
+                document.getElementById('demoUserMenu').classList.remove('show');
+                menuOpen = false;
+                
+                // 隐藏已登录视图
+                document.getElementById('demoUserView').classList.remove('show');
+                
+                // 显示未登录视图
+                document.getElementById('demoGuestView').style.display = 'flex';
+                
+                isLoggedIn = false;
+                
+                addResult('success', '✓ 退出成功');
+                addResult('success', '✓ 已恢复到未登录状态');
+            } else {
+                addResult('info', '取消退出');
+            }
+        }
+        
+        function toggleDemoMenu() {
+            const menu = document.getElementById('demoUserMenu');
+            menuOpen = !menuOpen;
+            
+            if (menuOpen) {
+                menu.classList.add('show');
+                addResult('info', '用户菜单已打开');
+            } else {
+                menu.classList.remove('show');
+                addResult('info', '用户菜单已关闭');
+            }
+        }
+        
+        function checkCurrentState() {
+            clearResults();
+            addResult('info', '=== 当前状态检查 ===');
+            addResult('info', `登录状态: ${isLoggedIn ? '已登录' : '未登录'}`);
+            addResult('info', `菜单状态: ${menuOpen ? '打开' : '关闭'}`);
+            
+            // 检查真实页面的会话
+            const token = localStorage.getItem('destinyai_token') || sessionStorage.getItem('destinyai_token');
+            const userData = localStorage.getItem('destinyai_user') || sessionStorage.getItem('destinyai_user');
+            
+            if (token && userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    addResult('success', '✓ 真实页面有活动会话');
+                    addResult('info', `用户: ${user.name || user.email}`);
+                } catch (error) {
+                    addResult('error', '✗ 会话数据解析失败');
+                }
+            } else {
+                addResult('info', '真实页面无活动会话');
+            }
+        }
+        
+        function testRealPage() {
+            addResult('info', '正在打开真实页面...');
+            window.open('index.html', '_blank');
+            addResult('success', '✓ 已在新窗口打开 index.html');
+            addResult('info', '请在新窗口中测试登录和退出功能');
+        }
+        
+        function clearTestData() {
+            if (confirm('确定要清除所有测试数据吗？')) {
+                localStorage.removeItem('destinyai_token');
+                localStorage.removeItem('destinyai_user');
+                sessionStorage.removeItem('destinyai_token');
+                sessionStorage.removeItem('destinyai_user');
+                
+                addResult('success', '✓ 测试数据已清除');
+                addResult('info', '可以重新开始测试');
+            }
+        }
+        
+        // 点击外部关闭菜单
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('demoUserMenu');
+            const menuBtn = e.target.closest('.user-menu-btn');
+            
+            if (!menuBtn && !menu.contains(e.target) && menuOpen) {
+                menu.classList.remove('show');
+                menuOpen = false;
+            }
+        });
+        
+        // 页面加载时显示欢迎信息
+        window.addEventListener('load', function() {
+            addResult('success', '✓ 测试页面加载完成');
+            addResult('info', '点击"模拟登录"按钮开始测试');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>占卜功能测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .box {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin: 10px 0;
+        }
+        button:hover { background: #45a049; }
+        .result {
+            background: #f9f9f9;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #4CAF50;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .error {
+            border-left-color: #f44336;
+            color: #f44336;
+        }
+        .success {
+            border-left-color: #4CAF50;
+            color: #4CAF50;
+        }
+        h1 { color: #333; }
+        h2 { color: #666; }
+    </style>
+</head>
+<body>
+    <h1>🔮 占卜功能测试</h1>
+    
+    <div class="box">
+        <h2>步骤 1: 检查环境</h2>
+        <div id="check" class="result">等待检查...</div>
+    </div>
+    
+    <div class="box">
+        <h2>步骤 2: 测试占卜功能</h2>
+        <button onclick="testDivination()">测试占卜</button>
+        <div id="result"></div>
+    </div>
+    
+    <script src="config.js"></script>
+    <script src="ai-service.js"></script>
+    
+    <script>
+        // 检查环境
+        function checkEnvironment() {
+            const checkDiv = document.getElementById('check');
+            let html = '';
+            
+            // 检查 CONFIG
+            if (typeof CONFIG !== 'undefined') {
+                html += '<div class="success">✅ CONFIG 已加载</div>';
+                html += `<div>- Mock Mode: ${CONFIG.FEATURES.MOCK_MODE}</div>`;
+                html += `<div>- API Key: ${CONFIG.OPENROUTER_API_KEY ? '已配置' : '未配置'}</div>`;
+            } else {
+                html += '<div class="error">❌ CONFIG 未加载</div>';
+            }
+            
+            // 检查 AIService
+            if (typeof AIService !== 'undefined') {
+                html += '<div class="success">✅ AIService 类已加载</div>';
+            } else {
+                html += '<div class="error">❌ AIService 类未加载</div>';
+            }
+            
+            // 检查 aiService 实例
+            if (typeof aiService !== 'undefined') {
+                html += '<div class="success">✅ aiService 实例已创建</div>';
+                html += `<div>- Mock Mode: ${aiService.mockMode}</div>`;
+            } else {
+                html += '<div class="error">❌ aiService 实例未创建</div>';
+            }
+            
+            checkDiv.innerHTML = html;
+        }
+        
+        // 测试占卜功能
+        async function testDivination() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="result">测试中...</div>';
+            
+            try {
+                // 确保使用模拟模式
+                CONFIG.FEATURES.MOCK_MODE = true;
+                window.aiService = new AIService();
+                
+                resultDiv.innerHTML += '<div class="result success">✅ 已启用模拟模式</div>';
+                
+                // 测试数据
+                const testData = {
+                    birthDate: '1990-01-01',
+                    birthTime: '12:00',
+                    birthPlace: 'Beijing',
+                    gender: 'male',
+                    categories: ['career', 'wealth', 'love']
+                };
+                
+                resultDiv.innerHTML += '<div class="result">正在调用 analyzeDivination...</div>';
+                resultDiv.innerHTML += `<div class="result">测试数据: ${JSON.stringify(testData, null, 2)}</div>`;
+                
+                // 调用占卜分析
+                const result = await aiService.analyzeDivination(testData);
+                
+                resultDiv.innerHTML += '<div class="result success">✅ 占卜分析成功！</div>';
+                
+                // 显示结果
+                resultDiv.innerHTML += '<div class="result success"><strong>返回的数据结构：</strong></div>';
+                resultDiv.innerHTML += `<div class="result">- personality: ${result.personality ? result.personality.length + ' 条' : '无'}</div>`;
+                resultDiv.innerHTML += `<div class="result">- career: ${result.career ? result.career.length + ' 条' : '无'}</div>`;
+                resultDiv.innerHTML += `<div class="result">- wealth: ${result.wealth ? result.wealth.length + ' 条' : '无'}</div>`;
+                resultDiv.innerHTML += `<div class="result">- love: ${result.love ? result.love.length + ' 条' : '无'}</div>`;
+                resultDiv.innerHTML += `<div class="result">- health: ${result.health ? result.health.length + ' 条' : '无'}</div>`;
+                resultDiv.innerHTML += `<div class="result">- elements: ${result.elements ? 'Yes' : 'No'}</div>`;
+                resultDiv.innerHTML += `<div class="result">- luckyColors: ${result.luckyColors ? result.luckyColors.length + ' 个' : '无'}</div>`;
+                resultDiv.innerHTML += `<div class="result">- luckyNumbers: ${result.luckyNumbers ? result.luckyNumbers.length + ' 个' : '无'}</div>`;
+                
+                // 显示详细内容
+                resultDiv.innerHTML += '<div class="result success"><strong>详细内容：</strong></div>';
+                
+                if (result.personality) {
+                    resultDiv.innerHTML += '<div class="result"><strong>性格特点：</strong><br>';
+                    result.personality.forEach((item, i) => {
+                        resultDiv.innerHTML += `${i + 1}. ${item}<br>`;
+                    });
+                    resultDiv.innerHTML += '</div>';
+                }
+                
+                if (result.career) {
+                    resultDiv.innerHTML += '<div class="result"><strong>事业展望：</strong><br>';
+                    result.career.forEach((item, i) => {
+                        resultDiv.innerHTML += `${i + 1}. ${item}<br>`;
+                    });
+                    resultDiv.innerHTML += '</div>';
+                }
+                
+                if (result.love) {
+                    resultDiv.innerHTML += '<div class="result"><strong>感情关系：</strong><br>';
+                    result.love.forEach((item, i) => {
+                        resultDiv.innerHTML += `${i + 1}. ${item}<br>`;
+                    });
+                    resultDiv.innerHTML += '</div>';
+                }
+                
+                if (result.elements) {
+                    resultDiv.innerHTML += '<div class="result"><strong>五行平衡：</strong><br>';
+                    resultDiv.innerHTML += `木: ${result.elements.wood}<br>`;
+                    resultDiv.innerHTML += `火: ${result.elements.fire}<br>`;
+                    resultDiv.innerHTML += `土: ${result.elements.earth}<br>`;
+                    resultDiv.innerHTML += `金: ${result.elements.metal}<br>`;
+                    resultDiv.innerHTML += `水: ${result.elements.water}<br>`;
+                    resultDiv.innerHTML += '</div>';
+                }
+                
+                if (result.luckyColors) {
+                    resultDiv.innerHTML += `<div class="result"><strong>幸运颜色：</strong> ${result.luckyColors.join(', ')}</div>`;
+                }
+                
+                if (result.luckyNumbers) {
+                    resultDiv.innerHTML += `<div class="result"><strong>幸运数字：</strong> ${result.luckyNumbers.join(', ')}</div>`;
+                }
+                
+                // 显示完整 JSON
+                resultDiv.innerHTML += '<div class="result"><strong>完整 JSON：</strong><br>';
+                resultDiv.innerHTML += JSON.stringify(result, null, 2);
+                resultDiv.innerHTML += '</div>';
+                
+                resultDiv.innerHTML += '<div class="result success">🎉 测试完成！数据格式正确！</div>';
+                
+            } catch (error) {
+                resultDiv.innerHTML += `<div class="result error">❌ 错误: ${error.message}</div>`;
+                resultDiv.innerHTML += `<div class="result error">堆栈: ${error.stack}</div>`;
+                console.error('测试失败:', error);
+            }
+        }
+        
+        // 页面加载时检查
+        window.addEventListener('DOMContentLoaded', () => {
+            checkEnvironment();
+        });
+    </script>
+</body>
+</html>

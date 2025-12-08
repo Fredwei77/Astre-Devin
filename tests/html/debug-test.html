@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>调试测试 - Destiny AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .log {
+            background: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #4CAF50;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .error {
+            border-left-color: #f44336;
+            color: #f44336;
+        }
+        .success {
+            border-left-color: #4CAF50;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 调试测试工具</h1>
+    
+    <div class="test-box">
+        <h2>1. 检查文件加载</h2>
+        <button onclick="checkFiles()">检查文件</button>
+        <div id="fileCheck"></div>
+    </div>
+    
+    <div class="test-box">
+        <h2>2. 测试 AI 服务</h2>
+        <button onclick="testAIService()">测试 AI 服务</button>
+        <div id="aiTest"></div>
+    </div>
+    
+    <div class="test-box">
+        <h2>3. 测试模拟模式</h2>
+        <button onclick="testMockMode()">测试模拟模式</button>
+        <div id="mockTest"></div>
+    </div>
+    
+    <div class="test-box">
+        <h2>4. 控制台日志</h2>
+        <div id="console" class="log"></div>
+    </div>
+    
+    <script src="config.js"></script>
+    <script src="ai-service.js"></script>
+    
+    <script>
+        // 重定向 console.log
+        const originalLog = console.log;
+        const originalError = console.error;
+        const consoleDiv = document.getElementById('console');
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            consoleDiv.innerHTML += `<div class="success">[LOG] ${args.join(' ')}</div>`;
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            consoleDiv.innerHTML += `<div class="error">[ERROR] ${args.join(' ')}</div>`;
+        };
+        
+        function checkFiles() {
+            const div = document.getElementById('fileCheck');
+            div.innerHTML = '';
+            
+            const checks = [
+                { name: 'CONFIG', obj: typeof CONFIG !== 'undefined' },
+                { name: 'CONFIG.OPENROUTER_API_KEY', obj: CONFIG?.OPENROUTER_API_KEY },
+                { name: 'CONFIG.AI_MODEL', obj: CONFIG?.AI_MODEL },
+                { name: 'CONFIG.MODELS', obj: CONFIG?.MODELS },
+                { name: 'CONFIG.FEATURES', obj: CONFIG?.FEATURES },
+                { name: 'AIService', obj: typeof AIService !== 'undefined' }
+            ];
+            
+            checks.forEach(check => {
+                const status = check.obj ? '✅' : '❌';
+                const value = typeof check.obj === 'object' ? JSON.stringify(check.obj) : check.obj;
+                div.innerHTML += `<div class="log ${check.obj ? 'success' : 'error'}">${status} ${check.name}: ${value}</div>`;
+            });
+        }
+        
+        async function testAIService() {
+            const div = document.getElementById('aiTest');
+            div.innerHTML = '<div class="log">正在测试...</div>';
+            
+            try {
+                // 创建 AI 服务实例
+                console.log('创建 AIService 实例...');
+                const service = new AIService();
+                div.innerHTML += '<div class="log success">✅ AIService 实例创建成功</div>';
+                
+                // 检查属性
+                div.innerHTML += `<div class="log">API Key: ${service.apiKey?.substring(0, 20)}...</div>`;
+                div.innerHTML += `<div class="log">Model: ${service.model}</div>`;
+                div.innerHTML += `<div class="log">Mock Mode: ${service.mockMode}</div>`;
+                
+                // 测试连接
+                console.log('测试连接...');
+                const result = await service.testConnection();
+                
+                if (result.success) {
+                    div.innerHTML += '<div class="log success">✅ 连接测试成功！</div>';
+                    div.innerHTML += `<div class="log">${JSON.stringify(result.response, null, 2)}</div>`;
+                } else {
+                    div.innerHTML += `<div class="log error">❌ 连接失败: ${result.error}</div>`;
+                }
+                
+            } catch (error) {
+                console.error('测试失败:', error);
+                div.innerHTML += `<div class="log error">❌ 错误: ${error.message}</div>`;
+                div.innerHTML += `<div class="log error">堆栈: ${error.stack}</div>`;
+            }
+        }
+        
+        async function testMockMode() {
+            const div = document.getElementById('mockTest');
+            div.innerHTML = '<div class="log">正在测试模拟模式...</div>';
+            
+            try {
+                // 强制启用模拟模式
+                CONFIG.FEATURES.MOCK_MODE = true;
+                
+                const service = new AIService();
+                div.innerHTML += '<div class="log success">✅ 模拟模式已启用</div>';
+                
+                // 测试占卜
+                console.log('测试占卜分析...');
+                const result = await service.analyzeDivination({
+                    birthDate: '1990-01-01',
+                    birthTime: '12:00',
+                    birthPlace: 'Beijing',
+                    gender: 'male',
+                    categories: ['career']
+                });
+                
+                div.innerHTML += '<div class="log success">✅ 占卜分析成功！</div>';
+                div.innerHTML += `<div class="log">性格特点: ${result.personality?.slice(0, 2).join(', ')}</div>`;
+                div.innerHTML += `<div class="log">五行: 木${result.elements?.wood} 火${result.elements?.fire}</div>`;
+                
+            } catch (error) {
+                console.error('模拟模式测试失败:', error);
+                div.innerHTML += `<div class="log error">❌ 错误: ${error.message}</div>`;
+            }
+        }
+        
+        // 页面加载时自动检查
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('页面加载完成');
+            checkFiles();
+        });
+    </script>
+</body>
+</html>

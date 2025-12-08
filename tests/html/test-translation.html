@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translation Test - Destiny AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #1a237e;
+        }
+        .controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        select {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e8f5e9;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+    </style>
+    <script src="language-switcher-final.js"></script>
+</head>
+<body>
+    <div class="controls">
+        <label for="languageSelect">Language:</label>
+        <select id="languageSelect">
+            <option value="en">English</option>
+            <option value="zh-CN">简体中文</option>
+            <option value="zh-TW">繁體中文</option>
+        </select>
+        <div class="status" id="status">Ready</div>
+    </div>
+
+    <h1>Translation Test Page</h1>
+    <p>This page tests the language switching functionality.</p>
+
+    <div class="card">
+        <h2>AI Divination</h2>
+        <p>Get personalized readings using advanced AI algorithms trained on thousands of years of Eastern wisdom. Accurate, instant, and tailored to your unique situation.</p>
+    </div>
+
+    <div class="card">
+        <h2>Feng Shui Analysis</h2>
+        <p>Optimize your living and working spaces with our interactive Feng Shui compass. Get real-time analysis and personalized recommendations for better energy flow.</p>
+    </div>
+
+    <div class="card">
+        <h2>I-Ching Wisdom</h2>
+        <p>Consult the ancient Book of Changes for guidance on important decisions. Our AI interprets the hexagrams in the context of your modern life challenges.</p>
+    </div>
+
+    <div class="card">
+        <h3>Navigation Test</h3>
+        <ul>
+            <li>Home</li>
+            <li>Divination</li>
+            <li>Feng Shui</li>
+            <li>I-Ching</li>
+            <li>Profile</li>
+        </ul>
+    </div>
+
+    <script>
+        // Monitor language changes
+        const statusEl = document.getElementById('status');
+        const select = document.getElementById('languageSelect');
+        
+        select.addEventListener('change', function() {
+            statusEl.textContent = 'Switching to ' + this.value + '...';
+            statusEl.className = 'status';
+            
+            setTimeout(() => {
+                if (window.DestinyLanguage) {
+                    const current = window.DestinyLanguage.getCurrent();
+                    statusEl.textContent = 'Current language: ' + current;
+                    statusEl.className = 'status';
+                } else {
+                    statusEl.textContent = 'Error: DestinyLanguage not found';
+                    statusEl.className = 'status error';
+                }
+            }, 500);
+        });
+        
+        // Check initialization
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                if (window.DestinyLanguage) {
+                    const current = window.DestinyLanguage.getCurrent();
+                    statusEl.textContent = 'Initialized. Current: ' + current;
+                    select.value = current;
+                } else {
+                    statusEl.textContent = 'Error: Failed to initialize';
+                    statusEl.className = 'status error';
+                }
+            }, 300);
+        });
+    </script>
+</body>
+</html>

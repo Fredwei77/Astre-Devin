@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>部署前测试 - 九筮</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="mystical-theme.css">
+</head>
+<body class="bg-gradient-to-br from-deep-navy via-mystic-purple to-jade-dark min-h-screen text-moon-silver p-8">
+    
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl font-bold text-mystic-gold mb-8 text-center">
+            <i class="fas fa-rocket mr-3"></i>部署前测试
+        </h1>
+        
+        <div class="bg-white/5 border border-mystic-gold/30 rounded-xl p-6 mb-6">
+            <h2 class="text-2xl font-bold text-mystic-gold mb-4">测试说明</h2>
+            <p class="mb-4">请按照以下步骤进行手动测试，确保所有功能正常：</p>
+            
+            <div class="space-y-4">
+                <div class="bg-white/5 p-4 rounded-lg">
+                    <h3 class="font-bold text-mystic-gold mb-2">1. 核心页面测试</h3>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li><a href="index.html" target="_blank" class="text-blue-400 hover:underline">首页</a> - 检查加载和显示</li>
+                        <li><a href="divination.html" target="_blank" class="text-blue-400 hover:underline">占卜页面</a> - 测试AI功能</li>
+                        <li><a href="fengshui.html" target="_blank" class="text-blue-400 hover:underline">风水页面</a> - 测试图片上传</li>
+                        <li><a href="iching.html" target="_blank" class="text-blue-400 hover:underline">易经页面</a> - 测试卦象生成</li>
+                        <li><a href="about.html" target="_blank" class="text-blue-400 hover:underline">关于页面</a> - 检查内容显示</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white/5 p-4 rounded-lg">
+                    <h3 class="font-bold text-mystic-gold mb-2">2. 支付系统测试</h3>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li><a href="test-premium-payment.html" target="_blank" class="text-blue-400 hover:underline">支付测试页面</a> - 完整测试</li>
+                        <li><a href="payment-status-checker.html" target="_blank" class="text-blue-400 hover:underline">状态检查器</a> - 系统状态</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white/5 p-4 rounded-lg">
+                    <h3 class="font-bold text-mystic-gold mb-2">3. 翻译测试</h3>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li>切换到英文，检查所有页面</li>
+                        <li>切换回中文，验证翻译</li>
+                        <li>检查用户菜单翻译</li>
+                        <li>检查升级提示翻译</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white/5 p-4 rounded-lg">
+                    <h3 class="font-bold text-mystic-gold mb-2">4. 社交媒体链接</h3>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li>检查页脚小红书链接: <a href="https://xhslink.com/m/40J0nrG5TNW" target="_blank" class="text-blue-400 hover:underline">测试链接</a></li>
+                        <li>验证新窗口打开</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white/5 border border-mystic-gold/30 rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-mystic-gold mb-4">测试检查清单</h2>
+            <div class="space-y-2">
+                <label class="flex items-center space-x-3 cursor-pointer hover:bg-white/5 p-2 rounded">
+                    <input type="checkbox" class="w-5 h-5">
+                    <span>所有页面正常加载</span>
+                </label>
+                <label class="flex items-center space-x-3 cursor-pointer hover:bg-white/5 p-2 rounded">
+                    <input type="checkbox" class="w-5 h-5">
+                    <span>导航栏功能正常</span>
+                </label>
+                <label class="flex items-center space-x-3 cursor-pointer hover:bg-white/5 p-2 rounded">
+                    <input type="checkbox" class="w-5 h-5">
+                    <span>语言切换正常</span>
+                </label>
+                <label class="flex items-center space-x-3 cursor-pointer hover:bg-white/5 p-2 rounded">
+                    <input type="checkbox" class="w-5 h-5">
+                    <span>用户菜单翻译正确</span>
+                </label>
+                <label class="flex items-center space-x-3 cursor-pointer hover:bg-white/5 p-2 rounded">
+                    <input type="checkbox" class="w-5 h-5">
+                    <span>支付系统测试通过</span>
+                </label>
+                <label class="flex items-center space-x-3 cursor-pointer hover:bg-white/5 p-2 rounded">
+                    <input type="checkbox" class="w-5 h-5">
+                    <span>小红书链接正确</span>
+                </label>
+                <label class="flex items-center space-x-3 cursor-pointer hover:bg-white/5 p-2 rounded">
+                    <input type="checkbox" class="w-5 h-5">
+                    <span>响应式布局正常</span>
+                </label>
+                <label class="flex items-center space-x-3 cursor-pointer hover:bg-white/5 p-2 rounded">
+                    <input type="checkbox" class="w-5 h-5">
+                    <span>无控制台错误</span>
+                </label>
+            </div>
+            
+            <div class="mt-6 text-center">
+                <button onclick="alert('测试完成！请查看 PRE_DEPLOYMENT_TEST.md 了解详细信息')" 
+                        class="bg-mystic-gold text-deep-navy px-8 py-3 rounded-lg font-bold hover:bg-yellow-400 transition-colors">
+                    <i class="fas fa-check mr-2"></i>确认测试完成
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

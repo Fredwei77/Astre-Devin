@@ -1,0 +1,550 @@
+
+
+</html>y>od
+
+</b  </script>   });
+
+              });t);
+     ripild(scdChppendy.aboument.         doc;
+       arning')c} 加载失败`, 'w{sr告: $g(`警 = () => loipt.onerrorscr       
+         rc; = script.src        s        ;
+script')lement('reateE document.cscript =      const       > {
+     =forEach(srcts.   scrip         
+          ];
+              '
+tions.jsnsla  'tra      
+        .js',cedenhan-client-pe   'stri           ger.js',
+  n-manacriptio'subs                s = [
+t scriptns       co脚本
+       // 加载必要的              
+ ;
+       , 'info')按钮开始自动化测试'"开始测试"log('点击        ess');
+    'succ就绪', 统已log('测试系         {
+   ', () => dedtLoaontenDOMC('neristeaddEventL     window.本
+   时加载必要的脚 // 页面加载      
+  }
+    
+   success');导出', '告已    log('测试报        
+         L(url);
+   ObjectURevoke URL.r    );
+       ick(cl       a.   json`;
+  t('T')[0]}.spliOString().().toISte Da-${newreportad = `test-   a.downlo
+         ref = url;       a.h;
+     ')Element('aent.create= documst a     con        RL(blob);
+bjectU URL.createO const url =       );
+    /json' }ionplicat: 'ap, { type 2)], null,reporty(ngifN.striw Blob([JSO blob = neconst                   
+ };
+             t
+   .innerTexestLog')ById('tetElement.gnt: docume log          
+     l) * 100),Results.totaassed / testts.psul(testRe Math.round(e:    passRat      s,
+      estResult ts:     result          ,
+ tring()).toISOSnew Date(imestamp:         t       = {
+  st reporton c
+           tReport() {ion expor       funct报告
+ / 导出 /       }
+
+    r');
+    rrorning' : 'e'wa ? >= 70sRate ascess' : psuc? ' >= 90 Ratee}%`, passRat${pass:  log(`通过率          'info');
+ rnings}`, was.{testResult 警告: $ |ed}ults.failtRestes ${ | 失败:assed}esults.p: ${testR.total} | 通过esults`总计: ${testR       log(          
+  e;
+     d = falsleabistton').dortBuntById('expt.getEleme   documen
+         >重新测试';/i"><r-2s fa-redo mlass="fa<i cML = '.innerHTonnButt   ru  e;
+       = falson.disabled unButt      r      = status;
+nt Conteatus').textllStoveramentById('ent.getEle     docum     
+       
+         }         ror');
+ , 'er===='要改进 ======试完成 - 系统需========= 测     log('=   
+        ';- 需要改进s = '❌ 测试完成        statu       {
+   lse     } e       arning');
+=', 'w========态良好 =成 - 系统状==== 测试完log('======          良好';
+      ⚠️ 测试完成 - = '   status             0) {
+ ssRate >= 7f (pa } else i      
+     'success');=====',  =====优秀系统状态成 -  测试完==========   log('           - 优秀';
+   '✅ 测试完成atus =         st       = 90) {
+ te >passRaif (          '';
+    =tus  let sta          0);
+10tal) * Results.totestssed / lts.pa((testResuth.roundsRate = Mapas const 
+           / 完成     /      
+              }
+  
+         test.test);onTests' }, : 'integratinerIdontai c...test,est({ t runT  awai       {
+        integration)estSuites.t of tst tes  for (con       ');
+   ', 'info ---第三方集成测试  log('---          集成测试
+       // 运行      
+              }
+       
+    test.test); },ts'8nTesi1tainerId: 'st, con{ ...teunTest(ait r    aw          .i18n) {
+  stSuites test of teconst      for (o');
+      --', 'inf国际化测试 -   log('---         测试
+  运行国际化         //  
+                }
+   );
+      }, test.testageTests' rId: 'ptainetest, con ...nTest({ ru    await          pages) {
+  es.Suit of testst test for (con      
+     , 'info');---''--- 页面测试      log(       // 运行页面测试
+                 
+  }
+                test);
+ est. tTests' },FunctionrecorId: 'ntaine...test, coest({ it runT    awa           on) {
+ coreFunctitSuites.t of test tesnsco      for (    fo');
+   ---', 'in- 核心功能测试og('--      l
+      行核心功能测试 运          //
+            ML = '';
+  nnerHTsts').itionTed('integrayIentBetElemocument.g          d;
+   ''nerHTML =ts').in('i18nTesmentByIdment.getEle    docu        ';
+erHTML = 'inneTests').yId('pagentBt.getElemocumen d         
+  TML = '';.innerHsts')nctionTeeFu'cord(entByIlemgetEnt.   docume
+         清空容器       //  
+       
+         teStats();upda          : 0 };
+  ningsiled: 0, ward: 0, fa 0, passe= { total:sults testRe            / 重置统计
+         /       
+     
+   o');inf', ' ==========化测试自动 开始=====  log('=====     ;
+     ...' = '测试进行中Contentxt').teusllStatd('overaByIt.getElementdocumen               
+
+         ;中...'r-2"></i>测试fa-spin mspinner ="fas fa-ass clrHTML = '<i.inne   runButton        true;
+ abled = Button.dis run  
+         );tton'tById('runBuetElemenment.gcunButton = doru    const {
+        ) runAllTests(c function asyn测试
+           // 运行所有 }
+
+     
+       ;teStats()da    up
+                     }
+
+           ');e}`, 'errorssagr.me${erro}: .name❌ ${testItem      log(`    );
+      ager.messed', erro, 'failstItem(itemteTe     upda
+           ;failed++s.stResult te          
+     +;otal+Results.t    test          
+  ror) {catch (er          }      }
+           error');
+  `, 'age}esult.mess${rme}: naItem.${test`❌ g( lo                 );
+  ssagemesult.re, 'failed', Item(item  updateTest                  ed++;
+s.fail  testResult                  
+else {          } 
+           }            cess');
+   ge}`, 'suclt.messame}: ${resunatItem.${teslog(`✅                    age);
+     messed', result.item, 'passItem(pdateTest         u        ;
+       ++sedasestResults.p         t            {
+    se    } el                ng');
+ 'warnisage}`,mes}: ${result.Item.name ${testlog(`⚠️                 ;
+       ssage)sult.me, re'warning'(item, emItupdateTest                   ++;
+     s.warningsult    testRes                  rning) {
+  sult.wa  if (re                 sed) {
+ .pas  if (result                
+     
+         s.total++;lt   testResu           );
+   testFunc(ait = awultres    const         try {
+                         
+
+   e}`);stItem.nam测试: ${te开始og(`          l);
+  m, 'running'(iteateTestItemupd            );
+.containerIdme, testItem.naestItemm(testIteateT= crenst item           coFunc) {
+  stItem, testnTest(teon ruuncti async f测试
+          // 运行单个
+     
+
+        }      };
+      '}`' : '✗some ? '✓asFontAwe ${hesome:, FontAw✗'}nd ? '✓' : 'asTailwind: ${hlwi `Tai   message:         
+    esome,hasFontAwind && ailwhasTed: sspa               turn {
+        re]');
+     -awesome"ontnk[href*="fr('lictoSeleeryment.qucuome = dohasFontAwesonst  c
+           ;ndcss"]')wi[src*="tailor('scriptelecterySnt.qu| docume' |ndefinedwind !== 'utypeof tail= sTailwind const ha         ));
+    500esolve,eout(rTim=> setlve omise(resowait new Pr          aces() {
+  ResourtestCDNnction  fu    async  }
+
+                 }
+;
+     查社交媒体链接' }essage: '无法检lse, mssed: farn { pa retu              e) {
+  } catch (                 };
+         红书链接未更新'
+ ' : '小 '小红书链接已更新asXHS ?: h    message        ,
+        XHSd: has passe                 urn {
+   ret             
+  G5TNW');/40J0nr/m'xhslink.coms(tml.includeasXHS = h     const h      );
+     ext(nse.t await respoonst html =         c
+       ;html')dex.tch('ine = await fest respons     con       {
+            try     
+ {iaLinks()lMedociastSion teync funct   as
+     
+        }
+;       }ed'
+     ndefin === 'ueClient.supabasof windowperning: ty  wa         
+     客户端未找到',upabase已加载' : 'Sse客户端 ? 'Supaba 'undefined'seClient !==ndow.supaba typeof wisage:  mes              fined',
+nde 'ueClient !==asabindow.sup: typeof wpassed           {
+      return 
+           0));solve, 50etTimeout(re=> s(resolve misew Proawait ne   
+         nnection() {Coabasetion testSupync func       as     }
+
+      };
+          ripe
+!hasStng:   warni            
+  式）',用测试模将使载（: 'Stripe未加客户端已加载' e ? 'StripeasStripmessage: h             
+   true,assed:           prn {
+            retu';
+      ndefined!== 'uripe peof Stipe = tyonst hasStr    c
+        e, 500));esolvTimeout(retve => sesolmise(r Proait new     aw
+       Client() { testStripetionync func       as    }
+
+ 
+    ;          }lse
+  ing: faarn        w,
+        通过`译检查 '英文'}翻' ? '中文' :ang === 'zhessage: `${l        m
+        d: true, passe           {
+       return        ));
+  olve, 500Timeout(resetesolve => sromise(rit new Pawa       {
+      ness(lang)nCompletetioslaanction testTrasync fun
+             }
+;
+             }
+  找到'功能未'语言切换 : 语言切换功能可用'18n ? 'sage: hasIes     m         hasI18n,
+     passed:              n {
+       retured';
+     == 'undefineLanguage !dow.updatpeof win' || tyefinednd !== 'ui18n window.eofsI18n = typnst ha  co          , 500));
+veimeout(resololve => setTe(resmisew Pro    await n       itch() {
+ LanguageSwtion test  async func    }
+
+  };
+                  翻译文件未找到'
+  ' : '文件已加载? '翻译ned' defis !== 'un.translationindowf w typeoessage:          m    ',
+  undefinedions !== 'slatw.traneof windoassed: typ    p         turn {
+    re  
+         ve, 500));t(resolimeou=> setTresolve mise( new Pro       await     {
+tionsLoad() tTranslaon tesnc functi      asy}
+
+  }
+                  age}` };
+  ss${e.me ${page}: : `无法访问message,  falsen { passed:      retur          ch (e) {
+  } cat      
+         };
+           e.status}`返回 ${respons : `${page} age} 可访问` ? `${pokonse.spssage: re   me              nse.ok,
+   posed: resas p               {
+     turn  re              ' });
+: 'HEADthode, { met fetch(pagawairesponse =       const 
+          y {     tr {
+       e)geLoad(pagestPaction t funync        as}
+
+      
+      }
+        }; e.message 存储不可用: ' +age: '本地ssse, meed: fal pass   return {          ) {
+   } catch (e          };
+   可用'e: '本地存储age, messed: tru { pass      return
+          m('test');removeItetorage.    localS        st');
+    ('test', 'tee.setItemlocalStorag           y {
+        tr      {
+   lStorage() n testLocafunctio     async 
+
+   
+        }       };nced
+     Enha hastripe &&g: !hasS    warnin    
+        系统未找到',e已加载' : '支付ipe ? 'StripStr has :支付系统已加载' ? '增强版nhancede: hasE      messag          nced,
+haasEntripe || hsS: ha   passed           turn {
+   re           
+d';efine= 'undvice !=ymentSerdStripePahanceindow.Enpeof wanced = tyasEnh   const h     ned';
+    undefitripe !== 'eof Se = typnst hasStrip    co      
+  )); 500solve,(reeoutim=> setTe solv Promise(reait new    aw   m() {
+     entSysteestPaymunction t    async f   }
+
+    
+       };       找到'
+   订阅管理器未加载' : '订阅管理器已 'ed' ?'undefinnager !== nMascriptio.subindowof w: typessage     me           ed',
+efinger !== 'undcriptionManaubseof window.styp: sedpas           {
+       return 
+          lve, 500));t(resoTimeou => setresolvemise(ait new Pro       aw  () {
+   ystemionSubscripttion testS func     async  }
+
+           };
+ 
+          : '认证服务未找到'认证服务已加载'ed' ? 'efince !== 'undthServiw.Aupeof windossage: ty    me            ',
+ined 'undef !==iceAuthServindow.: typeof wpassed          {
+           return
+        ));resolve, 500tTimeout(> seresolve =Promise(  await new 
+          m() {teAuthSysnction test   async fu    测试函数
+     //
+
+             } `;
+         }
+  /div>` : ''ge}<">${messaver/70 mt-2xt-moon-silext-sm teclass="tage ? `<div      ${mess           </div>
+             
+   ns[status]}     ${ico        n>
+       tent}</spa).textConn'or('spaerySelectem.quitn>${pa      <s             ween">
+ et justify-btems-center"flex iass=v cl  <di           
+   HTML = `innerm.       ite};
+         >'
+        "></i0-yellow-40ngle textriaclamation-texs="fas fa-clasing: '<i      warn        </i>',
+   ed-400">t-re tex-circls fa-timesclass="faed: '<i   fail            /i>',
+  400"><text-green-rcle check-ci="fas fa-d: '<i class passe            i>',
+   ow-400"></yellt-spin texfa-notch e-fas fa-circlss="clag: '<i nninru                {
+ ns =t ico        cons   `;
+ status}tem ${me = `test-im.classNate i      '') {
+     age = , messstatus(item, ateTestItemfunction upd      项状态
+  测试     // 更新    }
+
+   item;
+     return            ild(item);
+ppendChiner.ata        con    `;
+           >
+ iv</d       
+         ></i>-blue-400"a-spin textrcle-notch fa-ci ffas=" <i class                 
+  n>pa${name}</span> <s               en">
+    etweify-benter just items-cs="flex  <div clas          L = `
+    em.innerHTM       it;
+     -')}` '\s+/g,(/name.replace `test-${d =item.i             pending';
+st-itemssName = 'te    item.cla       div');
+ ement('createElocument.st item = d      con      erId);
+containtById(t.getElemenenum= docer ontainonst c    c {
+        d)ainerIont(name, ctemeTestIn creatnctio      fu 创建测试项
+  
+        //    }
++ '%';
+    ogress = pr.width styleessFill').ById('progrElementdocument.get           
+   : 0;        0 
+      otal) * 10esults.ts) / testR.warning testResults +ults.failed + testRessults.passed ? ((testRe           l > 0 
+    s.tota= testResultress og  const pr              
+  
+      Rate + '%';tent = passextCon').tId('passRateementByent.getEl       docum    ;
+   : 0           
+   al) * 100) ts.totesul / testRults.passed((testRes Math.round        ?       tal > 0 
+ tResults.to tesRate = passnst      co       
+   s;
+        warningResults.testontent = ).textCarningTests''wId(getElementBycument.  do       
+   ts.failed;tResulnt = testextConteests').dT('failentByIdlemeetEent.g       docum    
+ passed;sults.ent = testRe.textContdTests')('passeyIdtBElemenment.get      docutal;
+      esults.totRent = testContts').texTestotalementById('ment.getEl    docu    s() {
+    dateStatunction up       f更新统计
+ /       /
+
+        }>';
+  /div日志已清除<ilver/50">moon-ss="text-las<div c = 'nnerHTMLg').iById('testLoElementument.get       doc) {
+     clearLog( function      }
+
+   
+       lHeight;croliv.slogDollTop = .scrogDiv       l
+     (entry);appendChild   logDiv.      `;
+   message}p}] ${tam= `[${timesContent .text      entry'}`;
+      ilveron-s-mo' : 'textow-400xt-yellg' ? 'te'warnin= ' : type ==400een- ? 'text-grss'succe === ': type' 400red-' ? 'text-errortype === '1 ${sName = `mb-clasry.ent         v');
+   t('dieElemeneatment.crocuentry = dconst        ;
+     eString()aleTimoLocDate().tnew  = imestamp    const t      ;
+  ('testLog')ByIdentgetElem = document.Div log      const    ') {
+  = 'infoype ge, t log(messa  function函数
+            // 日志
+      };
+: 0
+    ngs      warni  
+      failed: 0,          d: 0,
+   passe  
+        0,otal:  t           {
+ts = testResul
+        let   };
+   ]
+            es }
+  Resourcest: testCDNN资源加载', t'CD    { name:             
+s },aLinklMediiast: testSoc社交媒体链接', te   { name: '       
+      ection },aseConntestSupabtest: , base连接'e: 'Supa   { nam       
+      ent },estStripeCli', test: tripe客户端 { name: 'St          
+     n: [iograt  inte         ,
+         ]n') }
+    ess('eenmpletnCoslatio> testTran () =性', test:译完整{ name: '英文翻      
+          zh') },('mpletenessationCotTransl => testest: (), 完整性'文翻译: '中 { name               witch },
+stLanguageS能', test: te切换功me: '语言 { na          d },
+     sLoaslation: testTrantest '翻译文件加载',    { name:         : [
+    i18n   ,
+                ]
+     ') }t.htmleLoad('abouPag) => testtest: (', name: '关于页面   {            },
+  g.html') inchoad('i testPageL () =>面', test:me: '易经页      { na          html') },
+gshui.fenPageLoad(' => test ()', test:'风水页面{ name:               
+   },ml')n.httio('divinaoadtPageL tes: () =>', testme: '占卜页面      { na          ') },
+ndex.htmlLoad('i=> testPage test: () e: '首页加载',am      { n
+          ages: [    p       ],
+          ge }
+   tLocalStoratest: tes本地存储',    { name: '         },
+     mentSystemstPayte', test: me: '支付系统        { na
+        System },ionubscripttSt: tes订阅管理系统', tes ' { name:         },
+      stem estAuthSy test: t证系统',户认me: '用   { na     
+        unction: [       coreF = {
+     stSuitesnst te        co   // 测试配置
+t>
+     scrip  <  iv>
+
+
+    </d>
+   </div
+          </div>      .</div>
+ ..开始r/50">等待测试ilven-s"text-moo<div class=               xt-sm">
+ o te-mon-y-auto font overflow max-h-96d-lg p-4ck/40 rounde-blass="bgtLog" cla"tesdiv id=          <  >
+     </div    button>
+       </           ></i>清除
+ raser mr-2" fa-e="fas<i class               
+     gold">-mystic-:textoverr hvemoon-siltext-m ss="text-sog()" clarLeak="clton onclic <but            /h3>
+      <       
+      ></i>测试日志mr-2"inal  fa-termass="fas<i cl               ld">
+     mystic-got--bold tex-xl fontass="text      <h3 cl         ">
+ een mb-4etwfy-bjustitems-center ="flex ilass<div c  
+          l p-6">ounded-x30 rystic-gold/r border-mte/5 bordes="bg-whiv clas    <di -->
+    - 详细日志 <!-   v>
+
+    </di     tton>
+    </bu          出报告
+ r-2"></i>导-download mass="fas fa cl       <i  >
+       wed"t-allonor-ed:cursoisablcity-50 ded:opa30 disabld/mystic-golr-border borden-opacity sitio-90 tranpacitylg hover:ot-bold text-ed-lg fonund py-4 ro-silverle text-moonmystic-purpdark to-from-jade-adient-to-r -1 bg-grlexlass="f c              d
+     n" disablexportButto id="e"rtReport()expon onclick="  <butto
+             </button>       /i>开始测试
+  ><mr-2" fa-play lass="fas<i c           >
+     rs"tion-coloansiellow-400 trover:bg-y hd text-lgg font-bol-lounded py-4 rvyp-na-deec-gold texttix-1 bg-mysclass="fle              
+      Button" runid="" Tests()All="runickton onclut       <b     b-8">
+-4 mx gaplass="flev c       <di操作按钮 -->
+ !-- 
+
+        <    </div>
+
+    </div>       >
+     "></divestsonTegratintid="i  <div             </h3>
+              成测试
+    >第三方集r-2"></ig ma-plus="fas f clas    <i                mb-4">
+ mystic-goldd text-font-bolxt-xl 3 class="te     <h     
+      d-xl p-6">d/30 rounde-mystic-golorder borderbg-white/5 b"lass=    <div c
+        > 集成测试 --       <!--    
+ 
+/div>           <></div>
+ 8nTests"="i1<div id       
+            </h3>        
+     试化测国际</i> mr-2"> fa-globe"fass=     <i clas             >
+   mb-4"-mystic-goldxt tefont-boldl t-x="tex class <h3           ">
+    d-xl p-6ld/30 roundegorder-mystic-der bote/5 borss="bg-whiiv cla  <d       ->
+   -- 国际化测试 -         <!   iv>
+
+   </d
+         v></dis">st id="pageTe        <div
+             </h3>        测试
+   </i>页面 mr-2">file-alta- fass="fas cl  <i            ">
+      d mb-4t-mystic-golnt-bold texl fos="text-xash3 cl  <             6">
+ p-ed-xl und/30 rooldmystic-gorder-r bite/5 borde"bg-wh class=<div    >
+        <!-- 页面测试 --            div>
+
+         </  div>
+ Tests"></ionreFunctv id="co         <di3>
+        </h    
+           /i>核心功能测试"><gs mr-2 fa-coss="fas <i cla                mb-4">
+   gold xt-mystic-nt-bold tel foss="text-x cla        <h3  6">
+      p-xl /30 rounded-stic-golder border-my/5 bordbg-whitev class="<di         试 -->
+   -- 核心功能测          <!  
+    
+        6 mb-8">cols-2 gap-md:grid-="grid   <div class -->
+      测试分类    <!-- 
+
+    div>   </   /div>
+        <iv>
+          </d         率</div>
+   lver/70">通过t-moon-sitext-sm texs="   <div clas             v>
+    %</diRate">0d="passold" istic-gtext-my font-bold xt-3xl"teiv class=    <d         
+       at-card">v class="stdi    <          iv>
+      </d         
+   ">警告</div>er/70silv-moon-exttext-sm tlass="v cdi   <           div>
+      ">0</ingTests" id="warnow-400d text-yellnt-bol3xl foass="text-iv cl          <d          d">
+"stat-car<div class=            /div>
+       <            /div>
+ r/70">失败<lveon-sit-mosm tex"text-ss=v cla         <di    v>
+       /di0<sts">"failedTe" id=-400text-redl font-bold ="text-3xiv class          <d      
+    ">ardass="stat-civ cl          <d
+      </div>               >
+ 过</divlver/70">通xt-moon-sim teass="text-scldiv            <        >0</div>
+ ssedTests"paid="n-400" gree-bold text-ext-3xl font="tv class<di              
+      rd">-caclass="stat <div         iv>
+           </d     v>
+       总测试数</di/70">ersilvoon-text-ms="text-sm iv clas   <d               >0</div>
+  totalTests"d" id="ystic-golxt-mont-bold tel f"text-3xiv class= <d               >
+    ard"s="stat-cv clas        <di  4">
+      ols-5 gap--cmd:gridid-cols-2 d grgriiv class="  <d
+          iv>      </d     iv>
+ ></d""width: 0% style=-fill"="progress" classllprogressFi <div id="         
+      ">4ss-bar mb-s="progreasiv cl  <d       div>
+         </     v>
+ di">准备中...</-semiboldt-lg fontass="texlStatus" clerald="ov <div i               
+试进度</h2>-gold">测t-mystict-bold texon2xl f"text-<h2 class=           ">
+     mb-4ween  justify-betenterx items-cass="flecl     <div >
+        mb-8"l p-6 rounded-xc-gold/30stier border-myorde/5 bwhitg-ass="bdiv cl>
+        <总体进度 -- <!-- >
+
+          </div     境就绪</p>
+检查系统功能，确保生产环">全面ver/70n-sils="text-moo   <p clas
+         1>/h          <化测试
+  "></i>部署前自动ocket mr-3s="fas fa-r     <i clas    ">
+       2gold mb-ext-mystic-bold t-4xl font-"text  <h1 class=
+          r mb-8">"text-centess= cla   <div题 -->
+     !-- 标        <      
+
+  xl">max-w-6-8 to px-4 pyainer mx-au="contiv class   
+    <d>
+ r"t-moon-silve-screen tex-dark min-h-jadetostic-purple y via-myeep-navbr from-d-to-dientss="bg-gra
+<body clahead>style>
+</  </      }
+  enter;
+  lign: c    text-a
+        : 20px;   padding     ;
+    radius: 12px border-      
+     3);, 0, 0.ba(255, 215olid rg s border: 1px          05);
+  0.5, 255, 25255,gba(nd: rbackgrou           ard {
+      .stat-c       
+    }
+   0.3s;
+     idth tion: wtransi        0);
+    , #ffa50ffd700, #nt(to rightradie-g linearund:gro       back%;
+      100 height:         ill {
+  progress-f    .    
+        
+   }    
+ idden;: herflow          ov: 4px;
+  -radiuser  bord          0.1);
+, 255, 255, (255ground: rgba    back;
+        height: 8px          
+   {-bargress.pro        
+ 
+       
+        }}; acity: 0.7  50% { op          ; }
+{ opacity: 1  0%, 100%       {
+     seyframes pul  @ke  
+      }
+         1);
+     8, 11, 0.(245, 15band: rg  backgrou
+          e0b; #f59-left-color:     border
+       ing {st-item.warn   .te     
+
+          }    ;
+  8, 0.1), 68, 6rgba(239round:       backg444;
+      #ef4left-color: er-   bord         ailed {
+.ft-itemtes
+        .      
+      }1);
+    , 94, 0., 19734gba(kground: r       bace;
+     olor: #22c55der-left-cor       b   {
+   ssedst-item.pa      .te      
+  
+          }inite;
+lse 1s infimation: pu     an24;
+       or: #fbbf-colft-leorder          b{
+  unning .r-item      .test        
+        }
+#3b82f6;
+  lor: -left-coder        bor {
+    tem.pending     .test-i  
+         }
+  s;
+      ion: all 0.3 transit       );
+    , 0.055, 2555, 25: rgba(25nd    backgrou      #666;
+  : 4px solid eft   border-l      s: 8px;
+   -radiuborder       0;
+     x   margin: 8p     
+     2px; padding: 1           tem {
+   .test-i     tyle>
+ <s
+   s">
+    cse.stical-themref="myet" htyleshenk rel="s">
+    <li.min.csscss/all0/.4.esome/6s/font-aw/ajax/libomudflare.c://cdnjs.clo"httpset" href=ylesherel="st  <link   ript>
+/scm"><ilwindcss.co/cdn.ta="https:/ <script src  /title>
+ 测试 - 九筮<部署前自动化le>>
+    <tit-scale=1.0"tiale-width, inih=devicntent="widt" cortpoviewname="   <meta ">
+ F-8arset="UTmeta ch   <head>
+ -CN">
+<="zh<html langPE html>
+TY<!DOC

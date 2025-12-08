@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户菜单测试 - Destiny AI</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- User Menu Styles -->
+    <link rel="stylesheet" href="user-menu.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a237e 0%, #0d1b2a 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        
+        .test-nav {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .status-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .status-item:last-child {
+            border-bottom: none;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+            color: #1a237e;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        .btn-danger {
+            background: #ff4444;
+            color: #fff;
+        }
+        
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <!-- Test Navigation Bar -->
+    <nav class="test-nav fixed top-0 w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 rounded-full bg-mystic-gold/20 flex items-center justify-center border border-mystic-gold/50">
+                        <span class="text-xl font-bold" style="color: #ffd700;">九</span>
+                    </div>
+                    <span class="text-xl font-bold" style="color: #ffd700;">Destiny AI</span>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <!-- Login/User Section -->
+                    <div id="authSection" class="flex items-center space-x-3">
+                        <!-- Guest View (Not Logged In) -->
+                        <div id="guestView" class="flex items-center space-x-3">
+                            <button id="loginBtn" 
+                                class="text-moon-silver hover:text-mystic-gold transition-colors font-medium flex items-center gap-2"
+                                style="color: #c0c0c0;">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>登入</span>
+                            </button>
+                            <a href="payment.html"
+                                class="bg-mystic-gold text-deep-navy px-4 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors"
+                                style="background: #ffd700; color: #1a237e;">
+                                开始使用
+                            </a>
+                        </div>
+                        
+                        <!-- User View (Logged In) -->
+                        <div id="userView" class="hidden">
+                            <div class="flex items-center space-x-3">
+                                <!-- User Avatar and Name -->
+                                <div class="flex items-center space-x-2 user-avatar-container">
+                                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-mystic-gold to-moon-silver flex items-center justify-center border-2 border-mystic-gold/50 shadow-lg"
+                                        style="background: linear-gradient(135deg, #ffd700, #c0c0c0);">
+                                        <img id="userAvatar" src="" alt="User Avatar" class="w-full h-full rounded-full object-cover hidden">
+                                        <i id="userIcon" class="fas fa-user text-deep-navy text-sm" style="color: #1a237e;"></i>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span id="userName" class="text-moon-silver font-medium text-sm" style="color: #c0c0c0;"></span>
+                                        <span id="userLevel" class="text-mystic-gold text-xs hidden" style="color: #ffd700;">VIP</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Dropdown Menu Button -->
+                                <div class="relative">
+                                    <button id="userMenuBtn" class="text-moon-silver hover:text-mystic-gold transition-all duration-300 p-2 hover:bg-mystic-gold/10 rounded-full"
+                                        style="color: #c0c0c0;">
+                                        <i class="fas fa-chevron-down text-sm"></i>
+                                    </button>
+                                    
+                                    <!-- Dropdown Menu -->
+                                    <div id="userMenu" class="absolute right-0 mt-2 w-56 bg-black/95 backdrop-blur-md border-2 border-mystic-gold/30 rounded-xl shadow-2xl hidden z-50 overflow-hidden">
+                                        <!-- User Info Card -->
+                                        <div class="user-info-card">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-mystic-gold to-moon-silver flex items-center justify-center border-2 border-mystic-gold/50"
+                                                    style="background: linear-gradient(135deg, #ffd700, #c0c0c0);">
+                                                    <i class="fas fa-user text-deep-navy" style="color: #1a237e;"></i>
+                                                </div>
+                                                <div class="flex-1">
+                                                    <div id="menuUserName" class="text-warm-white font-semibold text-sm"></div>
+                                                    <div id="menuUserEmail" class="user-email"></div>
+                                                    <div id="menuUserStatus" class="user-status">免费会员</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Menu Items -->
+                                        <div class="py-2">
+                                            <a href="profile.html" class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-user-circle w-5"></i>
+                                                <span class="ml-3">个人信息</span>
+                                            </a>
+                                            
+                                            <a href="profile.html#readings" class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-history w-5"></i>
+                                                <span class="ml-3">我的占卜</span>
+                                            </a>
+                                            
+                                            <a href="payment.html" class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-crown w-5"></i>
+                                                <span class="ml-3">会员升级</span>
+                                                <span class="ml-auto text-xs bg-mystic-gold text-deep-navy px-2 py-1 rounded-full font-bold"
+                                                    style="background: #ffd700; color: #1a237e;">HOT</span>
+                                            </a>
+                                            
+                                            <a href="profile.html#settings" class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-cog w-5"></i>
+                                                <span class="ml-3">设置</span>
+                                            </a>
+                                        </div>
+                                        
+                                        <hr class="border-mystic-gold/20 mx-3">
+                                        
+                                        <!-- Logout Button -->
+                                        <div class="py-2">
+                                            <button id="logoutBtn" class="w-full flex items-center px-4 py-3 text-moon-silver hover:text-red-400 hover:bg-red-400/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-sign-out-alt w-5"></i>
+                                                <span class="ml-3">退出登录</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-24 pb-12 px-4">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-4xl font-bold text-center mb-8" style="color: #ffd700;">🎨 用户菜单测试页面</h1>
+            
+            <!-- Status Section -->
+            <div class="test-section">
+                <h2 class="text-2xl font-bold mb-4" style="color: #ffd700;">📊 当前状态</h2>
+                <div class="status-box">
+                    <div class="status-item">
+                        <span>登录状态：</span>
+                        <span id="loginStatus" style="color: #ffd700;">检查中...</span>
+                    </div>
+                    <div class="status-item">
+                        <span>用户名：</span>
+                        <span id="statusUserName" style="color: #ffd700;">-</span>
+                    </div>
+                    <div class="status-item">
+                        <span>用户邮箱：</span>
+                        <span id="statusUserEmail" style="color: #ffd700;">-</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Control Section -->
+            <div class="test-section">
+                <h2 class="text-2xl font-bold mb-4" style="color: #ffd700;">🎮 测试控制</h2>
+                <div class="flex flex-wrap gap-4">
+                    <button class="btn-primary" onclick="simulateLogin()">
+                        ✅ 模拟登录
+                    </button>
+                    <button class="btn-danger" onclick="simulateLogout()">
+                        ❌ 清除登录
+                    </button>
+                    <button class="btn-primary" onclick="refreshStatus()">
+                        🔄 刷新状态
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Instructions -->
+            <div class="test-section">
+                <h2 class="text-2xl font-bold mb-4" style="color: #ffd700;">📝 测试说明</h2>
+                <ol class="space-y-3" style="color: #c0c0c0; line-height: 1.8;">
+                    <li><strong>1. 测试未登录状态：</strong>
+                        <ul class="ml-6 mt-2">
+                            <li>• 点击"清除登录"按钮</li>
+                            <li>• 导航栏应显示"登入"按钮</li>
+                        </ul>
+                    </li>
+                    <li><strong>2. 测试登录状态：</strong>
+                        <ul class="ml-6 mt-2">
+                            <li>• 点击"模拟登录"按钮</li>
+                            <li>• 导航栏应显示用户头像和名称</li>
+                        </ul>
+                    </li>
+                    <li><strong>3. 测试下拉菜单：</strong>
+                        <ul class="ml-6 mt-2">
+                            <li>• 点击用户名旁的下拉箭头</li>
+                            <li>• 菜单应平滑展开</li>
+                            <li>• 显示用户信息和菜单项</li>
+                        </ul>
+                    </li>
+                    <li><strong>4. 测试菜单关闭：</strong>
+                        <ul class="ml-6 mt-2">
+                            <li>• 点击页面其他地方</li>
+                            <li>• 菜单应自动关闭</li>
+                            <li>• 按ESC键也应关闭</li>
+                        </ul>
+                    </li>
+                    <li><strong>5. 测试退出登录：</strong>
+                        <ul class="ml-6 mt-2">
+                            <li>• 点击"退出登录"菜单项</li>
+                            <li>• 应显示确认对话框</li>
+                            <li>• 确认后应清除登录状态</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="auth-service.js"></script>
+    <script src="user-menu.js"></script>
+    
+    <script>
+        // 更新状态显示
+        function updateStatusDisplay() {
+            const isAuth = window.AuthService ? window.AuthService.isAuthenticated() : false;
+            const user = window.AuthService ? window.AuthService.getCurrentUser() : null;
+            
+            document.getElementById('loginStatus').textContent = isAuth ? '✅ 已登录' : '❌ 未登录';
+            document.getElementById('statusUserName').textContent = user ? (user.name || '-') : '-';
+            document.getElementById('statusUserEmail').textContent = user ? (user.email || '-') : '-';
+        }
+        
+        // 模拟登录
+        function simulateLogin() {
+            const testUser = {
+                email: 'test@destinyai.com',
+                name: 'Test User',
+                id: '12345',
+                avatar: null
+            };
+            
+            const testToken = 'test_token_' + Date.now();
+            
+            if (window.AuthService) {
+                window.AuthService.setAuth(testToken, testUser, true);
+            } else {
+                localStorage.setItem('destinyai_token', testToken);
+                localStorage.setItem('destinyai_user', JSON.stringify(testUser));
+            }
+            
+            alert('✅ 模拟登录成功！\n\n用户: ' + testUser.email);
+            updateStatusDisplay();
+            
+            // 手动触发UI更新
+            if (window.UserMenuManager) {
+                window.UserMenuManager.updateUI();
+            }
+        }
+        
+        // 清除登录
+        function simulateLogout() {
+            if (window.AuthService) {
+                window.AuthService.clearAuth();
+            } else {
+                localStorage.clear();
+                sessionStorage.clear();
+            }
+            
+            alert('❌ 登录状态已清除！');
+            updateStatusDisplay();
+            
+            // 手动触发UI更新
+            if (window.UserMenuManager) {
+                window.UserMenuManager.updateUI();
+            }
+        }
+        
+        // 刷新状态
+        function refreshStatus() {
+            updateStatusDisplay();
+            
+            if (window.UserMenuManager) {
+                window.UserMenuManager.updateUI();
+            }
+            
+            alert('🔄 状态已刷新！');
+        }
+        
+        // 页面加载时更新状态
+        window.addEventListener('DOMContentLoaded', () => {
+            updateStatusDisplay();
+            console.log('[Test Page] Loaded');
+        });
+        
+        // 监听认证状态变化
+        window.addEventListener('authStateChanged', (e) => {
+            console.log('[Test Page] Auth state changed:', e.detail);
+            updateStatusDisplay();
+        });
+    </script>
+</body>
+</html>

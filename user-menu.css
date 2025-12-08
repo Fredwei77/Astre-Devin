@@ -1,0 +1,285 @@
+/* ============================================
+   USER MENU STYLES - 用户下拉菜单样式
+   ============================================ */
+
+/* 用户菜单容器 */
+#userMenu {
+    min-width: 240px;
+    max-height: 600px;
+    overflow-y: auto;
+    animation: fadeIn 0.2s ease-out;
+    z-index: 99999 !important;
+    position: absolute !important;
+    pointer-events: auto !important;
+}
+
+/* 确保菜单在最上层 */
+#userMenu.show {
+    display: block !important;
+}
+
+/* 菜单按钮容器 */
+#userMenuBtn {
+    z-index: 99998 !important;
+    position: relative;
+}
+
+/* 用户视图容器 */
+#userView {
+    position: relative;
+    z-index: 99997;
+}
+
+/* 用户菜单项 */
+#userMenu a,
+#userMenu button {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+    margin: 4px 8px;
+}
+
+#userMenu a:first-child {
+    margin-top: 8px;
+}
+
+#userMenu button:last-child {
+    margin-bottom: 8px;
+}
+
+/* 用户菜单项悬停效果 */
+#userMenu a:hover,
+#userMenu button:hover {
+    transform: translateX(4px);
+}
+
+/* 用户菜单图标 */
+#userMenu i {
+    width: 20px;
+    text-align: center;
+}
+
+/* 用户菜单分隔线 */
+#userMenu hr {
+    margin: 8px 12px;
+}
+
+/* 用户头像容器 */
+.user-avatar-container {
+    position: relative;
+    cursor: pointer;
+}
+
+/* 用户头像 */
+#userAvatar {
+    transition: all 0.3s ease;
+}
+
+.user-avatar-container:hover #userAvatar {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+/* 用户名 */
+#userName {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 下拉箭头动画 */
+#userMenuBtn {
+    transition: all 0.3s ease;
+}
+
+#userMenuBtn:hover {
+    transform: scale(1.1);
+}
+
+#userMenuBtn.active {
+    transform: rotate(180deg);
+}
+
+/* 登录按钮 */
+#loginBtn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+}
+
+#loginBtn:hover {
+    transform: translateY(-2px);
+}
+
+/* 登出按钮特殊样式 */
+#logoutBtn {
+    position: relative;
+    overflow: hidden;
+}
+
+#logoutBtn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 68, 68, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+#logoutBtn:hover::before {
+    left: 100%;
+}
+
+/* 会员标识 */
+.premium-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #ffd700, #daa520);
+    color: #1a237e;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: bold;
+    margin-left: 6px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(0.95);
+    }
+}
+
+/* 用户等级标识 */
+.user-level {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #ffd700, #daa520);
+    color: #1a237e;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 50%;
+    margin-left: 6px;
+}
+
+/* 菜单项图标颜色 */
+#userMenu a:hover i,
+#userMenu button:hover i {
+    color: inherit;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    #userMenu {
+        min-width: 200px;
+        right: -10px;
+    }
+    
+    #userName {
+        max-width: 80px;
+    }
+    
+    #userMenu a,
+    #userMenu button {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 加载动画 */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 用户菜单打开时的遮罩 */
+.user-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    z-index: 40;
+}
+
+/* 用户信息卡片（可选） */
+.user-info-card {
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 8px;
+    margin-bottom: 4px;
+}
+
+.user-info-card .user-email {
+    font-size: 12px;
+    color: #c0c0c0;
+    margin-top: 4px;
+}
+
+.user-info-card .user-status {
+    font-size: 11px;
+    color: #ffd700;
+    margin-top: 4px;
+}
+
+/* 菜单项徽章 */
+.menu-badge {
+    display: inline-block;
+    background: #ff4444;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: auto;
+}
+
+/* 新功能标识 */
+.new-feature {
+    position: relative;
+}
+
+.new-feature::after {
+    content: 'NEW';
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #ff4444;
+    color: white;
+    font-size: 8px;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-weight: bold;
+}

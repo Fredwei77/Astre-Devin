@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新翻译测试 - Translation Test</title>
+    
+    <!-- Language Switcher -->
+    <script src="i18n.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a237e 0%, #4a148c 100%);
+            color: #fafafa;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        .controls {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        select {
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 2px solid #ffd700;
+            background: rgba(255, 255, 255, 0.9);
+            color: #1a237e;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffd700;
+        }
+        
+        .test-section h2 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .test-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .test-item strong {
+            color: #c0c0c0;
+            min-width: 200px;
+        }
+        
+        .test-item span {
+            color: #fafafa;
+            flex: 1;
+            text-align: right;
+        }
+        
+        .success {
+            border-left: 3px solid #4caf50;
+        }
+        
+        .warning {
+            border-left: 3px solid #ff9800;
+        }
+        
+        .error {
+            border-left: 3px solid #f44336;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        button {
+            background: #ffd700;
+            color: #1a237e;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: #ffed4e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>新增翻译测试页面</h1>
+        
+        <div class="controls">
+            <label for="languageSelect" style="margin-right: 10px; font-weight: bold;">选择语言 / Select Language:</label>
+            <select id="languageSelect">
+                <option value="en">English</option>
+                <option value="zh-CN">简体中文</option>
+                <option value="zh-TW">繁體中文</option>
+            </select>
+        </div>
+
+        <!-- 易经页面翻译测试 -->
+        <div class="test-section">
+            <h2>易经页面 (I-Ching Page)</h2>
+            
+            <div class="test-item success">
+                <strong>方法选择标题:</strong>
+                <span data-i18n="iching.method.title">Choose Your Divination Method</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>三枚硬币:</strong>
+                <span data-i18n="iching.method.coins">Three Coins</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>硬币描述:</strong>
+                <span data-i18n="iching.method.coins.desc">Traditional method using three coins...</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>数字法:</strong>
+                <span data-i18n="iching.method.numbers">Numerical</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>时间法:</strong>
+                <span data-i18n="iching.method.time">Time Based</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>语音提问:</strong>
+                <span data-i18n="iching.method.voice">Voice Question</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>问题标签:</strong>
+                <span data-i18n="iching.question.label">What is your question?</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>开始按钮:</strong>
+                <button data-i18n="iching.button.begin">Begin Divination</button>
+            </div>
+            
+            <div class="test-item success">
+                <strong>投掷硬币:</strong>
+                <button data-i18n="iching.cast.button">Cast Coins</button>
+            </div>
+            
+            <div class="test-item success">
+                <strong>您的卦象:</strong>
+                <span data-i18n="iching.hexagram.your">Your Hexagram</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>解读标题:</strong>
+                <span data-i18n="iching.result.title">Your I-Ching Reading</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>主卦:</strong>
+                <span data-i18n="iching.result.primary">Primary Hexagram</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>变爻:</strong>
+                <span data-i18n="iching.result.changing">Changing Lines</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>卦辞:</strong>
+                <span data-i18n="iching.result.judgment">Judgment</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>象辞:</strong>
+                <span data-i18n="iching.result.image">Image</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>建议:</strong>
+                <span data-i18n="iching.result.advice">Advice for Your Situation</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>推荐行动:</strong>
+                <span data-i18n="iching.result.actions">Recommended Actions</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>操作按钮:</strong>
+                <button data-i18n="iching.button.save">Save Reading</button>
+                <button data-i18n="iching.button.share">Share Reading</button>
+                <button data-i18n="iching.button.new">New Divination</button>
+            </div>
+        </div>
+
+        <!-- 个人档案页面翻译测试 -->
+        <div class="test-section">
+            <h2>个人档案页面 (Profile Page)</h2>
+            
+            <div class="test-item success">
+                <strong>统计标签:</strong>
+                <span data-i18n="profile.stats.readings">Total Readings</span> |
+                <span data-i18n="profile.stats.accuracy">Accuracy Rate</span> |
+                <span data-i18n="profile.stats.streak">Day Streak</span> |
+                <span data-i18n="profile.stats.achievements">Achievements</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>进度标签:</strong>
+                <span data-i18n="profile.progress">Level Progress</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>操作按钮:</strong>
+                <button data-i18n="profile.button.edit">Edit Profile</button>
+                <button data-i18n="profile.button.settings">Settings</button>
+            </div>
+            
+            <div class="test-item success">
+                <strong>标签页:</strong>
+                <button data-i18n="profile.tab.dashboard">Dashboard</button>
+                <button data-i18n="profile.tab.readings">Reading History</button>
+                <button data-i18n="profile.tab.goals">Goals & Progress</button>
+                <button data-i18n="profile.tab.achievements">Achievements</button>
+                <button data-i18n="profile.tab.insights">Personal Insights</button>
+            </div>
+            
+            <div class="test-item success">
+                <strong>性格特征:</strong>
+                <span data-i18n="profile.personality">Personality Traits</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>最近活动:</strong>
+                <span data-i18n="profile.activity.recent">Recent Activity</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>今日洞察:</strong>
+                <span data-i18n="profile.insights.today">Today's Insights</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>洞察类型:</strong>
+                <span data-i18n="profile.insights.lucky">Lucky Element</span> |
+                <span data-i18n="profile.insights.career">Career Outlook</span> |
+                <span data-i18n="profile.insights.relationships">Relationships</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>历史记录:</strong>
+                <span data-i18n="profile.history.title">Reading History</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>时间筛选:</strong>
+                <span data-i18n="profile.history.allTypes">All Types</span> |
+                <span data-i18n="profile.history.last30">Last 30 Days</span> |
+                <span data-i18n="profile.history.last3months">Last 3 Months</span> |
+                <span data-i18n="profile.history.lastYear">Last Year</span> |
+                <span data-i18n="profile.history.allTime">All Time</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>目标管理:</strong>
+                <span data-i18n="profile.goals.current">Current Goals</span> |
+                <button data-i18n="profile.goals.add">Add Goal</button> |
+                <span data-i18n="profile.goals.overview">Progress Overview</span>
+            </div>
+        </div>
+
+        <!-- 支付页面翻译测试 -->
+        <div class="test-section">
+            <h2>支付页面 (Payment Page)</h2>
+            
+            <div class="test-item success">
+                <strong>页面标题:</strong>
+                <span data-i18n="payment.title">Choose Your Path to Wisdom</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>退款保证:</strong>
+                <span data-i18n="payment.guarantee">30-Day Money-Back Guarantee</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>套餐名称:</strong>
+                <span data-i18n="payment.plan.free">Free</span> |
+                <span data-i18n="payment.plan.premium">Premium</span> |
+                <span data-i18n="payment.plan.professional">Professional</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>周期标签:</strong>
+                <span data-i18n="payment.plan.forever">Forever</span> |
+                <span data-i18n="payment.plan.perMonth">per month</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>热门标签:</strong>
+                <span data-i18n="payment.plan.mostPopular">Most Popular</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>操作按钮:</strong>
+                <button data-i18n="payment.button.getStarted">Get Started Free</button>
+                <button data-i18n="payment.button.choosePremium">Choose Premium</button>
+                <button data-i18n="payment.button.contactSales">Contact Sales</button>
+            </div>
+            
+            <div class="test-item success">
+                <strong>功能特性:</strong>
+                <span data-i18n="payment.feature.basic">Basic fortune readings</span> |
+                <span data-i18n="payment.feature.daily">Daily horoscopes</span> |
+                <span data-i18n="payment.feature.birthChart">Detailed birth chart analysis</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>比较标题:</strong>
+                <span data-i18n="payment.comparison.title">Compare All Features</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>用户评价:</strong>
+                <span data-i18n="payment.testimonials.title">What Our Users Say</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>常见问题:</strong>
+                <span data-i18n="payment.faq.title">Frequently Asked Questions</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>支付表单:</strong>
+                <span data-i18n="payment.form.title">Complete Your Subscription</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>表单字段:</strong>
+                <span data-i18n="payment.form.cardNumber">Card Number</span> |
+                <span data-i18n="payment.form.expiry">Expiry Date</span> |
+                <span data-i18n="payment.form.cvv">CVV</span> |
+                <span data-i18n="payment.form.name">Cardholder Name</span> |
+                <span data-i18n="payment.form.email">Email Address</span>
+            </div>
+            
+            <div class="test-item success">
+                <strong>表单按钮:</strong>
+                <button data-i18n="payment.button.cancel">Cancel</button>
+                <button data-i18n="payment.button.subscribe">Subscribe Now</button>
+            </div>
+        </div>
+
+        <div class="status">
+            <p id="testStatus">✅ 所有新增翻译键已加载完成！切换语言测试翻译效果。</p>
+            <p style="margin-top: 10px; font-size: 14px; color: #c0c0c0;">
+                当前语言: <span id="currentLang" style="color: #ffd700; font-weight: bold;">English</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // 等待 i18n 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const languageSelect = document.getElementById('languageSelect');
+            const currentLangSpan = document.getElementById('currentLang');
+            const testStatus = document.getElementById('testStatus');
+            
+            // 设置初始语言
+            if (window.i18n) {
+                languageSelect.value = i18n.getCurrentLanguage();
+                updateCurrentLang();
+            }
+            
+            // 监听语言切换
+            languageSelect.addEventListener('change', function() {
+                updateCurrentLang();
+                testStatus.innerHTML = '✅ 语言已切换！所有文本应该已更新。';
+                
+                // 3秒后恢复状态消息
+                setTimeout(() => {
+                    testStatus.innerHTML = '✅ 所有新增翻译键已加载完成！切换语言测试翻译效果。';
+                }, 3000);
+            });
+            
+            function updateCurrentLang() {
+                const lang = languageSelect.value;
+                const langNames = {
+                    'en': 'English',
+                    'zh-CN': '简体中文',
+                    'zh-TW': '繁體中文'
+                };
+                currentLangSpan.textContent = langNames[lang] || lang;
+            }
+        });
+    </script>
+</body>
+</html>

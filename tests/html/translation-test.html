@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translation Test - Destiny AI</title>
+    
+    <!-- Language Switcher -->
+    <script src="language-switcher-final.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a237e;
+            color: #fafafa;
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        .controls {
+            background: rgba(255, 215, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            margin: 0 10px;
+        }
+        
+        h1, h2 {
+            color: #ffd700;
+        }
+        
+        .text-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h1>Translation System Test</h1>
+        <label for="languageSelect">Select Language:</label>
+        <select id="languageSelect">
+            <option value="en">English</option>
+            <option value="zh-CN">简体中文</option>
+            <option value="zh-TW">繁體中文</option>
+        </select>
+    </div>
+
+    <div class="test-section">
+        <h2>Navigation Items</h2>
+        <div class="text-item">Home</div>
+        <div class="text-item">Divination</div>
+        <div class="text-item">Feng Shui</div>
+        <div class="text-item">I-Ching</div>
+        <div class="text-item">Profile</div>
+        <div class="text-item">Upgrade</div>
+        <div class="text-item">Get Started</div>
+    </div>
+
+    <div class="test-section">
+        <h2>Pricing Section</h2>
+        <div class="text-item">Free</div>
+        <div class="text-item">Premium</div>
+        <div class="text-item">Professional</div>
+        <div class="text-item">Most Popular</div>
+        <div class="text-item">Choose Premium</div>
+        <div class="text-item">Contact Sales</div>
+        <div class="text-item">Start Free</div>
+    </div>
+
+    <div class="test-section">
+        <h2>Features</h2>
+        <div class="text-item">Basic fortune readings</div>
+        <div class="text-item">Daily horoscopes</div>
+        <div class="text-item">Simple feng shui tips</div>
+        <div class="text-item">Community access</div>
+        <div class="text-item">All free features</div>
+        <div class="text-item">Detailed birth chart analysis</div>
+        <div class="text-item">Advanced feng shui compass</div>
+        <div class="text-item">Unlimited I-Ching consultations</div>
+        <div class="text-item">Personal growth tracking</div>
+        <div class="text-item">Expert consultations</div>
+        <div class="text-item">Priority support</div>
+        <div class="text-item">All premium features</div>
+        <div class="text-item">Business consultations</div>
+        <div class="text-item">Custom reports</div>
+        <div class="text-item">API access</div>
+        <div class="text-item">White-label solutions</div>
+    </div>
+
+    <div class="test-section">
+        <h2>Hero Section</h2>
+        <div class="text-item">Discover Your Destiny</div>
+        <div class="text-item">Harness the power of ancient Eastern wisdom combined with modern AI technology.</div>
+        <div class="text-item">Start Free Reading</div>
+        <div class="text-item">Learn More</div>
+        <div class="text-item">Readings Completed</div>
+        <div class="text-item">Happy Users</div>
+        <div class="text-item">Accuracy Rate</div>
+    </div>
+
+    <div class="test-section">
+        <h2>Features Section</h2>
+        <div class="text-item">Ancient Wisdom, Modern Technology</div>
+        <div class="text-item">AI Divination</div>
+        <div class="text-item">Feng Shui Analysis</div>
+        <div class="text-item">I-Ching Wisdom</div>
+        <div class="text-item">Try Now →</div>
+        <div class="text-item">Explore →</div>
+        <div class="text-item">Consult →</div>
+    </div>
+
+    <div class="test-section">
+        <h2>Footer</h2>
+        <div class="text-item">Privacy Policy</div>
+        <div class="text-item">Terms of Service</div>
+        <div class="text-item">Contact Us</div>
+        <div class="text-item">Support</div>
+    </div>
+
+    <script>
+        // Add visual feedback when language changes
+        document.getElementById('languageSelect').addEventListener('change', function() {
+            document.body.style.opacity = '0.5';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 300);
+        });
+    </script>
+</body>
+</html>
