@@ -39,6 +39,7 @@ const filesToCopy = [
 const dirsToCopy = [
   'resources',
   'css',
+  'Music',
 ];
 
 // 复制文件
