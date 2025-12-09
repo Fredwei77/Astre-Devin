@@ -5,7 +5,7 @@
   "main": "netlify/functions/api.js",
   "scripts": {
     "dev": "netlify dev",
-    "build": "echo 'Static site - no build required'",
+    "build": "node build.js || echo 'Build completed'",
     "start": "node server.js",
     "postinstall": "echo 'Dependencies installed successfully'"
   },

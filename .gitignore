@@ -26,6 +26,8 @@ Thumbs.db
 dist/
 build/
 .cache/
+# Netlify构建输出（由构建脚本生成）
+public/
 
 # 测试
 coverage/
