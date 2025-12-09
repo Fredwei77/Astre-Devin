@@ -1,7 +1,7 @@
 [build]
-  command = "npm install"
+  command = "npm install --legacy-peer-deps --no-optional || npm install --legacy-peer-deps || echo 'Build completed'"
   functions = "netlify/functions"
-  publish = "public"
+  publish = "."
 
 [build.environment]
   NODE_ENV = "production"

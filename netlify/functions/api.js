@@ -3,7 +3,7 @@ const express = require('express');
 const serverless = require('serverless-http');
 
 // 导入现有的Express应用
-const app = require('../../server');
+const app = require('../../server-netlify');
 
 // 为Netlify Functions包装Express应用
 const handler = serverless(app);
