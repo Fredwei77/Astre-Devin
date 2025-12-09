@@ -14,6 +14,9 @@ const TRANSLATIONS = {
         'nav.userInfo': 'Profile',
         'nav.myReadings': 'My Readings',
         'nav.settings': 'Settings',
+        
+        // Brand
+        'brand.name': 'Astre Devin',
 
         // Common
         'common.loading': 'Loading...',
@@ -1215,6 +1218,9 @@ const TRANSLATIONS = {
         'chart.elements.water': '水',
         'chart.series.elements': '您的五行',
 
+        // 品牌
+        'brand.name': '九 筮',
+        
         // 关于我们页面
         'nav.about': '关于我们',
         'about.hero.title': '关于我们',
@@ -1864,6 +1870,9 @@ const TRANSLATIONS = {
         'login.error.googleFailed': 'Google 登入失败，请重试',
         'login.error.githubFailed': 'GitHub 登入失败，请重试',
 
+        // 品牌
+        'brand.name': '九 筮',
+        
         // 關於我們頁面
         'nav.about': '關於我們',
         'about.hero.title': '關於我們',

@@ -40,6 +40,16 @@ temp/
 *.pem
 *.key
 secrets/
+*.secret
+.env*
 
 # Netlify
 .netlify/
+
+# 图片处理临时文件
+process-logo.js
+
+# 备份文件
+*.backup
+*_backup.*
+package-*.json
