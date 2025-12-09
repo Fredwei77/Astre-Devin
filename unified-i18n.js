@@ -222,6 +222,14 @@
     // Create global instance
     window.i18n = new UnifiedI18n();
 
+    // Load translations from translations.js if available
+    if (typeof TRANSLATIONS !== 'undefined') {
+        window.i18n.loadTranslations(TRANSLATIONS);
+        console.log('[UnifiedI18n] Translations loaded from translations.js');
+    } else {
+        console.warn('[UnifiedI18n] TRANSLATIONS object not found. Make sure translations.js is loaded before unified-i18n.js');
+    }
+
     // Auto-initialize when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
