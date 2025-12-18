@@ -107,6 +107,8 @@
      * 处理追问请求 - 使用优化的系统提示词
      */
     async function handleFollowupQuestion() {
+        console.log('🤖 开始处理追问请求...');
+        
         const input = document.getElementById('divinationFollowupInput');
         const button = document.getElementById('askDivinationFollowup');
         const loading = document.getElementById('divinationFollowupLoading');
@@ -114,16 +116,21 @@
         const answerText = document.getElementById('divinationFollowupAnswerText');
 
         const question = input.value.trim();
+        console.log('📝 用户问题:', question);
         
         if (!question) {
+            console.warn('⚠️ 用户未输入问题');
             alert(window.i18n?.t('divination.followup.emptyError') || '请输入您的问题');
             return;
         }
 
         if (!currentDivinationResult) {
+            console.error('❌ 未找到占卜结果');
             alert(window.i18n?.t('divination.followup.noResultError') || '请先进行占卜分析');
             return;
         }
+        
+        console.log('✅ 验证通过，开始AI分析...');
 
         // 显示加载状态
         button.disabled = true;
@@ -144,7 +151,12 @@
             const userPrompt = buildFollowupContext(currentDivinationResult, question);
             
             // 调用AI服务，传入系统提示词和用户提示词
-            const response = await window.AIService.chatWithSystem(systemPrompt, userPrompt);
+            // 确保使用正确的AI服务实例
+            const aiService = window.aiService || (window.AIService ? new window.AIService() : null);
+            if (!aiService) {
+                throw new Error('AI服务未初始化');
+            }
+            const response = await aiService.chatWithSystem(systemPrompt, userPrompt);
             
             // 显示答案
             answerText.innerHTML = formatAnswer(response);
@@ -155,7 +167,22 @@
 
         } catch (error) {
             console.error('追问失败:', error);
-            alert(window.i18n?.t('divination.followup.error') || 'AI解答失败，请稍后重试');
+            console.error('错误详情:', {
+                message: error.message,
+                aiServiceExists: !!window.aiService,
+                AIServiceExists: !!window.AIService,
+                configExists: typeof CONFIG !== 'undefined'
+            });
+            
+            // 更详细的错误提示
+            let errorMessage = 'AI解答失败，请稍后重试';
+            if (error.message.includes('AI服务未初始化')) {
+                errorMessage = 'AI服务初始化失败，请刷新页面重试';
+            } else if (error.message.includes('请先进行占卜分析')) {
+                errorMessage = '请先进行占卜分析后再提问';
+            }
+            
+            alert(window.i18n?.t('divination.followup.error') || errorMessage);
         } finally {
             button.disabled = false;
             loading.classList.add('hidden');
@@ -279,9 +306,9 @@ ${question}
   * 父母宫（年柱）、事业宫（月柱）、婚姻宫（日支）、子女宫（时柱）的详细解读
   * 包含神煞分析（如天乙贵人、桃花、羊刃、空亡等）对各宫位的影响
 
-**第二部分：流年运势（2026丙午年）**
-- 流年总纲：结合大运与2026丙午流年（马年），分析天干地支产生的刑冲合害关系
-- 十二流月详解：请逐月分析2026年农历正月至十二月的运势起伏（需涵盖事业、财运、健康、感情）
+**第二部分：流年运势（${new Date().getFullYear() + 1}年）**
+- 流年总纲：结合大运与${new Date().getFullYear() + 1}年流年，分析天干地支产生的刑冲合害关系
+- 十二流月详解：请逐月分析${new Date().getFullYear() + 1}年农历正月至十二月的运势起伏（需涵盖事业、财运、健康、感情）
 - 引用佐证：针对流年吉凶，请引用《三命通会》或《流年秘断》中的相关断语
 
 **第三部分：生存指南与改运操作**
@@ -340,7 +367,15 @@ ${question}
      * 初始化追问功能
      */
     function initFollowup(divinationResult, selectedCategory) {
+        console.log('🔮 初始化占卜追问功能...');
+        
+        if (!divinationResult) {
+            console.warn('⚠️ 占卜结果为空，无法初始化追问功能');
+            return;
+        }
+        
         currentDivinationResult = divinationResult;
+        console.log('✅ 占卜结果已保存:', divinationResult);
         
         // 生成并渲染建议问题
         const questions = generateSuggestedQuestions(divinationResult, selectedCategory);
@@ -350,6 +385,9 @@ ${question}
         const askButton = document.getElementById('askDivinationFollowup');
         if (askButton) {
             askButton.onclick = handleFollowupQuestion;
+            console.log('✅ 追问按钮事件已绑定');
+        } else {
+            console.warn('⚠️ 未找到追问按钮元素');
         }
 
         // 支持回车键提交
@@ -360,6 +398,9 @@ ${question}
                     handleFollowupQuestion();
                 }
             });
+            console.log('✅ 追问输入框键盘事件已绑定');
+        } else {
+            console.warn('⚠️ 未找到追问输入框元素');
         }
         
         // 监听语言切换事件
@@ -369,6 +410,8 @@ ${question}
                 renderSuggestedQuestions(questions);
             }
         });
+        
+        console.log('🔮 占卜追问功能初始化完成');
     }
 
     /**

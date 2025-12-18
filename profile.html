@@ -155,19 +155,30 @@
 
         .level-badge {
             position: absolute;
-            bottom: -5px;
-            right: -5px;
-            background: #ffd700;
+            bottom: -8px;
+            right: -8px;
+            background: linear-gradient(135deg, #ffd700, #ffcc00);
             color: #1a237e;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-            border: 3px solid #c0c0c0;
+            font-weight: 800;
+            font-size: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            line-height: 1;
+        }
+
+        .level-badge::before {
+            content: 'LEVEL';
+            font-size: 8px;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+            opacity: 0.8;
         }
 
         .tab-button {
@@ -266,11 +277,13 @@
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .mystical-particles {
-                display: none; /* Reduce GPU load on mobile */
+                display: none;
+                /* Reduce GPU load on mobile */
             }
-            
+
             #musicControl button {
-                backdrop-filter: blur(8px); /* Reduce blur for performance */
+                backdrop-filter: blur(8px);
+                /* Reduce blur for performance */
             }
         }
     </style>
@@ -285,11 +298,14 @@
 
     <!-- Music Control Button with Mobile Optimization -->
     <div id="musicControl" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
-        <button id="musicToggle" class="bg-mystic-gold/20 backdrop-blur-sm border border-mystic-gold/30 text-mystic-gold hover:bg-mystic-gold hover:text-deep-navy active:scale-95 transition-all duration-300 rounded-full w-14 h-14 sm:w-12 sm:h-12 flex items-center justify-center shadow-lg touch-manipulation" title="Toggle Background Music">
+        <button id="musicToggle"
+            class="bg-mystic-gold/20 backdrop-blur-sm border border-mystic-gold/30 text-mystic-gold hover:bg-mystic-gold hover:text-deep-navy active:scale-95 transition-all duration-300 rounded-full w-14 h-14 sm:w-12 sm:h-12 flex items-center justify-center shadow-lg touch-manipulation"
+            title="Toggle Background Music">
             <span id="musicIcon" class="text-xl sm:text-lg">🎵</span>
         </button>
         <!-- Volume Control Slider for Mobile -->
-        <div id="volumeSlider" class="absolute bottom-16 right-0 bg-black/80 backdrop-blur-sm border border-mystic-gold/30 rounded-lg p-3 hidden">
+        <div id="volumeSlider"
+            class="absolute bottom-16 right-0 bg-black/80 backdrop-blur-sm border border-mystic-gold/30 rounded-lg p-3 hidden">
             <div class="flex items-center space-x-2">
                 <span class="text-xs text-mystic-gold">🔊</span>
                 <input type="range" id="volumeRange" min="0" max="100" value="30" class="volume-slider">
@@ -351,25 +367,25 @@
                         <option value="en">English</option>
                         <option value="zh-CN">简体中文</option>
                         <option value="zh-TW">繁體中文</option>
+                        <option value="es">Español</option>
                     </select>
-                    
+
                     <!-- Login/User Section -->
                     <div id="authSection" class="flex items-center space-x-3">
                         <!-- Guest View (Not Logged In) -->
                         <div id="guestView" class="flex items-center space-x-3">
-                            <button id="loginBtn" 
+                            <button id="loginBtn"
                                 class="text-moon-silver hover:text-mystic-gold transition-colors font-medium flex items-center gap-2"
                                 style="color: #c0c0c0;">
                                 <span data-i18n="nav.login">登入</span>
                             </button>
                             <a href="payment.html"
                                 class="bg-mystic-gold text-deep-navy px-4 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors"
-                                style="background: #ffd700; color: #1a237e;"
-                                data-i18n="nav.upgrade">
+                                style="background: #ffd700; color: #1a237e;" data-i18n="nav.upgrade">
                                 Upgrade
                             </a>
                         </div>
-                        
+
                         <!-- User View (Logged In) -->
                         <div id="userView" class="hidden">
                             <div class="flex items-center space-x-3">
@@ -377,24 +393,30 @@
                                 <div class="flex items-center space-x-2 user-avatar-container">
                                     <div class="w-9 h-9 rounded-full bg-gradient-to-br from-mystic-gold to-moon-silver flex items-center justify-center border-2 border-mystic-gold/50 shadow-lg"
                                         style="background: linear-gradient(135deg, #ffd700, #c0c0c0);">
-                                        <img id="userAvatar" src="" alt="User Avatar" class="w-full h-full rounded-full object-cover hidden">
-                                        <i id="userIcon" class="fas fa-user text-deep-navy text-sm" style="color: #1a237e;"></i>
+                                        <img id="userAvatar" src="" alt="User Avatar"
+                                            class="w-full h-full rounded-full object-cover hidden">
+                                        <i id="userIcon" class="fas fa-user text-deep-navy text-sm"
+                                            style="color: #1a237e;"></i>
                                     </div>
                                     <div class="flex flex-col">
-                                        <span id="userName" class="text-moon-silver font-medium text-sm" style="color: #c0c0c0;"></span>
-                                        <span id="userLevel" class="text-mystic-gold text-xs hidden" style="color: #ffd700;">VIP</span>
+                                        <span id="userName" class="text-moon-silver font-medium text-sm"
+                                            style="color: #c0c0c0;"></span>
+                                        <span id="userLevel" class="text-mystic-gold text-xs hidden"
+                                            style="color: #ffd700;">VIP</span>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Dropdown Menu Button -->
                                 <div class="relative">
-                                    <button id="userMenuBtn" class="text-moon-silver hover:text-mystic-gold transition-all duration-300 p-2 hover:bg-mystic-gold/10 rounded-full"
+                                    <button id="userMenuBtn"
+                                        class="text-moon-silver hover:text-mystic-gold transition-all duration-300 p-2 hover:bg-mystic-gold/10 rounded-full"
                                         style="color: #c0c0c0;">
                                         <i class="fas fa-chevron-down text-sm"></i>
                                     </button>
-                                    
+
                                     <!-- Dropdown Menu -->
-                                    <div id="userMenu" class="absolute right-0 mt-2 w-56 bg-black/95 backdrop-blur-md border-2 border-mystic-gold/30 rounded-xl shadow-2xl hidden z-50 overflow-hidden">
+                                    <div id="userMenu"
+                                        class="absolute right-0 mt-2 w-56 bg-black/95 backdrop-blur-md border-2 border-mystic-gold/30 rounded-xl shadow-2xl hidden z-50 overflow-hidden">
                                         <!-- User Info Card -->
                                         <div class="user-info-card">
                                             <div class="flex items-center space-x-3">
@@ -403,47 +425,54 @@
                                                     <i class="fas fa-user text-deep-navy" style="color: #1a237e;"></i>
                                                 </div>
                                                 <div class="flex-1">
-                                                    <div id="menuUserName" class="text-warm-white font-semibold text-sm"></div>
+                                                    <div id="menuUserName"
+                                                        class="text-warm-white font-semibold text-sm"></div>
                                                     <div id="menuUserEmail" class="user-email"></div>
                                                     <div id="menuUserStatus" class="user-status">免费会员</div>
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         <!-- Menu Items -->
                                         <div class="py-2">
-                                            <a href="profile.html" class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+                                            <a href="profile.html"
+                                                class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
                                                 style="color: #c0c0c0;">
                                                 <i class="fas fa-user-circle w-5"></i>
                                                 <span class="ml-3" data-i18n="nav.profile">个人信息</span>
                                             </a>
-                                            
-                                            <a href="profile.html#readings" class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+
+                                            <a href="profile.html#readings"
+                                                class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
                                                 style="color: #c0c0c0;">
                                                 <i class="fas fa-history w-5"></i>
                                                 <span class="ml-3" data-i18n="nav.myReadings">我的占卜</span>
                                             </a>
-                                            
-                                            <a href="payment.html" class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+
+                                            <a href="payment.html"
+                                                class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
                                                 style="color: #c0c0c0;">
                                                 <i class="fas fa-crown w-5"></i>
                                                 <span class="ml-3" data-i18n="nav.upgrade">会员升级</span>
-                                                <span class="ml-auto text-xs bg-mystic-gold text-deep-navy px-2 py-1 rounded-full font-bold"
+                                                <span
+                                                    class="ml-auto text-xs bg-mystic-gold text-deep-navy px-2 py-1 rounded-full font-bold"
                                                     style="background: #ffd700; color: #1a237e;">HOT</span>
                                             </a>
-                                            
-                                            <a href="profile.html#settings" class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+
+                                            <a href="profile.html#settings"
+                                                class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
                                                 style="color: #c0c0c0;">
                                                 <i class="fas fa-cog w-5"></i>
                                                 <span class="ml-3" data-i18n="nav.settings">设置</span>
                                             </a>
                                         </div>
-                                        
+
                                         <hr class="border-mystic-gold/20 mx-3">
-                                        
+
                                         <!-- Logout Button -->
                                         <div class="py-2">
-                                            <button id="logoutBtn" class="w-full flex items-center px-4 py-3 text-moon-silver hover:text-red-400 hover:bg-red-400/10 transition-all"
+                                            <button id="logoutBtn"
+                                                class="w-full flex items-center px-4 py-3 text-moon-silver hover:text-red-400 hover:bg-red-400/10 transition-all"
                                                 style="color: #c0c0c0;">
                                                 <i class="fas fa-sign-out-alt w-5"></i>
                                                 <span class="ml-3" data-i18n="nav.logout">退出登录</span>
@@ -514,12 +543,12 @@
 
                     <!-- Quick Actions -->
                     <div class="flex flex-col space-y-3">
-                        <button
+                        <button id="editProfileBtn"
                             class="bg-mystic-gold text-deep-navy px-6 py-2 rounded-lg font-semibold hover:bg-yellow-400 transition-colors"
                             data-i18n="profile.button.edit">
                             Edit Profile
                         </button>
-                        <button
+                        <button id="mainSettingsBtn"
                             class="border border-moon-silver text-moon-silver px-6 py-2 rounded-lg font-semibold hover:bg-moon-silver hover:text-deep-navy transition-colors"
                             data-i18n="profile.button.settings">
                             Settings
@@ -661,11 +690,86 @@
                         </div>
 
                         <div class="mt-6 text-center">
-                            <button
+                            <button id="sideGetDetailedAnalysisBtn"
                                 class="bg-mystic-gold text-deep-navy px-4 py-2 rounded-lg font-semibold hover:bg-yellow-400 transition-colors text-sm"
                                 data-i18n="profile.button.fullReading">
                                 Get Full Reading
                             </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Section (NEW) -->
+                <div id="settingsSection" class="lg:col-span-3 profile-card rounded-xl p-8 mt-4">
+                    <h3 class="text-2xl font-serif font-bold mb-6 text-mystic-gold" data-i18n="profile.settings.title">
+                        Account Preferences</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="space-y-4">
+                            <div id="langSetting"
+                                class="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10 transition-colors">
+                                <div>
+                                    <div class="font-semibold text-warm-white" data-i18n="profile.settings.lang.title">
+                                        System Language</div>
+                                    <div class="text-xs text-moon-silver" data-i18n="profile.settings.lang.desc">
+                                        Current: Simplified Chinese</div>
+                                </div>
+                                <i class="fas fa-chevron-right text-moon-silver text-xs"></i>
+                            </div>
+                            <div id="notifToggle"
+                                class="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10 transition-colors">
+                                <div>
+                                    <div class="font-semibold text-warm-white" data-i18n="profile.settings.notif.title">
+                                        Push Notifications</div>
+                                    <div class="text-xs text-moon-silver" data-i18n="profile.settings.notif.desc">Daily
+                                        destiny alerts</div>
+                                </div>
+                                <div
+                                    class="w-10 h-6 bg-mystic-gold/20 rounded-full relative p-1 transition-colors toggle-bg">
+                                    <div class="w-4 h-4 bg-mystic-gold rounded-full transition-transform toggle-dot">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div id="privacyToggle"
+                                class="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10 transition-colors">
+                                <div>
+                                    <div class="font-semibold text-warm-white"
+                                        data-i18n="profile.settings.privacy.title">Privacy Mode</div>
+                                    <div class="text-xs text-moon-silver" data-i18n="profile.settings.privacy.desc">Hide
+                                        my reading history</div>
+                                </div>
+                                <div class="w-10 h-6 bg-white/10 rounded-full relative p-1 transition-colors toggle-bg">
+                                    <div class="w-4 h-4 bg-moon-silver rounded-full transition-transform toggle-dot">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- GDPR Download -->
+                            <div id="downloadDataBtn"
+                                class="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10 transition-colors group">
+                                <div>
+                                    <div class="font-semibold text-warm-white"
+                                        data-i18n="profile.settings.gdpr.download_title">
+                                        Download My Data</div>
+                                    <div class="text-xs text-moon-silver"
+                                        data-i18n="profile.settings.gdpr.download_desc">
+                                        Export all your local data</div>
+                                </div>
+                                <i class="fas fa-download text-mystic-gold text-xs"></i>
+                            </div>
+
+                            <div id="deleteAccountBtn"
+                                class="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10 cursor-pointer hover:bg-red-500/10 transition-colors group">
+                                <div>
+                                    <div class="font-semibold text-red-400 group-hover:text-red-300"
+                                        data-i18n="profile.settings.danger.title">
+                                        Danger Zone</div>
+                                    <div class="text-xs text-moon-silver" data-i18n="profile.settings.danger.desc">
+                                        Delete account and data</div>
+                                </div>
+                                <i class="fas fa-exclamation-triangle text-red-400 text-xs"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -677,9 +781,9 @@
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-2xl font-serif font-bold" data-i18n="profile.history.title">Reading History</h3>
                         <div class="flex space-x-2">
-                            <button id="refreshReadings" 
-                                    class="bg-mystic-gold/20 hover:bg-mystic-gold/30 text-mystic-gold px-4 py-2 rounded-lg transition-colors"
-                                    title="刷新">
+                            <button id="refreshReadings"
+                                class="bg-mystic-gold/20 hover:bg-mystic-gold/30 text-mystic-gold px-4 py-2 rounded-lg transition-colors"
+                                title="刷新">
                                 <i class="fas fa-sync-alt"></i>
                             </button>
                             <select class="bg-white/10 border border-moon-silver/30 rounded px-3 py-1 text-sm">
@@ -701,19 +805,20 @@
                     <div id="readingsHistoryContainer" class="space-y-4">
                         <!-- 动态加载的历史记录将显示在这里 -->
                         <div class="text-center py-12">
-                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-mystic-gold mx-auto mb-4"></div>
-                            <p class="text-moon-silver">加载中...</p>
+                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-mystic-gold mx-auto mb-4">
+                            </div>
+                            <p class="text-moon-silver" data-i18n="profile.history.loading">加载中...</p>
                         </div>
                     </div>
 
                     <!-- 分页 -->
                     <div class="flex justify-center space-x-4 mt-6">
-                        <button id="prevPage" 
-                                class="bg-white/10 hover:bg-white/20 text-moon-silver px-4 py-2 rounded-lg transition-colors">
+                        <button id="prevPage"
+                            class="bg-white/10 hover:bg-white/20 text-moon-silver px-4 py-2 rounded-lg transition-colors">
                             <i class="fas fa-chevron-left mr-2"></i>上一页
                         </button>
-                        <button id="nextPage" 
-                                class="bg-white/10 hover:bg-white/20 text-moon-silver px-4 py-2 rounded-lg transition-colors">
+                        <button id="nextPage"
+                            class="bg-white/10 hover:bg-white/20 text-moon-silver px-4 py-2 rounded-lg transition-colors">
                             下一页<i class="fas fa-chevron-right ml-2"></i>
                         </button>
                     </div>
@@ -1156,7 +1261,7 @@
                         </div>
 
                         <div class="mt-6 text-center">
-                            <button
+                            <button id="getDetailedAnalysisBtn"
                                 class="bg-mystic-gold text-deep-navy px-6 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors"
                                 data-i18n="profile.insights.detailedAnalysis">
                                 Get Detailed Analysis
@@ -1172,8 +1277,16 @@
     <footer class="bg-ink-black py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center">
+                <div class="flex justify-center space-x-6 mb-4 flex-wrap">
+                    <a href="terms.html" class="text-moon-silver hover:text-mystic-gold transition-colors text-sm"
+                        data-i18n="footer.terms">Terms</a>
+                    <a href="support.html" class="text-moon-silver hover:text-mystic-gold transition-colors text-sm"
+                        data-i18n="footer.support">Support</a>
+                    <a href="about.html" class="text-moon-silver hover:text-mystic-gold transition-colors text-sm"
+                        data-i18n="nav.about">About</a>
+                </div>
                 <p class="text-moon-silver text-sm" data-i18n="profile.footer">
-                    © 2024 Destiny AI. All rights reserved. Track your destiny journey.
+                    © 2024 Destiny AI. All rights reserved.
                 </p>
             </div>
         </div>
@@ -1190,8 +1303,220 @@
 
             init() {
                 this.setupTabNavigation();
+                this.setupActionButtons();
                 this.initializeCharts();
                 this.loadUserData();
+                this.syncSettingsUI();
+
+                // 处理 URL 中的锚点跳转 (例如 profile.html#readings)
+                this.handleInitialHash();
+            }
+
+            setupActionButtons() {
+                // 编辑档案按钮
+                const editBtn = document.getElementById('editProfileBtn');
+                if (editBtn) {
+                    editBtn.addEventListener('click', () => {
+                        this.openEditModal();
+                    });
+                }
+
+                // 主设置按钮
+                const settingsBtn = document.getElementById('mainSettingsBtn');
+                if (settingsBtn) {
+                    settingsBtn.addEventListener('click', () => {
+                        this.switchTab('dashboard');
+                        // 平滑滚动到设置区块
+                        setTimeout(() => {
+                            const section = document.getElementById('settingsSection');
+                            if (section) {
+                                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                section.classList.add('ring-2', 'ring-mystic-gold/50');
+                                setTimeout(() => section.classList.remove('ring-2', 'ring-mystic-gold/50'), 2000);
+                            }
+                        }, 100);
+                    });
+                }
+
+                // 获取完整解读按钮 (支持多个实例)
+                const analysisBtns = [
+                    document.getElementById('getDetailedAnalysisBtn'),
+                    document.getElementById('sideGetDetailedAnalysisBtn')
+                ];
+
+                // 设置项功能绑定
+                const langBtn = document.getElementById('langSetting');
+                if (langBtn) {
+                    langBtn.addEventListener('click', () => this.handleLanguageSwitch());
+                }
+
+                const notifBtn = document.getElementById('notifToggle');
+                if (notifBtn) {
+                    notifBtn.addEventListener('click', () => this.toggleSetting('notifications'));
+                }
+
+                const privacyBtn = document.getElementById('privacyToggle');
+                if (privacyBtn) {
+                    privacyBtn.addEventListener('click', () => this.toggleSetting('privacy'));
+                }
+
+                // GDPR 功能绑定
+                const downloadBtn = document.getElementById('downloadDataBtn');
+                if (downloadBtn) {
+                    downloadBtn.addEventListener('click', () => this.handleDownloadData());
+                }
+
+                const deleteBtn = document.getElementById('deleteAccountBtn');
+                if (deleteBtn) {
+                    deleteBtn.addEventListener('click', () => this.handleAccountDeletion());
+                }
+            }
+
+            handleDownloadData() {
+                try {
+                    const userData = {};
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (key.includes('destiny') || key.includes('supabase.auth')) {
+                            userData[key] = localStorage.getItem(key);
+                        }
+                    }
+
+                    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(userData, null, 2));
+                    const downloadAnchorNode = document.createElement('a');
+                    downloadAnchorNode.setAttribute("href", dataStr);
+                    downloadAnchorNode.setAttribute("download", `destiny_ai_data_${new Date().toISOString().split('T')[0]}.json`);
+                    document.body.appendChild(downloadAnchorNode);
+                    downloadAnchorNode.click();
+                    downloadAnchorNode.remove();
+
+                    alert(window.i18n.t('profile.settings.gdpr.download_success'));
+                } catch (error) {
+                    console.error('Data export failed:', error);
+                    alert('Export failed. Please try again.');
+                }
+            }
+
+            handleAccountDeletion() {
+                if (confirm(window.i18n.t('profile.settings.gdpr.delete_confirm'))) {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.href = 'index.html?logout=true';
+                }
+            }
+
+            syncSettingsUI() {
+                const settings = JSON.parse(localStorage.getItem('destiny_user_settings') || '{"notifications":true,"privacy":false}');
+                this.updateToggleUI('notifToggle', settings.notifications);
+                this.updateToggleUI('privacyToggle', settings.privacy);
+            }
+
+            updateToggleUI(containerId, active) {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+
+                const bg = container.querySelector('.toggle-bg');
+                const dot = container.querySelector('.toggle-dot');
+
+                if (active) {
+                    bg.classList.replace('bg-white/10', 'bg-mystic-gold/20');
+                    dot.classList.add('translate-x-4');
+                    dot.classList.replace('bg-moon-silver', 'bg-mystic-gold');
+                } else {
+                    bg.classList.replace('bg-mystic-gold/20', 'bg-white/10');
+                    dot.classList.remove('translate-x-4');
+                    dot.classList.replace('bg-mystic-gold', 'bg-moon-silver');
+                }
+            }
+
+            toggleSetting(type) {
+                const key = 'destiny_user_settings';
+                const settings = JSON.parse(localStorage.getItem(key) || '{"notifications":true,"privacy":false}');
+                settings[type] = !settings[type];
+                localStorage.setItem(key, JSON.stringify(settings));
+
+                const containerId = type === 'notifications' ? 'notifToggle' : 'privacyToggle';
+                this.updateToggleUI(containerId, settings[type]);
+                console.log(`[Profile] Setting ${type} toggled to:`, settings[type]);
+            }
+
+            handleLanguageSwitch() {
+                if (!window.i18n) return;
+                const current = window.i18n.getCurrentLanguage();
+                const next = current === 'zh-CN' ? 'en' : 'zh-CN';
+                window.i18n.setLanguage(next);
+                setTimeout(() => window.location.reload(), 300);
+            }
+
+            openEditModal() {
+                const user = window.AuthService ? window.AuthService.getCurrentUser() : null;
+                if (!user) return;
+
+                const modal = document.getElementById('editProfileModal');
+                const nameInput = document.getElementById('editName');
+                const avatarInput = document.getElementById('editAvatar');
+
+                if (modal && nameInput && avatarInput) {
+                    nameInput.value = user.name || user.email.split('@')[0];
+                    avatarInput.value = user.avatar || '';
+                    modal.classList.remove('hidden');
+                }
+            }
+
+            closeEditModal() {
+                const modal = document.getElementById('editProfileModal');
+                if (modal) modal.classList.add('hidden');
+            }
+
+            saveProfile() {
+                const nameInput = document.getElementById('editName');
+                const avatarInput = document.getElementById('editAvatar');
+
+                if (!nameInput || !avatarInput) return;
+
+                const user = window.AuthService ? window.AuthService.getCurrentUser() : null;
+                if (user) {
+                    // 更新本地数据
+                    user.name = nameInput.value.trim();
+                    user.avatar = avatarInput.value.trim();
+
+                    // 持久化到 localStorage (通过 AuthService 键名)
+                    const key = 'destiny_user_data'; // 对应 auth-service.js 中的 userKey
+                    localStorage.setItem(key, JSON.stringify(user));
+
+                    // 如果有多个存储介质，同步更新
+                    sessionStorage.setItem(key, JSON.stringify(user));
+
+                    console.log('[Profile] Data saved and persistent:', user);
+
+                    // 刷新 UI
+                    this.loadUserData();
+
+                    // 触发全局事件通知其他组件（如导航栏）
+                    window.dispatchEvent(new CustomEvent('authStateChanged', { detail: user }));
+
+                    this.closeEditModal();
+                    alert('资料更新成功！');
+                }
+            }
+
+            handleInitialHash() {
+                const hash = window.location.hash.replace('#', '');
+                if (hash) {
+                    // 映射哈希到对应的 Tab ID
+                    const hashToTab = {
+                        'readings': 'history', // 我的占卜对应解读历史
+                        'settings': 'dashboard' // 暂时映射到控制面板
+                    };
+                    const targetTabId = hashToTab[hash] || hash;
+
+                    // 检查是否存在对应的 Tab 按钮
+                    const tabBtn = document.querySelector(`[data-tab="${targetTabId}"]`);
+                    if (tabBtn) {
+                        console.log('[Profile] Auto-switching to tab based on hash:', targetTabId);
+                        this.switchTab(targetTabId);
+                    }
+                }
             }
 
             setupTabNavigation() {
@@ -1326,53 +1651,161 @@
             }
 
             loadUserData() {
-                // Simulate loading user data
-                const userData = {
-                    name: 'Wisdom Seeker',
-                    level: 5,
-                    totalReadings: 47,
-                    accuracyRate: 94,
-                    streakDays: 12,
-                    achievements: 8,
-                    levelProgress: '2,340 / 3,000 XP'
-                };
+                // 如果 AuthService 存在，则尝试获取真实用户数据
+                const user = window.AuthService ? window.AuthService.getCurrentUser() : null;
 
-                // Update UI with user data
-                document.getElementById('userName').textContent = userData.name;
-                document.getElementById('userLevel').textContent = userData.level;
-                document.getElementById('totalReadings').textContent = userData.totalReadings;
-                document.getElementById('accuracyRate').textContent = userData.accuracyRate + '%';
-                document.getElementById('streakDays').textContent = userData.streakDays;
-                document.getElementById('achievements').textContent = userData.achievements;
-                document.getElementById('levelProgress').textContent = userData.levelProgress;
+                if (user) {
+                    console.log('[Profile] Loading user data for:', user.email);
 
-                // Update avatar based on level
-                const avatar = document.getElementById('userAvatar');
-                const avatars = ['命', '易', '风', '占', '悟'];
-                avatar.textContent = avatars[(userData.level - 1) % avatars.length];
+                    // 1. 更新名称
+                    let displayName = user.name;
+                    if (!displayName && user.email) {
+                        displayName = user.email.split('@')[0];
+                    }
+                    displayName = displayName || 'Wisdom Seeker';
+
+                    const userNameElements = document.querySelectorAll('#userName');
+                    userNameElements.forEach(el => {
+                        el.textContent = displayName;
+                    });
+
+                    // 2. 更新等级与 VIP 状态
+                    const isPremium = user.isPremium || user.level === 'premium';
+                    const level = user.level || 5; // Keep level as number for non-VIP
+
+                    const userLevelElements = document.querySelectorAll('#userLevel');
+                    userLevelElements.forEach(el => {
+                        if (isPremium) {
+                            el.textContent = 'VIP';
+                            el.classList.remove('hidden');
+                            el.classList.add('premium-gradient-text');
+                        } else {
+                            el.textContent = level; // Only show the number
+                            el.classList.remove('premium-gradient-text');
+                            // Optionally add 'hidden' if level is 0 or not set, or ensure it's visible
+                            el.classList.remove('hidden');
+                        }
+                    });
+
+                    // 3. 更新称号
+                    const titleElement = document.getElementById('userTitle');
+                    if (titleElement) {
+                        const statusText = isPremium ? 'Premium Voyager' : 'Destiny Explorer';
+                        titleElement.innerHTML = `${statusText} <span class="mx-2">•</span> Level ${level}`;
+                    }
+
+                    // 4. 更新头像
+                    // 档案页的大头像
+                    const mainAvatarContainer = document.querySelector('.w-32.h-32.rounded-full');
+                    if (mainAvatarContainer) {
+                        if (user.avatar) {
+                            mainAvatarContainer.innerHTML = `<img src="${user.avatar}" class="w-full h-full rounded-full object-cover border-4 border-mystic-gold/30">`;
+                            mainAvatarContainer.style.background = 'transparent';
+                        } else {
+                            // 如果没有头像，使用首字母和渐变背景
+                            const firstChar = displayName.charAt(0).toUpperCase();
+                            mainAvatarContainer.textContent = firstChar;
+                            mainAvatarContainer.style.background = isPremium ?
+                                'linear-gradient(135deg, #ffd700, #f59e0b)' :
+                                'linear-gradient(135deg, #1a237e, #4a148c)';
+                            mainAvatarContainer.classList.add('flex', 'items-center', 'justify-center', 'text-4xl', 'font-bold', 'text-white', 'shadow-xl');
+                        }
+                    }
+
+                    // 导航栏的小头像内容
+                    const navAvatarImg = document.getElementById('userAvatar');
+                    const navAvatarIcon = document.getElementById('userIcon');
+                    if (navAvatarImg && navAvatarIcon) {
+                        if (user.avatar) {
+                            navAvatarImg.src = user.avatar;
+                            navAvatarImg.classList.remove('hidden');
+                            navAvatarIcon.parentElement.classList.add('hidden');
+                        } else {
+                            navAvatarImg.classList.add('hidden');
+                            navAvatarIcon.parentElement.classList.remove('hidden');
+                        }
+                    }
+
+                    // 5. 更新邮件显示
+                    const menuUserEmail = document.getElementById('menuUserEmail');
+                    if (menuUserEmail) menuUserEmail.textContent = user.email;
+
+                    const menuUserStatus = document.getElementById('menuUserStatus');
+                    if (menuUserStatus) {
+                        menuUserStatus.textContent = isPremium ? 'Premium Member' : 'Standard Member';
+                        if (isPremium) menuUserStatus.classList.add('text-mystic-gold');
+                    }
+                } else {
+                    console.warn('[Profile] No user logged in, showing placeholder data');
+                }
             }
         }
 
         // Initialize profile manager when page loads
         document.addEventListener('DOMContentLoaded', () => {
-            new ProfileManager();
+            window.ProfileManagerInstance = new ProfileManager();
         });
     </script>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="fixed inset-0 z-[60] flex items-center justify-center hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onclick="window.ProfileManagerInstance.closeEditModal()"></div>
+        <div
+            class="relative bg-ink-black border-2 border-mystic-gold/30 w-full max-w-md mx-4 rounded-2xl shadow-2xl p-6 overflow-hidden">
+            <h3 class="text-2xl font-serif font-bold text-mystic-gold mb-6" data-i18n="profile.edit.title">Edit Profile
+            </h3>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm text-moon-silver mb-2" data-i18n="profile.edit.name">Display
+                        Name</label>
+                    <input type="text" id="editName"
+                        class="w-full bg-deep-navy/50 border border-mystic-gold/20 rounded-lg px-4 py-2 text-warm-white focus:outline-none focus:border-mystic-gold/50 transition-all">
+                </div>
+                <div>
+                    <label class="block text-sm text-moon-silver mb-2" data-i18n="profile.edit.avatar">Avatar
+                        URL</label>
+                    <input type="text" id="editAvatar"
+                        class="w-full bg-deep-navy/50 border border-mystic-gold/20 rounded-lg px-4 py-2 text-warm-white focus:outline-none focus:border-mystic-gold/50 transition-all"
+                        placeholder="https://example.com/avatar.jpg">
+                </div>
+            </div>
+
+            <div class="flex space-x-4 mt-8">
+                <button onclick="window.ProfileManagerInstance.closeEditModal()"
+                    class="flex-1 px-4 py-2 border border-moon-silver/30 text-moon-silver rounded-lg hover:bg-white/5 transition-all"
+                    data-i18n="common.cancel">Cancel</button>
+                <button onclick="window.ProfileManagerInstance.saveProfile()"
+                    class="flex-1 px-4 py-2 bg-mystic-gold text-deep-navy rounded-lg font-bold hover:bg-yellow-400 transition-all"
+                    data-i18n="common.save">Save Changes</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Supabase Integration -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js"></script>
     <script src="supabase-init.js"></script>
-    
+
     <!-- 认证系统 - 页面访问控制 -->
     <script src="auth-service.js"></script>
     <script src="auth-guard-enhanced.js"></script>
-    
+
     <!-- 用户菜单 -->
     <script src="user-menu.js"></script>
-    
+
     <!-- 历史记录管理 -->
     <script src="profile-readings.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('[SW] Registered'))
+                    .catch(err => console.log('[SW] Failed', err));
+            });
+        }
+    </script>
 </body>
 
 </html>

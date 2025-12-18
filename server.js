@@ -24,17 +24,24 @@ app.use(helmet({
     contentSecurityPolicy: false  // 完全禁用 CSP 用于开发
 }));
 
-// CORS configuration
+// CORS configuration - 增强支持本地 file:// 协议访问
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:8080',
+    origin: function (origin, callback) {
+        // 允许没有 origin (如本地文件) 或来自环境变量、localhost 的请求
+        if (!origin || origin === 'null' || origin.includes('localhost') || origin.includes('8080')) {
+            callback(null, true);
+        } else {
+            callback(null, true); // 开发阶段默认全放开，生产环境建议严格限制
+        }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token']
 }));
 
-// Body parser with size limit
-app.use(express.json({ limit: '10kb' }));
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+// Body parser with size limit - 增加限制以支持风水图片上传
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 
 // Serve static files
 app.use(express.static('.'));  // 服务当前目录的所有文件
@@ -71,21 +78,21 @@ app.get('/api/csrf-token', (req, res) => {
     const token = generateCSRFToken();
     const sessionId = req.headers['x-session-id'] || generateCSRFToken();
     csrfTokens.set(sessionId, token);
-    
+
     // Clean old tokens (older than 1 hour)
     setTimeout(() => csrfTokens.delete(sessionId), 3600000);
-    
+
     res.json({ token, sessionId });
 });
 
 function validateCSRF(req, res, next) {
     const token = req.headers['x-csrf-token'];
     const sessionId = req.headers['x-session-id'];
-    
+
     if (!token || !sessionId || csrfTokens.get(sessionId) !== token) {
         return res.status(403).json({ success: false, message: 'Invalid CSRF token' });
     }
-    
+
     next();
 }
 
@@ -116,7 +123,7 @@ const registerValidation = [
 // ============================================
 
 // Login
-app.post('/api/auth/login', 
+app.post('/api/auth/login',
     authLimiter,
     validateCSRF,
     loginValidation,
@@ -124,9 +131,9 @@ app.post('/api/auth/login',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    success: false, 
-                    message: errors.array()[0].msg 
+                return res.status(400).json({
+                    success: false,
+                    message: errors.array()[0].msg
                 });
             }
 
@@ -134,17 +141,17 @@ app.post('/api/auth/login',
             const user = users.get(email);
 
             if (!user) {
-                return res.status(401).json({ 
-                    success: false, 
-                    message: '邮箱或密码错误' 
+                return res.status(401).json({
+                    success: false,
+                    message: '邮箱或密码错误'
                 });
             }
 
             const isValidPassword = await bcrypt.compare(password, user.password);
             if (!isValidPassword) {
-                return res.status(401).json({ 
-                    success: false, 
-                    message: '邮箱或密码错误' 
+                return res.status(401).json({
+                    success: false,
+                    message: '邮箱或密码错误'
                 });
             }
 
@@ -169,9 +176,9 @@ app.post('/api/auth/login',
 
         } catch (error) {
             console.error('Login error:', error);
-            res.status(500).json({ 
-                success: false, 
-                message: '服务器错误，请稍后重试' 
+            res.status(500).json({
+                success: false,
+                message: '服务器错误，请稍后重试'
             });
         }
     }
@@ -186,9 +193,9 @@ app.post('/api/auth/register',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    success: false, 
-                    message: errors.array()[0].msg 
+                return res.status(400).json({
+                    success: false,
+                    message: errors.array()[0].msg
                 });
             }
 
@@ -196,9 +203,9 @@ app.post('/api/auth/register',
 
             // Check if user exists
             if (users.has(email)) {
-                return res.status(409).json({ 
-                    success: false, 
-                    message: '该邮箱已被注册' 
+                return res.status(409).json({
+                    success: false,
+                    message: '该邮箱已被注册'
                 });
             }
 
@@ -224,9 +231,9 @@ app.post('/api/auth/register',
 
         } catch (error) {
             console.error('Registration error:', error);
-            res.status(500).json({ 
-                success: false, 
-                message: '服务器错误，请稍后重试' 
+            res.status(500).json({
+                success: false,
+                message: '服务器错误，请稍后重试'
             });
         }
     }
@@ -241,9 +248,9 @@ app.post('/api/auth/forgot-password',
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ 
-                    success: false, 
-                    message: '无效的邮箱地址' 
+                return res.status(400).json({
+                    success: false,
+                    message: '无效的邮箱地址'
                 });
             }
 
@@ -264,9 +271,9 @@ app.post('/api/auth/forgot-password',
 
         } catch (error) {
             console.error('Forgot password error:', error);
-            res.status(500).json({ 
-                success: false, 
-                message: '服务器错误，请稍后重试' 
+            res.status(500).json({
+                success: false,
+                message: '服务器错误，请稍后重试'
             });
         }
     }
@@ -438,25 +445,45 @@ app.post('/api/ai/chat',
     // CSRF验证暂时禁用，因为AI API已有限流保护
     // validateCSRF,
     async (req, res) => {
+        console.log('--- AI Request Start ---');
+        console.log('Method:', req.method);
+        console.log('Body keys:', Object.keys(req.body));
+        if (req.body.messages) {
+            console.log('Has image:', JSON.stringify(req.body).includes('base64'));
+        }
         try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 60000); // 60秒超时
+
             const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
                     'Content-Type': 'application/json',
-                    'HTTP-Referer': process.env.FRONTEND_URL,
+                    'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:3000',
                     'X-Title': 'Destiny AI'
                 },
-                body: JSON.stringify(req.body)
+                body: JSON.stringify(req.body),
+                signal: controller.signal
             });
 
+            clearTimeout(timeoutId);
+
             const data = await response.json();
-            res.json(data);
+
+            // 同步 OpenRouter 的状态码到前端
+            console.log(`OpenRouter Status: ${response.status}`);
+            if (!response.ok) {
+                console.error('OpenRouter Error Data:', JSON.stringify(data));
+            }
+
+            res.status(response.status).json(data);
 
         } catch (error) {
             console.error('AI API error:', error);
-            res.status(500).json({ 
-                error: 'AI服务暂时不可用' 
+            res.status(500).json({
+                error: 'AI服务暂时不可用',
+                details: error.message
             });
         }
     }
@@ -467,9 +494,9 @@ app.post('/api/ai/chat',
 // ============================================
 
 app.get('/api/health', (req, res) => {
-    res.json({ 
-        status: 'ok', 
-        timestamp: new Date().toISOString() 
+    res.json({
+        status: 'ok',
+        timestamp: new Date().toISOString()
     });
 });
 
@@ -479,17 +506,17 @@ app.get('/api/health', (req, res) => {
 
 app.use((err, req, res, next) => {
     console.error('Server error:', err);
-    res.status(500).json({ 
-        success: false, 
-        message: '服务器内部错误' 
+    res.status(500).json({
+        success: false,
+        message: '服务器内部错误'
     });
 });
 
 // 404 handler
 app.use((req, res) => {
-    res.status(404).json({ 
-        success: false, 
-        message: '接口不存在' 
+    res.status(404).json({
+        success: false,
+        message: '接口不存在'
     });
 });
 

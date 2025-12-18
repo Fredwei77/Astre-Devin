@@ -14,7 +14,7 @@ const TRANSLATIONS = {
         'nav.userInfo': 'Profile',
         'nav.myReadings': 'My Readings',
         'nav.settings': 'Settings',
-        
+
         // Brand
         'brand.name': 'Astre Devin',
 
@@ -281,7 +281,7 @@ const TRANSLATIONS = {
         'iching.followup.button': 'AI Answer',
         'iching.followup.answer': 'AI Answer:',
         'iching.followup.loading': 'AI is thinking...',
-        
+
         // I-Ching Default Content
         'iching.default.hexagram.title': 'Hexagram 1: The Creative',
         'iching.default.hexagram.desc': 'The creative works sublime success, furthering through perseverance.',
@@ -380,6 +380,19 @@ const TRANSLATIONS = {
         'profile.insights.wellness.desc': 'Incorporate more metal element activities (precision, organization) to balance your strong fire energy and maintain better health.',
         'profile.insights.wellness.button': 'Wellness Tips',
         'profile.insights.detailedAnalysis': 'Get Detailed Analysis',
+        'profile.settings.title': 'Account Preferences',
+        'profile.settings.lang.title': 'System Language',
+        'profile.settings.lang.desc': 'Current: Simplified Chinese',
+        'profile.settings.notif.title': 'Push Notifications',
+        'profile.settings.notif.desc': 'Daily destiny alerts',
+        'profile.settings.privacy.title': 'Privacy Mode',
+        'profile.settings.privacy.desc': 'Hide my reading history',
+        'profile.settings.danger.title': 'Danger Zone',
+        'profile.settings.danger.desc': 'Delete account and data',
+        'profile.settings.gdpr.download_title': 'Download My Data',
+        'profile.settings.gdpr.download_desc': 'Export all your local data in JSON format',
+        'profile.settings.gdpr.delete_confirm': 'Are you sure you want to delete all your data? This action cannot be undone and you will be logged out.',
+        'profile.settings.gdpr.download_success': 'Data exported successfully.',
         'profile.footer': '© 2024 Destiny AI. All rights reserved. Track your destiny journey.',
 
         // Payment Page
@@ -398,7 +411,7 @@ const TRANSLATIONS = {
         'payment.feature.limitedReadings': '✓ Daily horoscope',
         'payment.feature.noAI': '✗ No AI features',
         'payment.feature.fullAI': '✓ Full AI analysis',
-        
+
         // Pay Per Use
         'payPerUse.title': 'Pay Per Use',
         'payPerUse.or': 'or',
@@ -577,7 +590,7 @@ const TRANSLATIONS = {
         'login.footer.services': 'AI Divination Services',
         'login.backToHome': 'Back to Home',
         'login.loading': 'Connecting to Destiny Realm...',
-        
+
         // Register Form
         'register.name.label': 'Username',
         'register.name.placeholder': 'Please enter your username',
@@ -595,7 +608,7 @@ const TRANSLATIONS = {
         'register.terms.service': 'Terms of Service',
         'register.terms.and': 'and',
         'register.terms.privacy': 'Privacy Policy',
-        
+
         // Messages
         'login.message.success': 'Login successful! Redirecting...',
         'login.message.registerSuccess': 'Registration successful! Please login',
@@ -603,7 +616,7 @@ const TRANSLATIONS = {
         'login.message.registering': 'Registering...',
         'login.message.connectingGoogle': 'Connecting to Google...',
         'login.message.connectingGitHub': 'Connecting to GitHub...',
-        
+
         // Errors
         'login.error.invalidEmail': 'Please enter a valid email address',
         'login.error.emptyPassword': 'Please enter password',
@@ -660,7 +673,100 @@ const TRANSLATIONS = {
         'footer.terms': 'Terms of Service',
         'footer.contact': 'Contact Us',
         'footer.support': 'Support',
-        'footer.copyright': '© 2024 Destiny AI. All rights reserved. Empowering lives through ancient wisdom and modern technology.'
+        'footer.copyright': '© 2024 Destiny AI. All rights reserved. Empowering lives through ancient wisdom and modern technology.',
+
+        // Profile Tabs
+        'profile.tab.dashboard': 'Dashboard',
+        'profile.tab.readings': 'Reading History',
+        'profile.tab.goals': 'Goals & Progress',
+        'profile.tab.achievements': 'Achievements',
+        'profile.tab.insights': 'Personal Insights',
+
+        // Profile Stats
+        'profile.stats.readings': 'Total Readings',
+        'profile.stats.accuracy': 'Accuracy Rate',
+        'profile.stats.streak': 'Day Streak',
+        'profile.stats.achievements': 'Achievements',
+
+        // Profile General
+        'profile.progress': 'Level Progress',
+        'profile.personality': 'Personality Traits',
+        'profile.button.edit': 'Edit Profile',
+        'profile.button.settings': 'Settings',
+        'profile.button.fullReading': 'Get Full Reading',
+
+        // Profile Activity
+        'profile.activity.recent': 'Recent Activity',
+        'profile.activity.birthChart': 'Birth Chart Analysis',
+        'profile.activity.iching': 'I-Ching Consultation',
+        'profile.activity.fengshui': 'Feng Shui Analysis',
+        'profile.activity.goalCompleted': 'Goal Completed',
+
+        // Profile Time
+        'profile.time.hoursAgo': 'hours ago',
+        'profile.time.dayAgo': '1 day ago',
+        'profile.time.daysAgo': 'days ago',
+        'profile.time.weekAgo': '1 week ago',
+
+        // Profile Insights
+        'profile.insights.today': "Today's Insights",
+        'profile.insights.lucky': 'Lucky Element',
+        'profile.insights.career': 'Career Outlook',
+        'profile.insights.relationships': 'Relationships',
+        'profile.insight.metal': 'Metal energy is strong today. Focus on precision and clarity in your decisions.',
+        'profile.insight.leadership': 'Excellent day for leadership opportunities. Trust your instincts.',
+        'profile.insight.harmony': 'Harmony in relationships. Good time to strengthen bonds.',
+
+        // Profile History
+        'profile.history.title': 'Reading History',
+        'profile.history.empty': 'No Reading History',
+        'profile.history.emptyDesc': 'Start your first divination now!',
+        'profile.history.startBtn': 'Start Divination',
+        'profile.history.allTypes': 'All Types',
+        'profile.history.last30': 'Last 30 Days',
+        'profile.history.last3months': 'Last 3 Months',
+        'profile.history.lastYear': 'Last Year',
+        'profile.history.allTime': 'All Time',
+        'profile.history.loading': 'Loading...',
+        'profile.history.viewDetail': 'View Details',
+        'profile.history.delete': 'Delete',
+        'profile.history.deleteConfirm': 'Are you sure you want to delete this record?',
+        'profile.history.deleteSuccess': 'Record deleted successfully',
+        'profile.history.loadFailed': 'Failed to load reading history',
+        'profile.history.birthDate': 'Birth Date',
+        'profile.history.category': 'Category',
+        'profile.history.clickDetail': 'Click to view details',
+
+        // Profile Types
+        'profile.type.divination': 'Destiny Divination',
+        'profile.type.fengshui': 'Feng Shui Analysis',
+        'profile.type.iching': 'I-Ching Hexagram',
+        'profile.type.unknown': 'Unknown Type',
+
+        // Profile Settings
+        'profile.settings.title': 'Account Preferences',
+        'profile.settings.lang.title': 'System Language',
+        'profile.settings.lang.desc': 'Current: English',
+        'profile.settings.notif.title': 'Push Notifications',
+        'profile.settings.notif.desc': 'Daily destiny alerts',
+        'profile.settings.privacy.title': 'Privacy Mode',
+        'profile.settings.privacy.desc': 'Hide my reading history',
+        'profile.settings.danger.title': 'Danger Zone',
+        'profile.settings.danger.desc': 'Delete account and data',
+
+        // Payment Page Extras
+        'payment.refund_policy': 'No refunds after service delivery (e.g., report generation, consultation completion).',
+        'payment.free_preview': 'Free Preview Available (First 100 words free).',
+
+        // Support & Complaints
+        'support.title': 'Help Center & AI Support',
+        'support.ai_service': '24/7 AI Customer Service',
+        'support.sla': 'Complaints will be responded to within 3 working days.',
+        'support.complaint_label': 'Report Misleading Content',
+        'support.compensation_title': 'Satisfaction Guarantee',
+        'support.compensation_desc': 'For any dissatisfaction, we offer a complimentary Feng Shui E-book ($29 value) instead of a refund.',
+        'support.chat_placeholder': 'Type your concern here...',
+        'support.ai_greeting': 'Greetings. I am your Oracle AI Assistant. How may I guide you through your journey today?',
     },
 
     'zh-CN': {
@@ -813,6 +919,14 @@ const TRANSLATIONS = {
         'fengshui.compass.degrees': '度数',
         'fengshui.analysis.title': '环境分析',
         'fengshui.analysis.upload.title': '上传房间照片',
+        'fengshui.analysis.upload.desc': '拖拽房间照片到此处或点击浏览',
+        'fengshui.analysis.upload.button': '选择照片',
+        'fengshui.analysis.results.title': '分析结果',
+        'fengshui.analysis.results.energy': '整体能量流动',
+        'fengshui.analysis.results.wealth': '财位分析',
+        'fengshui.analysis.results.health': '健康区域',
+        'fengshui.analysis.title': '环境分析',
+        'fengshui.analysis.upload.title': '上传房间照片',
         'fengshui.analysis.upload.desc': '拖放您的房间照片或点击浏览',
         'fengshui.analysis.upload.button': '选择照片',
         'fengshui.analysis.results.title': '分析结果',
@@ -943,7 +1057,7 @@ const TRANSLATIONS = {
         'iching.followup.answer': 'AI 解答：',
         'iching.followup.loading': 'AI 正在思考中...',
         'iching.footer': '© 2024 命运AI。保留所有权利。古老智慧，现代指引。',
-        
+
         // 易经默认内容
         'iching.default.hexagram.title': '第一卦：乾卦（创造）',
         'iching.default.hexagram.desc': '元亨利贞。创造之力带来崇高成功，通过坚持不懈而进步。',
@@ -1041,14 +1155,35 @@ const TRANSLATIONS = {
         'profile.insights.wellness.desc': '加入更多金元素活动（精确性、组织性）来平衡您强大的火能量，保持更好的健康。',
         'profile.insights.wellness.button': '健康建议',
         'profile.insights.detailedAnalysis': '获取详细分析',
-        'profile.footer': '© 2024 命运AI。保留所有权利。追踪您的命运之旅。',
+        'profile.settings.title': '偏好设置',
+        'profile.settings.lang.title': '系统语言',
+        'profile.settings.lang.desc': '当前：简体中文',
+        'profile.settings.notif.title': '推送通知',
+        'profile.settings.notif.desc': '每日运势提醒',
+        'profile.settings.privacy.title': '隐私模式',
+        'profile.settings.privacy.desc': '隐藏我的测算历史',
+        'profile.settings.danger.title': '危险区域',
+        'profile.settings.danger.desc': '删除账号及所有数据',
+        'profile.footer': '© 2024 Destiny AI. 保留所有权利。追踪您的命运之旅。',
 
         'profile.footer': '© 2024 命运AI。保留所有权利。追踪您的命运之旅。',
 
         // 支付页面
         'payment.title': '选择您的智慧之路',
         'payment.subtitle': '从免费测算开始，或通过高级功能解锁古老东方智慧的全部力量，获得更深层的洞察和个人成长。',
-        'payment.guarantee': '🛡️ 30天退款保证',
+        'payment.guarantee': '',
+        'payment.refund_policy': '服务一旦交付（如报告生成、咨询结束），不支持退款',
+        'payment.free_preview': '提供免费预览（报告前100字免费查看）',
+
+        // 投诉与客服
+        'support.title': '帮助中心与 AI 客服',
+        'support.ai_service': '24/7 AI 在线客服',
+        'support.sla': '投诉将在 3 个工作日内得到答复',
+        'support.complaint_label': '投诉内容误导',
+        'support.compensation_title': '满意度保障',
+        'support.compensation_desc': '若对结果不满意，我们将赠送价值 $29 的《风水布局电子书》作为补偿，替代退款。',
+        'support.chat_placeholder': '请描述您的问题...',
+        'support.ai_greeting': '您好，我是您的九筮 AI 助手。请问今天有什么可以帮到您的吗？',
         'payment.plan.free': '免费版',
         'payment.plan.forever': '永久免费',
         'payment.plan.premium': '高级版',
@@ -1061,7 +1196,7 @@ const TRANSLATIONS = {
         'payment.feature.limitedReadings': '✓ 每日星座运势',
         'payment.feature.noAI': '✗ 无AI功能',
         'payment.feature.fullAI': '✓ 完整AI分析功能',
-        
+
         // 按次付费
         'payPerUse.title': '按次付费',
         'payPerUse.or': '或者',
@@ -1156,7 +1291,7 @@ const TRANSLATIONS = {
 
         'analysis.simulation.career.1': '创意领域有出色机会',
         'analysis.simulation.career.2': '领导职位潜力巨大',
-        'analysis.simulation.career.3': '2024年财务前景良好',
+        'analysis.simulation.career.3': `${new Date().getFullYear()}年财务前景良好`,
         'analysis.simulation.career.4': '考虑创业机会',
         'analysis.simulation.career.5': '国际发展机遇在前',
 
@@ -1220,7 +1355,7 @@ const TRANSLATIONS = {
 
         // 品牌
         'brand.name': '九 筮',
-        
+
         // 关于我们页面
         'nav.about': '关于我们',
         'about.hero.title': '关于我们',
@@ -1263,7 +1398,153 @@ const TRANSLATIONS = {
         'footer.terms': '服务条款',
         'footer.contact': '联系我们',
         'footer.support': '支持',
-        'footer.copyright': '© 2024 命运AI。保留所有权利。通过古老智慧和现代技术赋能生活。'
+        'footer.copyright': '© 2024 命运AI。保留所有权利。通过古老智慧和现代技术赋能生活。',
+
+        // 登录页面
+        'login.title': '欢迎回到命运之境',
+        'login.subtitle': '登入您的账户，探索神秘的AI占卜世界',
+        'login.tab.login': '登入',
+        'login.tab.register': '注册',
+        'login.email.label': '邮箱地址',
+        'login.email.placeholder': '请输入您的邮箱',
+        'login.password.label': '密码',
+        'login.password.placeholder': '请输入您的密码',
+        'login.password.show': '显示密码',
+        'login.password.hide': '隐藏密码',
+        'login.rememberMe': '记住我',
+        'login.forgotPassword': '忘记密码？',
+        'login.button.login': '登入账户',
+        'login.button.register': '创建账户',
+        'login.divider': '或',
+        'login.social.google': '使用 Google 账户登入',
+        'login.social.github': '使用 GitHub 账户登入',
+        'login.footer.firstTime': '首次使用？探索我们的',
+        'login.footer.services': 'AI占卜服务',
+        'login.backToHome': '返回首页',
+        'login.loading': '正在连接命运之境...',
+
+        // 注册表单
+        'register.name.label': '用户名',
+        'register.name.placeholder': '请输入您的用户名',
+        'register.email.label': '邮箱地址',
+        'register.email.placeholder': '请输入您的邮箱',
+        'register.password.label': '密码',
+        'register.password.placeholder': '至少8位字符，包含大小写字母和数字',
+        'register.confirmPassword.label': '确认密码',
+        'register.confirmPassword.placeholder': '请再次输入密码',
+        'register.passwordStrength.weak': '密码强度：弱',
+        'register.passwordStrength.medium': '密码强度：中等',
+        'register.passwordStrength.strong': '密码强度：强',
+        'register.passwordStrength.veryStrong': '密码强度：极强',
+        'register.terms.agree': '我已阅读并同意',
+        'register.terms.service': '服务条款',
+        'register.terms.and': '和',
+        'register.terms.privacy': '隐私政策',
+
+        // 消息提示
+        'login.message.success': '登入成功！正在跳转...',
+        'login.message.registerSuccess': '注册成功！请登录',
+        'login.message.loggingIn': '正在登入...',
+        'login.message.registering': '正在注册...',
+        'login.message.connectingGoogle': '正在连接 Google...',
+        'login.message.connectingGitHub': '正在连接 GitHub...',
+
+        // 错误提示
+        'login.error.invalidEmail': '请输入有效的邮箱地址',
+        'login.error.emptyPassword': '请输入密码',
+        'login.error.invalidCredentials': '邮箱或密码错误',
+        'login.error.nameTooShort': '用户名至少需要2个字符',
+        'login.error.passwordTooShort': '密码至少需要8个字符',
+        'login.error.passwordMismatch': '两次输入的密码不一致',
+        'login.error.termsNotAgreed': '请同意服务条款和隐私政策',
+        'login.error.emailExists': '该邮箱已被注册',
+        'login.error.loginFailed': '登入失败，请检查邮箱和密码',
+        'login.error.registerFailed': '注册失败，请重试',
+        'login.error.googleFailed': 'Google 登入失败，请重试',
+        'login.error.githubFailed': 'GitHub 登入失败，请重试',
+
+        // 个人档案 标签页
+        'profile.tab.dashboard': '仪表盘',
+        'profile.tab.readings': '解读历史',
+        'profile.tab.goals': '目标与进度',
+        'profile.tab.achievements': '成就',
+        'profile.tab.insights': '个人洞察',
+
+        // 个人档案 统计项
+        'profile.stats.readings': '总解读次数',
+        'profile.stats.accuracy': '准确率',
+        'profile.stats.streak': '连续天数',
+        'profile.stats.achievements': '成就数量',
+
+        // 个人档案 通用
+        'profile.progress': '等级进度',
+        'profile.personality': '性格特质',
+        'profile.button.edit': '编辑资料',
+        'profile.button.settings': '设置',
+        'profile.button.fullReading': '获取完整解读',
+
+        // 个人档案 动态
+        'profile.activity.recent': '最近动态',
+        'profile.activity.birthChart': '生辰八字分析',
+        'profile.activity.iching': '易经咨询',
+        'profile.activity.fengshui': '风水分析',
+        'profile.activity.goalCompleted': '目标完成',
+
+        // 个人档案 时间
+        'profile.time.hoursAgo': '小时前',
+        'profile.time.dayAgo': '1天前',
+        'profile.time.daysAgo': '天前',
+        'profile.time.weekAgo': '1周前',
+
+        // 个人档案 洞察
+        'profile.insights.today': '今日洞察',
+        'profile.insights.lucky': '幸运元素',
+        'profile.insights.career': '事业前景',
+        'profile.insights.relationships': '人际关系',
+        'profile.insight.metal': '今日金能量强劲。在决策中注重精准和清晰。',
+        'profile.insight.leadership': '今天是非常适合展示领导力的日子。相信你的直觉。',
+        'profile.insight.harmony': '人际关系和谐。加强人际纽带的好时机。',
+
+        // 个人档案 历史记录
+        'profile.history.title': '解读历史',
+        'profile.history.empty': '暂无占卜记录',
+        'profile.history.emptyDesc': '开始你的第一次占卜吧！',
+        'profile.history.startBtn': '开始占卜',
+        'profile.history.allTypes': '所有类型',
+        'profile.history.last30': '最近30天',
+        'profile.history.last3months': '最近3个月',
+        'profile.history.lastYear': '最近一年',
+        'profile.history.allTime': '全部时间',
+        'profile.history.loading': '加载中...',
+        'profile.history.viewDetail': '查看详情',
+        'profile.history.delete': '删除',
+        'profile.history.deleteConfirm': '确定要删除这条记录吗？',
+        'profile.history.deleteSuccess': '记录已删除',
+        'profile.history.loadFailed': '加载历史记录失败',
+        'profile.history.birthDate': '出生日期',
+        'profile.history.category': '类别',
+        'profile.history.clickDetail': '点击查看详情',
+
+        // 个人档案 类型
+        'profile.type.divination': '命运占卜',
+        'profile.type.fengshui': '风水分析',
+        'profile.type.iching': '易经卦象',
+        'profile.type.unknown': '未知类型',
+
+        // 个人档案 设置
+        'profile.settings.title': '账户偏好',
+        'profile.settings.lang.title': '系统语言',
+        'profile.settings.lang.desc': '当前：简体中文',
+        'profile.settings.notif.title': '推送通知',
+        'profile.settings.notif.desc': '每日运势提醒',
+        'profile.settings.privacy.title': '隐私模式',
+        'profile.settings.privacy.desc': '隐藏我的解读历史',
+        'profile.settings.danger.title': '危险区域',
+        'profile.settings.danger.desc': '删除账户和数据',
+        'profile.settings.gdpr.download_title': '导出我的数据',
+        'profile.settings.gdpr.download_desc': '以 JSON 格式导出您存储在本地的所有数据',
+        'profile.settings.gdpr.delete_confirm': '您确定要删除所有数据吗？此操作不可逆，且您将被注销登录。',
+        'profile.settings.gdpr.download_success': '数据导出成功。'
     },
 
     'zh-TW': {
@@ -1633,6 +1914,10 @@ const TRANSLATIONS = {
         'profile.insights.wellness.button': '健康建議',
         'profile.insights.detailedAnalysis': '獲取詳細分析',
         'profile.footer': '© 2024 命運AI。保留所有權利。追蹤您的命運之旅。',
+        'profile.settings.gdpr.download_title': '導出我的數據',
+        'profile.settings.gdpr.download_desc': '以 JSON 格式導出您存儲在本地的所有數據',
+        'profile.settings.gdpr.delete_confirm': '您確定要刪除所有數據嗎？此操作不可逆，且您將被註銷登錄。',
+        'profile.settings.gdpr.download_success': '數據導出成功。',
 
         // 支付頁面
         'payment.title': '選擇您的智慧之路',
@@ -1650,7 +1935,7 @@ const TRANSLATIONS = {
         'payment.feature.limitedReadings': '✓ 每日星座運勢',
         'payment.feature.noAI': '✗ 無AI功能',
         'payment.feature.fullAI': '✓ 完整AI分析功能',
-        
+
         // 按次付費
         'payPerUse.title': '按次付費',
         'payPerUse.or': '或者',
@@ -1745,7 +2030,7 @@ const TRANSLATIONS = {
 
         'analysis.simulation.career.1': '創意領域有出色機會',
         'analysis.simulation.career.2': '領導職位潛力巨大',
-        'analysis.simulation.career.3': '2024年財務前景良好',
+        'analysis.simulation.career.3': `${new Date().getFullYear()}年財務前景良好`,
         'analysis.simulation.career.4': '考慮創業機會',
         'analysis.simulation.career.5': '國際發展機遇在前',
 
@@ -1829,7 +2114,7 @@ const TRANSLATIONS = {
         'login.footer.services': 'AI占卜服务',
         'login.backToHome': '返回首页',
         'login.loading': '正在连接命运之境...',
-        
+
         // 注册表单
         'register.name.label': '用户名',
         'register.name.placeholder': '请输入您的用户名',
@@ -1847,7 +2132,7 @@ const TRANSLATIONS = {
         'register.terms.service': '服务条款',
         'register.terms.and': '和',
         'register.terms.privacy': '隐私政策',
-        
+
         // 消息提示
         'login.message.success': '登入成功！正在跳转...',
         'login.message.registerSuccess': '注册成功！请登录',
@@ -1855,7 +2140,7 @@ const TRANSLATIONS = {
         'login.message.registering': '正在注册...',
         'login.message.connectingGoogle': '正在连接 Google...',
         'login.message.connectingGitHub': '正在连接 GitHub...',
-        
+
         // 错误提示
         'login.error.invalidEmail': '请输入有效的邮箱地址',
         'login.error.emptyPassword': '请输入密码',
@@ -1872,7 +2157,7 @@ const TRANSLATIONS = {
 
         // 品牌
         'brand.name': '九 筮',
-        
+
         // 關於我們頁面
         'nav.about': '關於我們',
         'about.hero.title': '關於我們',
@@ -1915,7 +2200,385 @@ const TRANSLATIONS = {
         'footer.terms': '服務條款',
         'footer.contact': '聯絡我們',
         'footer.support': '支援',
-        'footer.copyright': '© 2024 命運AI。保留所有權利。通過古老智慧和現代技術賦能生活。'
+        'footer.copyright': '© 2024 命運AI。保留所有權利。通過古老智慧和現代技術賦能生活。',
+
+        // 個人檔案 標籤頁
+        'profile.tab.dashboard': '儀表盤',
+        'profile.tab.readings': '解讀歷史',
+        'profile.tab.goals': '目標與進度',
+        'profile.tab.achievements': '成就',
+        'profile.tab.insights': '個人洞察',
+
+        // 個人檔案 統計項
+        'profile.stats.readings': '總解讀次數',
+        'profile.stats.accuracy': '準確率',
+        'profile.stats.streak': '連續天數',
+        'profile.stats.achievements': '成就數量',
+
+        // 個人檔案 通用
+        'profile.progress': '等級進度',
+        'profile.personality': '性格特質',
+        'profile.button.edit': '編輯資料',
+        'profile.button.settings': '設置',
+        'profile.button.fullReading': '獲取完整解讀',
+
+        // 個人檔案 動態
+        'profile.activity.recent': '最近動態',
+        'profile.activity.birthChart': '生辰八字分析',
+        'profile.activity.iching': '易經諮詢',
+        'profile.activity.fengshui': '風水分析',
+        'profile.activity.goalCompleted': '目標完成',
+
+        // 個人檔案 時間
+        'profile.time.hoursAgo': '小時前',
+        'profile.time.dayAgo': '1天前',
+        'profile.time.daysAgo': '天前',
+        'profile.time.weekAgo': '1周前',
+
+        // 個人檔案 洞察
+        'profile.insights.today': '今日洞察',
+        'profile.insights.lucky': '幸運元素',
+        'profile.insights.career': '事業前景',
+        'profile.insights.relationships': '人際關係',
+        'profile.insight.metal': '今日金能量強勁。在決策中注重精準和清晰。',
+        'profile.insight.leadership': '今天是非常適合展示領導力的日子。相信你的直覺。',
+        'profile.insight.harmony': '人際關係和諧。加強人際紐帶的好時機。',
+
+        // 個人檔案 歷史記錄
+        'profile.history.title': '解讀歷史',
+        'profile.history.empty': '暫無占卜記錄',
+        'profile.history.emptyDesc': '開始你的第一次占卜吧！',
+        'profile.history.startBtn': '開始占卜',
+        'profile.history.allTypes': '所有類型',
+        'profile.history.last30': '最近30天',
+        'profile.history.last3months': '最近3個月',
+        'profile.history.lastYear': '最近一年',
+        'profile.history.allTime': '全部時間',
+        'profile.history.loading': '加載中...',
+        'profile.history.viewDetail': '查看詳情',
+        'profile.history.delete': '刪除',
+        'profile.history.deleteConfirm': '確定要刪除這條記錄嗎？',
+        'profile.history.deleteSuccess': '記錄已刪除',
+        'profile.history.loadFailed': '加載歷史記錄失敗',
+        'profile.history.birthDate': '出生日期',
+        'profile.history.category': '類別',
+        'profile.history.clickDetail': '點擊查看詳情',
+
+        // 個人檔案 類型
+        'profile.type.divination': '命運占卜',
+        'profile.type.fengshui': '風水分析',
+        'profile.type.iching': '易經卦象',
+        'profile.type.unknown': '未知類型',
+
+        // 個人檔案 設置
+        'profile.settings.title': '帳戶偏好',
+        'profile.settings.lang.title': '系統語言',
+        'profile.settings.lang.desc': '當前：繁體中文',
+        'profile.settings.notif.title': '推送通知',
+        'profile.settings.notif.desc': '每日運勢提醒',
+        'profile.settings.privacy.title': '隱私模式',
+        'profile.settings.privacy.desc': '隱藏我的解讀歷史',
+        'profile.settings.danger.title': '危險區域',
+        'profile.settings.danger.desc': '刪除帳戶和數據',
+
+        // 支付頁面 擴展
+        'payment.refund_policy': '服務一旦交付（如報告生成、諮詢結束），不支持退款',
+        'payment.free_preview': '提供免費預覽（報告前100字免費查看）',
+
+        // 投訴與客服
+        'support.title': '幫助中心與 AI 客服',
+        'support.ai_service': '24/7 AI 在線客服',
+        'support.sla': '投訴將在 3 個工作日內得到答覆',
+        'support.complaint_label': '投訴內容誤導',
+        'support.compensation_title': '滿意度保障',
+        'support.compensation_desc': '若對結果不滿意，我們將贈送價值 $29 的《風水佈局電子書》作為補償，替代退款。',
+        'support.chat_placeholder': '請描述您的問題...',
+        'support.ai_greeting': '您好，我是您的九筮 AI 助手。請問今天有什麼可以帮到您的嗎？',
+    },
+
+    'es': {
+        // Navigation
+        'nav.home': 'Inicio',
+        'nav.divination': 'Divinación',
+        'nav.fengshui': 'Feng Shui',
+        'nav.iching': 'I-Ching',
+        'nav.profile': 'Perfil',
+        'nav.upgrade': 'Actualizar',
+        'nav.getStarted': 'Empezar',
+        'nav.login': 'Iniciar sesión',
+        'nav.logout': 'Cerrar sesión',
+        'nav.premium': 'Premium',
+        'nav.userInfo': 'Perfil',
+        'nav.myReadings': 'Mis Lecturas',
+        'nav.settings': 'Configuración',
+        'nav.about': 'Sobre Nosotros',
+
+        // Brand
+        'brand.name': 'Astre Devin',
+
+        // Common
+        'common.loading': 'Cargando...',
+        'common.save': 'Guardar',
+        'common.cancel': 'Cancelar',
+        'common.confirm': 'Confirmar',
+        'common.close': 'Cerrar',
+        'common.back': 'Atrás',
+        'common.next': 'Siguiente',
+        'common.submit': 'Enviar',
+        'common.search': 'Buscar',
+
+        // Home Page - Hero
+        'home.hero.title1': 'Descubre Tu Destino',
+        'home.hero.title2': 'Desbloquea Sabiduría Antigua',
+        'home.hero.title3': 'Navega el Viaje de la Vida',
+        'home.hero.title4': 'Encuentra Tu Verdadero Camino',
+        'home.hero.description': 'Aprovecha el poder de la sabiduría oriental antigua combinada con la tecnología moderna de IA. Explora tu destino, optimiza tu entorno y toma mejores decisiones de vida.',
+        'home.hero.cta1': 'Iniciar Lectura Gratis',
+        'home.hero.cta2': 'Saber Más',
+
+        // Home Page - Stats
+        'home.stats.readings': 'Lecturas Completadas',
+        'home.stats.users': 'Usuarios Felices',
+        'home.stats.accuracy': 'Tasa de Precisión',
+
+        // Home Page - Features
+        'home.features.title': 'Sabiduría Antigua, Tecnología Moderna',
+        'home.features.subtitle': 'Nuestra plataforma impulsada por IA combina métodos tradicionales de adivinación oriental con tecnología de vanguardia para brindarte información precisa y personalizada.',
+        'home.features.divination.title': 'IA Divinación',
+        'home.features.divination.desc': 'Obtén lecturas personalizadas utilizando algoritmos de IA avanzados entrenados en miles de años de sabiduría oriental. Preciso, instantáneo y adaptado a tu situación única.',
+        'home.features.divination.cta': 'Probar Ahora →',
+        'home.features.payPerUse': 'Pago por Uso:',
+        'home.features.perUse': '/uso',
+        'home.features.payNow': 'Pagar y Usar Ahora',
+        'home.features.fengshui.title': 'Análisis de Feng Shui',
+        'home.features.fengshui.desc': 'Optimiza tus espacios de vida y trabajo con nuestra brújula interactiva de Feng Shui. Obtén análisis en tiempo real y recomendaciones personalizadas para un mejor flujo de energía.',
+        'home.features.fengshui.cta': 'Explorar →',
+        'home.features.iching.title': 'Sabiduría del I-Ching',
+        'home.features.iching.desc': 'Consulta el antiguo Libro de los Cambios para obtener orientación sobre decisiones importantes. Nuestra IA interpreta los hexagramas en el contexto de tus desafíos de la vida moderna.',
+        'home.features.iching.cta': 'Consultar →',
+
+        // How It Works
+        'home.howItWorks.title': 'Tu Viaje de Autodescubrimiento',
+        'home.howItWorks.subtitle': 'Pasos simples para desbloquear la sabiduría de las edades y obtener claridad sobre tu camino a seguir.',
+        'home.howItWorks.step1.title': 'Comparte Tu Información',
+        'home.howItWorks.step1.desc': 'Ingresa tus detalles de nacimiento y tus preguntas o inquietudes actuales.',
+        'home.howItWorks.step2.title': 'Análisis de IA',
+        'home.howItWorks.step2.desc': 'Nuestra IA procesa tu información utilizando antiguos sistemas de sabiduría oriental.',
+        'home.howItWorks.step3.title': 'Obtén Perspectivas',
+        'home.howItWorks.step3.desc': 'Recibe lecturas personalizadas con orientación práctica y predicciones.',
+        'home.howItWorks.step4.title': 'Toma Acción',
+        'home.howItWorks.step4.desc': 'Utiliza la sabiduría adquirida para tomar mejores decisiones y mejorar tu vida.',
+
+        // Home - Pricing
+        'home.pricing.title': 'Elige Tu Camino',
+        'home.pricing.subtitle': 'Comienza con nuestras lecturas gratuitas o desbloquea todo el poder de la sabiduría antigua con funciones premium.',
+
+        // Home - Disclaimer
+        'home.disclaimer.title': '⚠️ Descargo de Responsabilidad Importante',
+        'home.disclaimer.text': 'Destiny AI proporciona herramientas de entretenimiento y autorreflexión basadas en antiguas tradiciones de sabiduría oriental. Nuestras lecturas y análisis son solo para fines informativos y de entretenimiento y no deben considerarse como asesoramiento profesional para asuntos médicos, legales, financieros o psicológicos. Los resultados no están garantizados y no deben ser la única base para decisiones importantes de la vida. Consulte a profesionales calificados para asuntos que requieran orientación experta.',
+
+        // Divination Page
+        'divination.title': 'Adivinación IA y Lectura de Fortuna',
+        'divination.subtitle': 'Descubre tu destino a través del análisis avanzado de IA de tu carta natal y camino de vida.',
+        'divination.form.title': 'Ingresa Tu Información de Nacimiento',
+        'divination.form.birthDate': 'Fecha de Nacimiento',
+        'divination.form.birthTime': 'Hora de Nacimiento',
+        'divination.form.birthPlace': 'Lugar de Nacimiento',
+        'divination.form.gender': 'Género',
+        'divination.form.gender.male': 'Hombre',
+        'divination.form.gender.female': 'Mujer',
+        'divination.form.gender.other': 'Otro',
+        'divination.form.gender.select': 'Seleccionar Género',
+        'divination.form.question': '¿Qué Te Gustaría Saber?',
+        'divination.category.career': 'Carrera',
+        'divination.category.career.desc': 'Crecimiento profesional y oportunidades',
+        'divination.category.wealth': 'Riqueza',
+        'divination.category.wealth.desc': 'Perspectivas financieras y suerte con el dinero',
+        'divination.category.love': 'Amor',
+        'divination.category.love.desc': 'Relaciones y matrimonio',
+        'divination.category.health': 'Salud',
+        'divination.category.health.desc': 'Bienestar y vitalidad',
+        'divination.button.analyze': 'Analizar Mi Destino',
+        'divination.dateFormat': 'Formato: MM/DD/AAAA (ej., 12/31/1990)',
+        'divination.timeFormat': 'Formato: 12 horas (ej., 2:30 PM)',
+        'divination.dateLabel': '📅 Formato Inglés',
+        'divination.timeLabel': '🕐 Formato 12 Horas',
+        'divination.clickToSelect': 'Clic para seleccionar',
+
+        // Feng Shui Page
+        'fengshui.title': 'Análisis de Feng Shui y Brújula',
+        'fengshui.subtitle': 'Optimiza tus espacios de vida y trabajo con nuestra brújula interactiva de Feng Shui. Obtén análisis en tiempo real y recomendaciones personalizadas.',
+        'fengshui.compass.title': 'Brújula Interactiva de Feng Shui',
+        'fengshui.compass.rotateLeft': '← Girar Izquierda',
+        'fengshui.compass.rotateRight': 'Girar Derecha →',
+        'fengshui.compass.direction': 'Dirección Actual',
+        'fengshui.compass.degrees': 'Grados',
+        'fengshui.elements.title': 'Equilibrio de los Cinco Elementos',
+        'fengshui.elements.wood': 'Madera',
+        'fengshui.elements.fire': 'Fuego',
+        'fengshui.elements.earth': 'Tierra',
+        'fengshui.elements.metal': 'Metal',
+        'fengshui.elements.water': 'Agua',
+        'fengshui.button.analyze': 'Analizar Feng Shui',
+        'fengshui.analyze.button': 'Analizar Feng Shui',
+        'fengshui.image.upload': 'Subir Foto de la Habitación',
+        'fengshui.image.success': 'Imagen subida exitosamente',
+
+        // I-Ching Page
+        'iching.title': 'Adivinación I-Ching',
+        'iching.subtitle': 'Consulta el antiguo Libro de los Cambios para orientación. Nuestra IA interpreta los hexagramas en el contexto de tu vida moderna.',
+        'iching.method.title': 'Elige Tu Método de Adivinación',
+        'iching.method.coins': 'Tres Monedas',
+        'iching.method.coins.desc': 'Método tradicional usando tres monedas lanzadas seis veces.',
+        'iching.method.numbers': 'Numérico',
+        'iching.method.numbers.desc': 'Usa números significativos de tu vida.',
+        'iching.method.time': 'Basado en Tiempo',
+        'iching.method.time.desc': 'Deja que la hora actual determine tu hexagrama.',
+        'iching.method.voice': 'Pregunta de Voz',
+        'iching.method.voice.desc': 'Habla tu pregunta y deja que la IA la analice.',
+        'iching.question.label': '¿Cuál es tu pregunta?',
+        'iching.question.placeholder': 'Concéntrate en una pregunta o situación específica.',
+        'iching.button.begin': 'Comenzar Adivinación',
+        'iching.cast.title': 'Lanzar las Monedas',
+        'iching.cast.instruction': 'Concéntrate en tu pregunta y haz clic para lanzar las monedas.',
+        'iching.cast.current': 'Lanzando',
+        'iching.cast.of': 'de',
+        'iching.cast.button': 'Lanzar Monedas',
+        'iching.hexagram.building': 'Construyendo...',
+        'iching.hexagram.your': 'Tu Hexagrama',
+        'iching.result.title': 'Tu Lectura de I-Ching',
+        'iching.result.subtitle': 'La sabiduría antigua revela:',
+        'iching.result.primary': 'Hexagrama Principal',
+        'iching.result.changing': 'Líneas Cambiantes',
+        'iching.result.judgment': 'Juicio',
+        'iching.result.image': 'Imagen',
+        'iching.result.advice': 'Consejo para Tu Situación',
+        'iching.result.actions': 'Acciones Recomendadas',
+        'iching.button.save': 'Guardar Lectura',
+        'iching.button.share': 'Compartir Lectura',
+        'iching.button.new': 'Nueva Adivinación',
+
+        // Profile Page
+        'profile.title': 'Perfil Personal',
+        'profile.level': 'Nivel',
+        'profile.stats.readings': 'Lecturas Totales',
+        'profile.stats.accuracy': 'Precisión',
+        'profile.stats.streak': 'Racha (Días)',
+        'profile.stats.achievements': 'Logros',
+        'profile.progress': 'Progreso de Nivel',
+        'profile.button.edit': 'Editar Perfil',
+        'profile.button.settings': 'Configuración',
+        'profile.tab.dashboard': 'Panel',
+        'profile.tab.readings': 'Historial',
+        'profile.tab.goals': 'Objetivos',
+        'profile.tab.achievements': 'Logros',
+        'profile.tab.insights': 'Perspectivas',
+        'profile.personality': 'Rasgos de Personalidad',
+        'profile.activity.recent': 'Actividad Reciente',
+        'profile.insights.today': 'Perspectivas de Hoy',
+        'profile.insights.lucky': 'Elemento de la Suerte',
+        'profile.insights.career': 'Perspectiva Profesional',
+        'profile.insights.relationships': 'Relaciones',
+        'profile.button.fullReading': 'Obtener Lectura Completa',
+        'profile.settings.title': 'Preferencias de Cuenta',
+        'profile.settings.lang.title': 'Idioma del Sistema',
+        'profile.settings.lang.desc': 'Actual: Español',
+        'profile.settings.notif.title': 'Notificaciones Push',
+        'profile.settings.notif.desc': 'Alertas diarias de destino',
+        'profile.settings.privacy.title': 'Modo Privacidad',
+        'profile.settings.privacy.desc': 'Ocultar mi historial',
+        'profile.settings.danger.title': 'Zona de Peligro',
+        'profile.settings.danger.desc': 'Borrar cuenta y datos',
+        'profile.history.title': 'Historial de Lecturas',
+        'profile.history.allTypes': 'Todos los Tipos',
+        'profile.history.last30': 'Últimos 30 Días',
+        'profile.history.last3months': 'Últimos 3 Meses',
+        'profile.history.lastYear': 'Último Año',
+        'profile.history.allTime': 'Todo el Tiempo',
+        'profile.history.loadMore': 'Cargar Más Historial',
+        'profile.goals.current': 'Objetivos Actuales',
+        'profile.goals.add': 'Añadir Objetivo',
+        'profile.goals.overview': 'Resumen de Progreso',
+
+        // Payment Page
+        'payment.title': 'Elige Tu Camino a la Sabiduría',
+        'payment.subtitle': 'Comienza tu viaje con lecturas gratuitas o desbloquea todo el poder con funciones premium.',
+        'payment.guarantee': 'Garantía de Devolución de 30 Días',
+        'payment.plan.free': 'Gratis',
+        'payment.plan.premium': 'Premium',
+        'payment.plan.professional': 'Profesional',
+        'payment.plan.forever': 'Para Siempre',
+        'payment.plan.perMonth': 'por mes',
+        'payment.plan.mostPopular': 'Más Popular',
+        'payment.button.getStarted': 'Empezar Gratis',
+        'payment.button.choosePremium': 'Elegir Premium',
+        'payment.button.contactSales': 'Contactar Ventas',
+        'payment.feature.basic': 'Lecturas básicas',
+        'payment.feature.daily': 'Horóscopos diarios',
+        'payment.feature.fengshui': 'Consejos simples de Feng Shui',
+        'payment.feature.community': 'Acceso a la comunidad',
+        'payment.feature.iching': 'Lecturas básicas de I-Ching',
+        'payment.feature.birthChart': 'Análisis detallado de carta natal',
+        'payment.feature.advancedFengshui': 'Brújula avanzada de Feng Shui',
+        'payment.feature.unlimitedIching': 'Consultas ilimitadas de I-Ching',
+        'payment.feature.tracking': 'Seguimiento de crecimiento personal',
+        'payment.feature.consultations': 'Consultas con expertos',
+        'payment.feature.support': 'Soporte prioritario',
+        'payment.feature.business': 'Consultas de negocios',
+        'payment.feature.reports': 'Informes personalizados',
+        'payment.feature.api': 'Acceso a API',
+        'payment.feature.whiteLabel': 'Soluciones de marca blanca',
+        'payment.comparison.title': 'Comparar Todas las Funciones',
+        'payment.comparison.subtitle': 'Mira exactamente qué obtienes',
+        'payment.testimonials.title': 'Lo Que Dicen Nuestros Usuarios',
+        'payment.testimonials.subtitle': 'Únete a miles de buscadores satisfechos',
+        'payment.faq.title': 'Preguntas Frecuentes',
+        'payment.form.title': 'Completa Tu Suscripción',
+        'payment.form.secure': 'Pago seguro con encriptación SSL',
+        'payment.form.cardNumber': 'Número de Tarjeta',
+        'payment.form.expiry': 'Fecha de Expiración',
+        'payment.form.cvv': 'CVV',
+        'payment.form.name': 'Titular de la Tarjeta',
+        'payment.form.email': 'Correo Electrónico',
+        'payment.form.security': 'Tu información de pago está segura',
+        'payment.button.cancel': 'Cancelar',
+        'payment.button.subscribe': 'Suscribirse Ahora',
+
+        // Tooltips
+        'tooltip.divination': 'La adivinación es la práctica de buscar conocimiento del futuro o lo desconocido.',
+        'tooltip.fengshui': 'Feng Shui es una antigua práctica china de organizar tu entorno.',
+        'tooltip.iching': 'El I-Ching es un antiguo texto de adivinación chino de 3000 años.',
+        'tooltip.elements': 'Los Cinco Elementos (Madera, Fuego, Tierra, Metal, Agua) son conceptos fundamentales.',
+        'tooltip.wood': 'Madera representa crecimiento y vitalidad.',
+        'tooltip.fire': 'Fuego representa pasión y energía.',
+        'tooltip.earth': 'Tierra representa estabilidad y nutrición.',
+        'tooltip.metal': 'Metal representa precisión y claridad.',
+        'tooltip.water': 'Agua representa flujo y sabiduría.',
+
+        // Support and Claims
+        'support.title': 'Centro de Ayuda y Soporte AI',
+        'support.ai_service': 'Servicio al Cliente AI 24/7',
+        'support.sla': 'Las quejas serán respondidas en un plazo de 3 días hábiles.',
+        'support.complaint_label': 'Informar contenido engañoso',
+        'support.compensation_title': 'Garantía de Satisfacción',
+        'support.compensation_desc': 'Para cualquier insatisfacción, ofrecemos un libro electrónico de Feng Shui gratuito (valor de $29) en lugar de un reembolso.',
+        'support.chat_placeholder': 'Escriba su inquietud aquí...',
+        'support.ai_greeting': 'Saludos. Soy su Asistente AI de Oráculo. ¿Cómo puedo guiarle en su viaje hoy?',
+
+        // Footer
+        'footer.services': 'Servicios',
+        'footer.company': 'Empresa',
+        'footer.legal': 'Legal',
+        'footer.connect': 'Conectar',
+        'footer.social': 'Redes Sociales',
+        'footer.xiaohongshu': 'Xiaohongshu: 魔缘文核',
+        'footer.rights': 'Todos los derechos reservados.',
+        'footer.description': 'Potenciando vidas a través de la sabiduría antigua y la tecnología moderna.',
+        'footer.privacy': 'Política de Privacidad',
+        'footer.terms': 'Términos de Servicio',
+        'footer.contact': 'Contáctenos',
+        'footer.support': 'Soporte',
+        'footer.copyright': '© 2024 Destiny AI. Todos los derechos reservados. Potenciando vidas a través de la sabiduría antigua y la tecnología moderna.',
     },
 };
 

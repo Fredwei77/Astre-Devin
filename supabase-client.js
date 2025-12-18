@@ -5,8 +5,18 @@
 
 // 从环境变量或配置文件加载Supabase配置
 // ⚠️ 在 Netlify 中配置环境变量：VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY
-const SUPABASE_URL = import.meta?.env?.VITE_SUPABASE_URL || 'https://izkcgqvxecfxqtgxpmaj.supabase.co';
-const SUPABASE_ANON_KEY = import.meta?.env?.VITE_SUPABASE_ANON_KEY || '';
+let SUPABASE_URL = 'https://izkcgqvxecfxqtgxpmaj.supabase.co';
+let SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml6a2NncXZ4ZWNmeHF0Z3hwbWFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwMzMzMzIsImV4cCI6MjA3OTYwOTMzMn0.wQEjV2MKXjSmsWUK14Shcg9QCCjGnbH564BbkrLPYms';
+
+// 尝试从全局配置或环境变量副本中获取（适配不同环境）
+try {
+    if (typeof window !== 'undefined' && window.SUPABASE_CONFIG) {
+        SUPABASE_URL = window.SUPABASE_CONFIG.url || SUPABASE_URL;
+        SUPABASE_ANON_KEY = window.SUPABASE_CONFIG.anonKey || SUPABASE_ANON_KEY;
+    }
+} catch (e) {
+    console.warn('Supabase config loading notice:', e.message);
+}
 
 // 初始化Supabase客户端
 let supabaseClient = null;

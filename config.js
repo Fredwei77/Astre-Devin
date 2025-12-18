@@ -4,7 +4,9 @@
 const CONFIG = {
   // OpenRouter API配置 - 通过后端代理访问，不在前端暴露密钥
   OPENROUTER_API_KEY: '', // 已移除 - 使用后端代理
-  OPENROUTER_API_URL: '/api/ai/chat', // 通过后端代理
+  OPENROUTER_API_URL: (typeof window !== 'undefined' && window.location.protocol === 'file:')
+    ? 'http://localhost:3000/api/ai/chat'
+    : '/api/ai/chat', // 通过后端代理
 
   // 模型选择 - 使用 DeepSeek 和 Gemini
   AI_MODEL: 'deepseek/deepseek-chat', // 主模型：DeepSeek（高性价比，强推理能力）
@@ -108,7 +110,7 @@ Your analysis framework includes:
       USER: (data) => {
         const language = data.language || localStorage.getItem('preferredLanguage') || 'zh';
         const isEnglish = language === 'en';
-        
+
         if (isEnglish) {
           return `Please provide an in-depth destiny analysis for the following user:
 
@@ -149,7 +151,7 @@ Please strictly return in JSON format, do not include any Markdown tags, code bl
   "yearForecast": "Detailed annual fortune forecast text IN ENGLISH (including career, wealth, relationships, etc.)"
 }`;
         }
-        
+
         return `请为以下用户进行深度命运分析：
 
 出生日期：${data.birthDate}
@@ -263,7 +265,7 @@ Your analysis framework includes:
 
       USER: (data) => {
         const language = data.language || localStorage.getItem('preferredLanguage') || 'zh';
-        
+
         if (language === 'en') {
           return `Please analyze the Feng Shui layout of the following space:
 
@@ -304,7 +306,7 @@ Please strictly return in JSON format, do not include \`\`\`json\`\`\` tags or a
   "taboos": ["Taboo1 IN ENGLISH", "Taboo2 IN ENGLISH", ...]
 }`;
         }
-        
+
         return `请分析以下空间的风水布局：
 
 空间类型：${data.spaceType || '居住空间'}

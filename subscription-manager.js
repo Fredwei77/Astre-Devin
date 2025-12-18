@@ -40,23 +40,26 @@ class SubscriptionManager {
                 }
             }
         };
-        
+
         // 按次付费价格
         this.payPerUse = {
             divination: {
                 price: 0.99,
                 name: 'AI占卜',
-                nameEn: 'AI Divination'
+                nameEn: 'AI Divination',
+                url: 'divination.html'
             },
             fengshui: {
                 price: 1.99,
                 name: '风水分析',
-                nameEn: 'Feng Shui Analysis'
+                nameEn: 'Feng Shui Analysis',
+                url: 'fengshui.html'
             },
             iching: {
                 price: 2.99,
                 name: '易经智慧',
-                nameEn: 'I-Ching Wisdom'
+                nameEn: 'I-Ching Wisdom',
+                url: 'iching.html'
             }
         };
     }
@@ -81,19 +84,18 @@ class SubscriptionManager {
     }
 
     /**
-     * 检查用户是否有权限使用AI功能
+     * 检查用户是否有权限使用AI功能 - 修正：默认允许使用，由后端处理额度
      */
     canUseAI() {
-        const plan = this.getCurrentPlan();
-        return this.plans[plan]?.features.aiEnabled || false;
+        // 解除限制，让所有用户都能尝试调用 AI
+        return true;
     }
 
     /**
-     * 检查用户是否只能使用模拟数据
+     * 检查用户是否只能使用模拟数据 - 修正：不再强制降级
      */
     isMockDataOnly() {
-        const plan = this.getCurrentPlan();
-        return this.plans[plan]?.features.mockDataOnly !== false;
+        return false;
     }
 
     /**
@@ -144,7 +146,7 @@ class SubscriptionManager {
 
         const messages = {
             title: isEnglish ? 'Upgrade Required' : '需要升级',
-            message: isEnglish 
+            message: isEnglish
                 ? `${feature} is only available for Premium and Professional members.`
                 : `${feature}仅对高级版和专业版会员开放。`,
             upgrade: isEnglish ? 'Upgrade Now' : '立即升级',
@@ -218,7 +220,7 @@ class SubscriptionManager {
                             class="flex-1 bg-moon-silver/20 text-moon-silver py-3 rounded-lg font-semibold hover:bg-moon-silver/30 transition-colors">
                         ${messages.cancel}
                     </button>
-                    <button onclick="window.location.href='payment.html'" 
+                    <button onclick="if(window.statePreserver) window.statePreserver.saveCurrentPage(); window.location.href='payment.html'" 
                             class="flex-1 bg-mystic-gold text-deep-navy py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors">
                         ${messages.upgrade}
                     </button>
@@ -235,7 +237,7 @@ class SubscriptionManager {
             }
         });
     }
-    
+
     /**
      * 处理按次付费
      */
@@ -243,33 +245,33 @@ class SubscriptionManager {
         const currentLang = localStorage.getItem('preferredLanguage') || 'zh';
         const isEnglish = currentLang === 'en';
         const payInfo = this.payPerUse[serviceType];
-        
+
         if (!payInfo) {
             console.error('Invalid service type:', serviceType);
             return;
         }
-        
+
         // 关闭当前模态框
         const modal = document.querySelector('.fixed.inset-0');
         if (modal) modal.remove();
-        
+
         // 显示支付处理提示
         this.showPaymentProcessing(payInfo, isEnglish);
-        
+
         // 模拟支付处理（实际应该调用支付API）
         setTimeout(() => {
             // 支付成功，授予一次使用权限
             this.grantSingleUse(serviceType);
-            
+
             // 关闭支付处理提示
             const processingModal = document.querySelector('.payment-processing-modal');
             if (processingModal) processingModal.remove();
-            
+
             // 显示支付成功提示
             this.showPaymentSuccess(payInfo, isEnglish);
         }, 2000);
     }
-    
+
     /**
      * 显示支付处理中
      */
@@ -288,7 +290,7 @@ class SubscriptionManager {
         `;
         document.body.appendChild(modal);
     }
-    
+
     /**
      * 显示支付成功
      */
@@ -302,7 +304,7 @@ class SubscriptionManager {
                 <p class="text-moon-silver mb-4">
                     ${isEnglish ? `You can now use ${payInfo.nameEn}` : `您现在可以使用${payInfo.name}`}
                 </p>
-                <button onclick="this.closest('.fixed').remove(); window.location.reload();" 
+                <button onclick="this.closest('.fixed').remove(); window.location.href = '${payInfo.url}';" 
                         class="bg-mystic-gold text-deep-navy px-8 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors">
                     ${isEnglish ? 'Continue' : '继续'}
                 </button>
@@ -310,7 +312,7 @@ class SubscriptionManager {
         `;
         document.body.appendChild(modal);
     }
-    
+
     /**
      * 授予单次使用权限
      */
@@ -320,7 +322,7 @@ class SubscriptionManager {
         localStorage.setItem(key, (count + 1).toString());
         console.log(`✅ 已授予 ${serviceType} 单次使用权限`);
     }
-    
+
     /**
      * 检查是否有单次使用权限
      */
@@ -329,7 +331,7 @@ class SubscriptionManager {
         const count = parseInt(localStorage.getItem(key) || '0');
         return count > 0;
     }
-    
+
     /**
      * 消耗单次使用权限
      */
@@ -343,7 +345,23 @@ class SubscriptionManager {
         }
         return false;
     }
-    
+
+    /**
+     * 检查用户是否为高级会员
+     */
+    isPremiumUser() {
+        const plan = this.getCurrentPlan();
+        return plan === 'premium' || plan === 'professional';
+    }
+
+    /**
+     * 检查是否有任何类型的单次使用积分
+     */
+    hasSingleUseCredits() {
+        const services = ['divination', 'fengshui', 'iching'];
+        return services.some(service => this.hasSingleUse(service));
+    }
+
     /**
      * 检查是否可以使用服务（包括订阅和按次付费）
      */
@@ -352,12 +370,12 @@ class SubscriptionManager {
         if (this.canUseAI()) {
             return { allowed: true, type: 'subscription' };
         }
-        
+
         // 检查是否有单次使用权限
         if (this.hasSingleUse(serviceType)) {
             return { allowed: true, type: 'singleUse' };
         }
-        
+
         return { allowed: false, type: 'none' };
     }
 
@@ -371,7 +389,7 @@ class SubscriptionManager {
 
         const messages = {
             title: isEnglish ? 'Daily Limit Reached' : '今日使用次数已达上限',
-            message: isEnglish 
+            message: isEnglish
                 ? `You have used ${usage.used} of ${usage.limit} free readings today. Upgrade to Premium for unlimited access.`
                 : `您今天已使用 ${usage.used}/${usage.limit} 次免费测算。升级到高级版即可无限使用。`,
             upgrade: isEnglish ? 'Upgrade Now' : '立即升级',
@@ -393,7 +411,7 @@ class SubscriptionManager {
                             class="flex-1 bg-moon-silver/20 text-moon-silver py-3 rounded-lg font-semibold hover:bg-moon-silver/30 transition-colors">
                         ${messages.cancel}
                     </button>
-                    <button onclick="window.location.href='payment.html'" 
+                    <button onclick="if(window.statePreserver) window.statePreserver.saveCurrentPage(); window.location.href='payment.html'" 
                             class="flex-1 bg-mystic-gold text-deep-navy py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors">
                         ${messages.upgrade}
                     </button>

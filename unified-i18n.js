@@ -12,7 +12,7 @@
     class UnifiedI18n {
         constructor() {
             this.currentLang = localStorage.getItem(STORAGE_KEY) || DEFAULT_LANG;
-            
+
             // CRITICAL FIX: Sync preferredLanguage with destinyai_language on init
             // This ensures AI services always have the correct language
             const preferredLang = localStorage.getItem('preferredLanguage');
@@ -20,7 +20,7 @@
                 localStorage.setItem('preferredLanguage', this.currentLang);
                 console.log('[UnifiedI18n] Synced preferredLanguage to:', this.currentLang);
             }
-            
+
             this.translations = {};
             this.observers = [];
             this.initialized = false;
@@ -67,12 +67,12 @@
 
             this.currentLang = lang;
             localStorage.setItem(STORAGE_KEY, lang);
-            
+
             // CRITICAL FIX: Also update preferredLanguage for AI services
             // AI services (divination, fengshui, iching) use 'preferredLanguage' key
             localStorage.setItem('preferredLanguage', lang);
             console.log('[UnifiedI18n] Updated preferredLanguage to:', lang);
-            
+
             document.documentElement.lang = this.getLangCode(lang);
 
             this.updatePage();
@@ -88,7 +88,8 @@
             const codes = {
                 'en': 'en',
                 'zh-CN': 'zh-Hans',
-                'zh-TW': 'zh-Hant'
+                'zh-TW': 'zh-Hant',
+                'es': 'es'
             };
             return codes[lang] || 'en';
         }

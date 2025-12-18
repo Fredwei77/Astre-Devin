@@ -69,30 +69,11 @@ class AIService {
      * @returns {Promise<object>} AI响应
      */
     async sendRequest(systemPrompt, userPrompt, options = {}) {
-        // 检查订阅权限
+        // 仅作日志记录，不再拦截使用限制
         if (typeof window !== 'undefined' && window.subscriptionManager) {
-            const canUseAI = window.subscriptionManager.canUseAI();
-            const isMockOnly = window.subscriptionManager.isMockDataOnly();
-            
-            // 免费用户只能使用模拟数据
-            if (isMockOnly || !canUseAI) {
-                console.log('免费用户，使用模拟数据');
-                const mockData = await this.getMockResponse(options.type);
-                return mockData;
-            }
-            
-            // 检查每日使用限制
-            const usage = window.subscriptionManager.checkDailyUsage();
-            if (!usage.allowed) {
-                console.log('今日使用次数已达上限');
-                window.subscriptionManager.showLimitReachedPrompt();
-                throw new Error('今日使用次数已达上限');
-            }
-            
-            // 增加使用次数
-            window.subscriptionManager.incrementDailyUsage();
+            console.log('AI Service: 发送请求，绕过使用限制检查');
         }
-        
+
         // 如果是模拟模式，返回模拟数据
         if (this.mockMode) {
             console.log('使用模拟模式，类型:', options.type);
@@ -103,8 +84,8 @@ class AIService {
 
         // 验证API配置
         // 如果使用后端代理（apiUrl以/api开头），则不需要检查apiKey
-        const isUsingProxy = this.apiUrl && this.apiUrl.startsWith('/api');
-        
+        const isUsingProxy = this.apiUrl && (this.apiUrl.startsWith('/api') || this.apiUrl.includes('/api/'));
+
         if (!isUsingProxy && (!this.apiKey || this.apiKey === 'YOUR_OPENROUTER_API_KEY_HERE' || this.apiKey === '')) {
             throw new Error('请在config.js中配置有效的OPENROUTER_API_KEY或使用后端代理');
         }
@@ -114,18 +95,18 @@ class AIService {
             await this.rateLimit();
 
             // 构建请求头
-            const isUsingProxy = this.apiUrl && this.apiUrl.startsWith('/api');
+            const isUsingProxy = this.apiUrl && (this.apiUrl.startsWith('/api') || this.apiUrl.includes('/api/'));
             const headers = {
                 'Content-Type': 'application/json'
             };
-            
+
             // 只有在不使用代理时才添加Authorization头
             if (!isUsingProxy && this.apiKey) {
                 headers['Authorization'] = `Bearer ${this.apiKey}`;
                 headers['HTTP-Referer'] = window.location.origin;
                 headers['X-Title'] = (typeof CONFIG !== 'undefined' ? CONFIG.APP_NAME : 'Destiny AI');
             }
-            
+
             const response = await fetch(this.apiUrl, {
                 method: 'POST',
                 headers: headers,
@@ -210,14 +191,47 @@ class AIService {
                     console.error('❌ 最终解析也失败:', finalError.message);
                 }
 
-                // 所有解析都失败，回退到模拟模式
-                throw new Error(`JSON解析彻底失败: ${e.message}`);
+                // 核心修复：如果不是必须要求 JSON 的场景，解析失败则返回原始文本
+                // 占卜、风水主分析通常需要 JSON，但追问（followup）通常是文本
+                if (options.type && options.type.includes('followup')) {
+                    console.log('ℹ️ 侦测到追问类型，解析 JSON 失败，返回原始文本内容');
+                    return content;
+                }
+
+                // 检查用户是否已付费
+                if (typeof window !== 'undefined' && window.subscriptionManager) {
+                    const isPaidUser = window.subscriptionManager.isPremiumUser() || window.subscriptionManager.hasSingleUseCredits();
+
+                    if (isPaidUser) {
+                        // 如果内容看起来根本不像 JSON（不含大括号），则直接返回原始文本
+                        if (!content.includes('{')) {
+                            return content;
+                        }
+                        // 否则才抛错
+                        throw new Error(`AI响应解析失败: ${e.message}。请稍后重试。`);
+                    }
+                }
+
+                // 默认回退
+                return content;
             }
 
         } catch (error) {
             console.error('AI请求错误:', error);
 
-            // 如果API失败，回退到模拟模式
+            // 检查用户是否已付费，如果已付费则不应该回退到模拟模式
+            if (typeof window !== 'undefined' && window.subscriptionManager) {
+                const canUseAI = window.subscriptionManager.canUseAI();
+                const isPaidUser = window.subscriptionManager.isPremiumUser() || window.subscriptionManager.hasSingleUseCredits();
+
+                if (isPaidUser && canUseAI) {
+                    // 付费用户，AI请求失败时应该报错而不是降级到模拟数据
+                    console.error('付费用户AI请求失败，不应该降级到模拟数据');
+                    throw new Error('AI服务暂时不可用，请稍后重试。如果问题持续存在，请联系客服。');
+                }
+            }
+
+            // 免费用户或未登录用户，可以回退到模拟模式
             console.warn('API请求失败，使用模拟数据');
             return this.getMockResponse(options.type);
         }
@@ -243,22 +257,12 @@ class AIService {
      * 占卜分析 - 使用 DeepSeek
      */
     async analyzeDivination(userData) {
-        // 检查订阅权限或按次付费权限
+        // 仅作日志记录，不再拦截请求
         if (typeof window !== 'undefined' && window.subscriptionManager) {
             const access = window.subscriptionManager.canUseService('divination');
-            
-            if (!access.allowed) {
-                console.log('需要升级或按次付费才能使用AI功能');
-                window.subscriptionManager.showUpgradePrompt('AI占卜分析', 'divination');
-                return this.getMockResponse('divination');
-            }
-            
-            // 如果是单次使用，消耗权限
-            if (access.type === 'singleUse') {
-                window.subscriptionManager.consumeSingleUse('divination');
-            }
+            console.log('AI Service: 占卜请求权限状态:', access);
         }
-        
+
         // 首先尝试等待CONFIG加载完成
         await this.waitForConfig();
 
@@ -278,7 +282,7 @@ class AIService {
         // 获取当前语言
         const language = localStorage.getItem('preferredLanguage') || 'zh';
         console.log('🌐 Divination analysis language:', language);
-        
+
         // 将语言信息添加到 userData
         userData.language = language;
 
@@ -315,22 +319,12 @@ class AIService {
      * 风水分析 - 使用 Gemini Pro
      */
     async analyzeFengShui(spaceData, imageBase64 = null) {
-        // 检查订阅权限或按次付费权限
+        // 仅作日志记录
         if (typeof window !== 'undefined' && window.subscriptionManager) {
             const access = window.subscriptionManager.canUseService('fengshui');
-            
-            if (!access.allowed) {
-                console.log('需要升级或按次付费才能使用AI功能');
-                window.subscriptionManager.showUpgradePrompt('AI风水分析', 'fengshui');
-                return this.getMockResponse('fengshui');
-            }
-            
-            // 如果是单次使用，消耗权限
-            if (access.type === 'singleUse') {
-                window.subscriptionManager.consumeSingleUse('fengshui');
-            }
+            console.log('AI Service: 风水请求权限状态:', access);
         }
-        
+
         // 检查CONFIG是否可用
         if (typeof CONFIG === 'undefined' || !CONFIG.PROMPTS) {
             console.warn('CONFIG.PROMPTS not available, using mock data');
@@ -340,7 +334,7 @@ class AIService {
         // 获取当前语言
         const language = localStorage.getItem('preferredLanguage') || 'zh';
         console.log('🌐 Feng Shui analysis language:', language);
-        
+
         // 将语言信息添加到 spaceData
         spaceData.language = language;
 
@@ -375,22 +369,12 @@ class AIService {
      * 易经解读 - 使用 DeepSeek
      */
     async analyzeIChing(questionData) {
-        // 检查订阅权限或按次付费权限
+        // 仅作日志记录
         if (typeof window !== 'undefined' && window.subscriptionManager) {
             const access = window.subscriptionManager.canUseService('iching');
-            
-            if (!access.allowed) {
-                console.log('需要升级或按次付费才能使用AI功能');
-                window.subscriptionManager.showUpgradePrompt('AI易经解读', 'iching');
-                return this.getMockResponse('iching');
-            }
-            
-            // 如果是单次使用，消耗权限
-            if (access.type === 'singleUse') {
-                window.subscriptionManager.consumeSingleUse('iching');
-            }
+            console.log('AI Service: 易经请求权限状态:', access);
         }
-        
+
         // 检查CONFIG是否可用
         if (typeof CONFIG === 'undefined' || !CONFIG.PROMPTS) {
             console.warn('CONFIG.PROMPTS not available, using mock data');
@@ -414,7 +398,7 @@ class AIService {
         // 获取当前语言
         const language = localStorage.getItem('preferredLanguage') || 'zh';
         const isEnglish = language === 'en';
-        
+
         const mockData = {
             divination: {
                 personality: isEnglish ? [
@@ -439,7 +423,7 @@ class AIService {
                 ] : [
                     '创意领域有出色机会',
                     '领导职位潜力巨大',
-                    '2024年财务前景良好',
+                    `${new Date().getFullYear()}年财务前景良好`,
                     '考虑创业机会',
                     '国际发展机遇在前'
                 ],
@@ -491,17 +475,17 @@ class AIService {
                 },
                 luckyColors: isEnglish ? ['gold', 'silver', 'purple', 'green', 'orange'] : ['金色', '银色', '紫色', '绿色', '橙色'],
                 luckyNumbers: [3, 7, 9, 21, 36],
-                zodiacAnalysis: isEnglish 
+                zodiacAnalysis: isEnglish
                     ? 'Your zodiac characteristics show strong adaptability and wisdom. You excel in interpersonal interactions and are good at seizing opportunities.'
                     : '您的生肖特征显示出强大的适应能力和智慧。在人际交往中表现出色，善于把握机会。',
                 yearForecast: isEnglish
-                    ? '2024 overall fortune is rising, especially in career and wealth. The first half of the year requires steady progress, while the second half will bring breakthrough developments.'
-                    : '2024年整体运势上扬，特别是在事业和财运方面。上半年需要稳扎稳打，下半年将迎来突破性进展。'
+                    ? `${new Date().getFullYear()} overall fortune is rising, especially in career and wealth. The first half of the year requires steady progress, while the second half will bring breakthrough developments.`
+                    : `${new Date().getFullYear()}年整体运势上扬，特别是在事业和财运方面。上半年需要稳扎稳打，下半年将迎来突破性进展。`
             },
 
             fengshui: {
                 overallScore: 75,
-                directionAnalysis: isEnglish 
+                directionAnalysis: isEnglish
                     ? 'The current direction is auspicious, favorable for career development and wealth enhancement. It is recommended to strengthen the water element to balance energy flow.'
                     : '当前方位属于吉位，有利于事业发展和财运提升。建议加强水元素以平衡能量流动。',
                 elements: {
@@ -554,7 +538,7 @@ class AIService {
                         priority: 'low'
                     }
                 ],
-                luckyItems: isEnglish 
+                luckyItems: isEnglish
                     ? ['Red Lantern', 'Lucky Bamboo', 'Dragon Statue', 'Crystal Sphere']
                     : ['红灯笼', '幸运竹', '龙雕像', '水晶球'],
                 taboos: isEnglish

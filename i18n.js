@@ -4,7 +4,7 @@
 class I18n {
     constructor() {
         this.currentLanguage = localStorage.getItem('destinyai_language') || 'en';
-        
+
         // CRITICAL FIX: Sync preferredLanguage with destinyai_language on init
         // This ensures AI services always have the correct language
         const preferredLang = localStorage.getItem('preferredLanguage');
@@ -12,23 +12,43 @@ class I18n {
             localStorage.setItem('preferredLanguage', this.currentLanguage);
             console.log('[I18n] Synced preferredLanguage to:', this.currentLanguage);
         }
-        
-        this.translations = this.loadTranslations();
+
+        this.translations = this._loadBuiltInTranslations();
         this.init();
     }
-    
+
     init() {
         // Set initial language
         this.setLanguage(this.currentLanguage);
-        
+
         // Setup language selector
         this.setupLanguageSelector();
-        
+
         // Update page on load
         this.updatePage();
     }
-    
-    loadTranslations() {
+
+    loadTranslations(externalTranslations) {
+        if (!externalTranslations) return;
+
+        console.log('[I18n] Loading external translations:', Object.keys(externalTranslations));
+
+        // Merge external translations into the existing translations
+        for (const lang of Object.keys(externalTranslations)) {
+            if (!this.translations[lang]) {
+                this.translations[lang] = {};
+            }
+            // Deep merge or just mixin keys
+            Object.assign(this.translations[lang], externalTranslations[lang]);
+        }
+
+        // Trigger page update to reflect new translations immediately
+        if (this.currentLanguage && externalTranslations[this.currentLanguage]) {
+            this.updatePage();
+        }
+    }
+
+    _loadBuiltInTranslations() {
         return {
             en: {
                 // Navigation
@@ -42,7 +62,7 @@ class I18n {
                 'nav.premium': 'Premium',
                 'nav.upgrade': 'Upgrade',
                 'nav.getStarted': 'Get Started',
-                
+
                 // Common
                 'common.loading': 'Loading...',
                 'common.save': 'Save',
@@ -53,7 +73,7 @@ class I18n {
                 'common.next': 'Next',
                 'common.submit': 'Submit',
                 'common.search': 'Search',
-                
+
                 // Home Page
                 'home.hero.title': 'Discover Your Destiny',
                 'home.hero.title1': 'Discover Your Destiny',
@@ -67,7 +87,7 @@ class I18n {
                 'home.stats.readings': 'Readings Completed',
                 'home.stats.users': 'Happy Users',
                 'home.stats.accuracy': 'Accuracy Rate',
-                
+
                 // Home Features
                 'home.features.title': 'Ancient Wisdom, Modern Technology',
                 'home.features.subtitle': 'Our AI-powered platform combines traditional Eastern divination methods with cutting-edge technology to provide you with accurate, personalized insights.',
@@ -80,7 +100,7 @@ class I18n {
                 'home.features.iching.title': 'I-Ching Wisdom',
                 'home.features.iching.desc': 'Consult the ancient Book of Changes for guidance on important decisions. Our AI interprets the hexagrams in the context of your modern life challenges.',
                 'home.features.iching.cta': 'Consult →',
-                
+
                 // How It Works
                 'home.howItWorks.title': 'Your Journey to Self-Discovery',
                 'home.howItWorks.subtitle': 'Simple steps to unlock the wisdom of the ages and gain clarity about your path forward.',
@@ -92,7 +112,7 @@ class I18n {
                 'home.howItWorks.step3.desc': 'Receive personalized readings with actionable guidance and predictions.',
                 'home.howItWorks.step4.title': 'Take Action',
                 'home.howItWorks.step4.desc': 'Use the wisdom gained to make better decisions and improve your life.',
-                
+
                 // Divination Page
                 'divination.title': 'AI Divination & Fortune Reading',
                 'divination.subtitle': 'Discover your destiny through advanced AI analysis of your birth chart and life path.',
@@ -120,7 +140,7 @@ class I18n {
                 'divination.dateLabel': '📅 English Format',
                 'divination.timeLabel': '🕐 12-Hour Format',
                 'divination.clickToSelect': 'Click to select',
-                
+
                 // Feng Shui Page
                 'fengshui.title': 'Feng Shui Analysis & Compass',
                 'fengshui.subtitle': 'Optimize your living and working spaces with our interactive Feng Shui compass. Get real-time analysis and personalized recommendations for better energy flow.',
@@ -135,15 +155,19 @@ class I18n {
                 'fengshui.elements.earth': 'Earth',
                 'fengshui.elements.metal': 'Metal',
                 'fengshui.elements.water': 'Water',
-                
+                'fengshui.button.analyze': 'Analyze Feng Shui',
+                'fengshui.analyze.button': 'Analyze Feng Shui',
+                'fengshui.image.upload': 'Upload Room Photo',
+                'fengshui.image.success': 'Image uploaded successfully',
+
                 // Pricing
                 'home.pricing.title': 'Choose Your Path',
                 'home.pricing.subtitle': 'Start with our free readings or unlock the full power of ancient wisdom with premium features.',
-                
+
                 // Disclaimer
                 'home.disclaimer.title': '⚠️ Important Disclaimer',
                 'home.disclaimer.text': 'Destiny AI provides entertainment and self-reflection tools based on ancient Eastern wisdom traditions. Our readings and analyses are for informational and entertainment purposes only and should not be considered as professional advice for medical, legal, financial, or psychological matters. Results are not guaranteed and should not be the sole basis for important life decisions. Please consult qualified professionals for matters requiring expert guidance.',
-                
+
                 // Footer
                 'footer.description': 'Combining ancient Eastern wisdom with modern AI technology to help you discover your destiny and make better life decisions.',
                 'footer.privacy': 'Privacy Policy',
@@ -151,7 +175,7 @@ class I18n {
                 'footer.contact': 'Contact Us',
                 'footer.support': 'Support',
                 'footer.copyright': '© 2024 Destiny AI. All rights reserved. Empowering lives through ancient wisdom and modern technology.',
-                
+
                 // Tooltips
                 'tooltip.divination': 'Divination is the practice of seeking knowledge of the future or unknown through supernatural means. Our AI analyzes your birth chart using ancient Eastern astrological principles.',
                 'tooltip.fengshui': 'Feng Shui (literally "wind-water") is an ancient Chinese practice of arranging your environment to promote harmony and positive energy flow.',
@@ -162,7 +186,7 @@ class I18n {
                 'tooltip.earth': 'Earth represents stability, nourishment, and grounding. Associated with center, health, and relationships. Enhance with crystals, ceramics, and yellow/brown colors.',
                 'tooltip.metal': 'Metal represents precision, clarity, and efficiency. Associated with autumn, children, and creativity. Enhance with metal objects, white/gray colors, and circular shapes.',
                 'tooltip.water': 'Water represents flow, wisdom, and wealth. Associated with winter, career, and life path. Enhance with fountains, aquariums, and blue/black colors.',
-                
+
                 // I-Ching Page
                 'iching.title': 'I-Ching Divination',
                 'iching.subtitle': 'Consult the ancient Book of Changes for guidance on important life decisions. Our AI interprets the hexagrams in the context of your modern life challenges.',
@@ -196,7 +220,7 @@ class I18n {
                 'iching.button.save': 'Save Reading',
                 'iching.button.share': 'Share Reading',
                 'iching.button.new': 'New Divination',
-                
+
                 // Profile Page
                 'profile.title': 'Personal Profile',
                 'profile.level': 'Level',
@@ -219,6 +243,15 @@ class I18n {
                 'profile.insights.career': 'Career Outlook',
                 'profile.insights.relationships': 'Relationships',
                 'profile.button.fullReading': 'Get Full Reading',
+                'profile.settings.title': 'Account Preferences',
+                'profile.settings.lang.title': 'System Language',
+                'profile.settings.lang.desc': 'Current: Simplified Chinese',
+                'profile.settings.notif.title': 'Push Notifications',
+                'profile.settings.notif.desc': 'Daily destiny alerts',
+                'profile.settings.privacy.title': 'Privacy Mode',
+                'profile.settings.privacy.desc': 'Hide my reading history',
+                'profile.settings.danger.title': 'Danger Zone',
+                'profile.settings.danger.desc': 'Delete account and data',
                 'profile.history.title': 'Reading History',
                 'profile.history.allTypes': 'All Types',
                 'profile.history.last30': 'Last 30 Days',
@@ -229,7 +262,7 @@ class I18n {
                 'profile.goals.current': 'Current Goals',
                 'profile.goals.add': 'Add Goal',
                 'profile.goals.overview': 'Progress Overview',
-                
+
                 // Payment Page
                 'payment.title': 'Choose Your Path to Wisdom',
                 'payment.subtitle': 'Start your journey with free readings or unlock the full power of ancient Eastern wisdom with premium features designed for deeper insights and personal growth.',
@@ -274,7 +307,7 @@ class I18n {
                 'payment.button.cancel': 'Cancel',
                 'payment.button.subscribe': 'Subscribe Now'
             },
-            
+
             'zh-CN': {
                 // 导航
                 'nav.home': '首页',
@@ -287,7 +320,7 @@ class I18n {
                 'nav.login': '登入',
                 'nav.logout': '退出登入',
                 'nav.premium': '会员服务',
-                
+
                 // 通用
                 'common.loading': '加载中...',
                 'common.save': '保存',
@@ -298,7 +331,7 @@ class I18n {
                 'common.next': '下一步',
                 'common.submit': '提交',
                 'common.search': '搜索',
-                
+
                 // 首页
                 'home.hero.title': '探索你的命运',
                 'home.hero.title1': '探索你的命运',
@@ -312,7 +345,7 @@ class I18n {
                 'home.stats.readings': '完成测算',
                 'home.stats.users': '满意用户',
                 'home.stats.accuracy': '准确率',
-                
+
                 // 首页特性
                 'home.features.title': '古老智慧，现代科技',
                 'home.features.subtitle': '我们的AI平台结合传统东方占卜方法与尖端技术，为您提供准确的个性化洞察。',
@@ -325,7 +358,7 @@ class I18n {
                 'home.features.iching.title': '易经智慧',
                 'home.features.iching.desc': '咨询古老的易经以获得重要决策的指导。我们的AI在您现代生活挑战的背景下解释卦象。',
                 'home.features.iching.cta': '咨询 →',
-                
+
                 // 使用流程
                 'home.howItWorks.title': '您的自我发现之旅',
                 'home.howItWorks.subtitle': '简单的步骤解锁古老智慧，清晰了解您的前进道路。',
@@ -337,7 +370,7 @@ class I18n {
                 'home.howItWorks.step3.desc': '获得个性化解读，包含可行的指导和预测。',
                 'home.howItWorks.step4.title': '采取行动',
                 'home.howItWorks.step4.desc': '使用获得的智慧做出更好的决策，改善您的生活。',
-                
+
                 // 占卜页面
                 'divination.title': 'AI占卜与命运解读',
                 'divination.subtitle': '通过先进的AI分析您的生辰八字和人生轨迹，探索您的命运。',
@@ -365,7 +398,7 @@ class I18n {
                 'divination.dateLabel': '📅 英文格式',
                 'divination.timeLabel': '🕐 12小时制',
                 'divination.clickToSelect': '点击选择',
-                
+
                 // 风水页面
                 'fengshui.title': '风水分析与罗盘',
                 'fengshui.subtitle': '使用我们的互动风水罗盘优化您的生活和工作空间。获得实时分析和个性化建议，以改善能量流动。',
@@ -380,15 +413,19 @@ class I18n {
                 'fengshui.elements.earth': '土',
                 'fengshui.elements.metal': '金',
                 'fengshui.elements.water': '水',
-                
+                'fengshui.button.analyze': '开始AI风水分析',
+                'fengshui.analyze.button': '开始AI风水分析',
+                'fengshui.image.upload': '上传环境照片',
+                'fengshui.image.success': '图片上传成功',
+
                 // 定价
                 'home.pricing.title': '选择您的道路',
                 'home.pricing.subtitle': '从免费测算开始，或通过高级功能解锁古老智慧的全部力量。',
-                
+
                 // 免责声明
                 'home.disclaimer.title': '⚠️ 重要免责声明',
                 'home.disclaimer.text': '命运AI基于古老东方智慧传统提供娱乐和自我反思工具。我们的解读和分析仅用于信息和娱乐目的，不应被视为医疗、法律、财务或心理事务的专业建议。结果不保证，不应作为重要人生决策的唯一依据。需要专家指导的事务请咨询合格的专业人士。',
-                
+
                 // 页脚
                 'footer.description': '结合古老东方智慧与现代AI技术，帮助您探索命运并做出更好的人生决策。',
                 'footer.privacy': '隐私政策',
@@ -396,7 +433,7 @@ class I18n {
                 'footer.contact': '联系我们',
                 'footer.support': '支持',
                 'footer.copyright': '© 2024 命运AI。保留所有权利。通过古老智慧和现代技术赋能生活。',
-                
+
                 // 工具提示
                 'tooltip.divination': '占卜是通过超自然手段寻求未来或未知知识的实践。我们的AI使用古老的东方占星原理分析您的生辰八字。',
                 'tooltip.fengshui': '风水（字面意思是"风-水"）是一种古老的中国实践，通过安排环境来促进和谐和正能量流动。',
@@ -407,7 +444,7 @@ class I18n {
                 'tooltip.earth': '土代表稳定、滋养和接地。与中心、健康和关系相关。用水晶、陶瓷和黄/棕色增强。',
                 'tooltip.metal': '金代表精确、清晰和效率。与秋天、孩子和创造力相关。用金属物品、白/灰色和圆形增强。',
                 'tooltip.water': '水代表流动、智慧和财富。与冬天、事业和人生道路相关。用喷泉、水族箱和蓝/黑色增强。',
-                
+
                 // 易经页面
                 'iching.title': '易经占卜',
                 'iching.subtitle': '咨询古老的易经以获得重要人生决策的指导。我们的AI在您现代生活挑战的背景下解释卦象。',
@@ -441,7 +478,7 @@ class I18n {
                 'iching.button.save': '保存解读',
                 'iching.button.share': '分享解读',
                 'iching.button.new': '新占卜',
-                
+
                 // 个人档案页面
                 'profile.title': '个人档案',
                 'profile.level': '等级',
@@ -464,6 +501,15 @@ class I18n {
                 'profile.insights.career': '事业展望',
                 'profile.insights.relationships': '人际关系',
                 'profile.button.fullReading': '获取完整解读',
+                'profile.settings.title': '账户偏好',
+                'profile.settings.lang.title': '系统语言',
+                'profile.settings.lang.desc': '当前：简体中文',
+                'profile.settings.notif.title': '推送通知',
+                'profile.settings.notif.desc': '每日运势提醒',
+                'profile.settings.privacy.title': '隐私模式',
+                'profile.settings.privacy.desc': '隐藏我的测算记录',
+                'profile.settings.danger.title': '危险区域',
+                'profile.settings.danger.desc': '注销账号及相关数据',
                 'profile.history.title': '测算历史',
                 'profile.history.allTypes': '所有类型',
                 'profile.history.last30': '最近30天',
@@ -474,7 +520,7 @@ class I18n {
                 'profile.goals.current': '当前目标',
                 'profile.goals.add': '添加目标',
                 'profile.goals.overview': '进度概览',
-                
+
                 // 支付页面
                 'payment.title': '选择您的智慧之路',
                 'payment.subtitle': '从免费测算开始您的旅程，或通过高级功能解锁古老东方智慧的全部力量，获得更深入的洞察和个人成长。',
@@ -519,7 +565,7 @@ class I18n {
                 'payment.button.cancel': '取消',
                 'payment.button.subscribe': '立即订阅'
             },
-            
+
             'zh-TW': {
                 // 導航
                 'nav.home': '首頁',
@@ -532,7 +578,7 @@ class I18n {
                 'nav.login': '登入',
                 'nav.logout': '退出登入',
                 'nav.premium': '會員服務',
-                
+
                 // 通用
                 'common.loading': '載入中...',
                 'common.save': '儲存',
@@ -543,7 +589,7 @@ class I18n {
                 'common.next': '下一步',
                 'common.submit': '提交',
                 'common.search': '搜尋',
-                
+
                 // 首頁
                 'home.hero.title': '探索你的命運',
                 'home.hero.title1': '探索你的命運',
@@ -557,7 +603,7 @@ class I18n {
                 'home.stats.readings': '完成測算',
                 'home.stats.users': '滿意用戶',
                 'home.stats.accuracy': '準確率',
-                
+
                 // 首頁特性
                 'home.features.title': '古老智慧，現代科技',
                 'home.features.subtitle': '我們的AI平台結合傳統東方占卜方法與尖端技術，為您提供準確的個性化洞察。',
@@ -570,7 +616,7 @@ class I18n {
                 'home.features.iching.title': '易經智慧',
                 'home.features.iching.desc': '諮詢古老的易經以獲得重要決策的指導。我們的AI在您現代生活挑戰的背景下解釋卦象。',
                 'home.features.iching.cta': '諮詢 →',
-                
+
                 // 使用流程
                 'home.howItWorks.title': '您的自我發現之旅',
                 'home.howItWorks.subtitle': '簡單的步驟解鎖古老智慧，清晰了解您的前進道路。',
@@ -582,7 +628,7 @@ class I18n {
                 'home.howItWorks.step3.desc': '獲得個性化解讀，包含可行的指導和預測。',
                 'home.howItWorks.step4.title': '採取行動',
                 'home.howItWorks.step4.desc': '使用獲得的智慧做出更好的決策，改善您的生活。',
-                
+
                 // 占卜頁面
                 'divination.title': 'AI占卜與命運解讀',
                 'divination.subtitle': '通過先進的AI分析您的生辰八字和人生軌跡，探索您的命運。',
@@ -610,7 +656,7 @@ class I18n {
                 'divination.dateLabel': '📅 英文格式',
                 'divination.timeLabel': '🕐 12小時制',
                 'divination.clickToSelect': '點擊選擇',
-                
+
                 // 風水頁面
                 'fengshui.title': '風水分析與羅盤',
                 'fengshui.subtitle': '使用我們的互動風水羅盤優化您的生活和工作空間。獲得即時分析和個性化建議，以改善能量流動。',
@@ -625,15 +671,15 @@ class I18n {
                 'fengshui.elements.earth': '土',
                 'fengshui.elements.metal': '金',
                 'fengshui.elements.water': '水',
-                
+
                 // 定價
                 'home.pricing.title': '選擇您的道路',
                 'home.pricing.subtitle': '從免費測算開始，或通過高級功能解鎖古老智慧的全部力量。',
-                
+
                 // 免責聲明
                 'home.disclaimer.title': '⚠️ 重要免責聲明',
                 'home.disclaimer.text': '命運AI基於古老東方智慧傳統提供娛樂和自我反思工具。我們的解讀和分析僅用於資訊和娛樂目的，不應被視為醫療、法律、財務或心理事務的專業建議。結果不保證，不應作為重要人生決策的唯一依據。需要專家指導的事務請諮詢合格的專業人士。',
-                
+
                 // 頁腳
                 'footer.description': '結合古老東方智慧與現代AI技術，幫助您探索命運並做出更好的人生決策。',
                 'footer.privacy': '隱私政策',
@@ -641,7 +687,7 @@ class I18n {
                 'footer.contact': '聯絡我們',
                 'footer.support': '支援',
                 'footer.copyright': '© 2024 命運AI。保留所有權利。通過古老智慧和現代技術賦能生活。',
-                
+
                 // 工具提示
                 'tooltip.divination': '占卜是通過超自然手段尋求未來或未知知識的實踐。我們的AI使用古老的東方占星原理分析您的生辰八字。',
                 'tooltip.fengshui': '風水（字面意思是「風-水」）是一種古老的中國實踐，通過安排環境來促進和諧和正能量流動。',
@@ -652,7 +698,7 @@ class I18n {
                 'tooltip.earth': '土代表穩定、滋養和接地。與中心、健康和關係相關。用水晶、陶瓷和黃/棕色增強。',
                 'tooltip.metal': '金代表精確、清晰和效率。與秋天、孩子和創造力相關。用金屬物品、白/灰色和圓形增強。',
                 'tooltip.water': '水代表流動、智慧和財富。與冬天、事業和人生道路相關。用噴泉、水族箱和藍/黑色增強。',
-                
+
                 // 易經頁面
                 'iching.title': '易經占卜',
                 'iching.subtitle': '諮詢古老的易經以獲得重要人生決策的指導。我們的AI在您現代生活挑戰的背景下解釋卦象。',
@@ -686,7 +732,7 @@ class I18n {
                 'iching.button.save': '儲存解讀',
                 'iching.button.share': '分享解讀',
                 'iching.button.new': '新占卜',
-                
+
                 // 個人檔案頁面
                 'profile.title': '個人檔案',
                 'profile.level': '等級',
@@ -719,7 +765,7 @@ class I18n {
                 'profile.goals.current': '當前目標',
                 'profile.goals.add': '新增目標',
                 'profile.goals.overview': '進度概覽',
-                
+
                 // 支付頁面
                 'payment.title': '選擇您的智慧之路',
                 'payment.subtitle': '從免費測算開始您的旅程，或通過高級功能解鎖古老東方智慧的全部力量，獲得更深入的洞察和個人成長。',
@@ -766,47 +812,47 @@ class I18n {
             }
         };
     }
-    
+
     setupLanguageSelector() {
         const languageSelect = document.getElementById('languageSelect');
         if (languageSelect) {
             // Set current language
             languageSelect.value = this.currentLanguage;
-            
+
             // Add change event listener
             languageSelect.addEventListener('change', (e) => {
                 this.setLanguage(e.target.value);
             });
         }
     }
-    
+
     setLanguage(lang) {
         this.currentLanguage = lang;
         localStorage.setItem('destinyai_language', lang);
-        
+
         // CRITICAL FIX: Also update preferredLanguage for AI services
         // AI services (divination, fengshui, iching) use 'preferredLanguage' key
         localStorage.setItem('preferredLanguage', lang);
         console.log('[I18n] Updated preferredLanguage to:', lang);
-        
+
         this.updatePage();
-        
+
         // Update HTML lang attribute
-        document.documentElement.lang = lang === 'zh-CN' ? 'zh-Hans' : 
-                                        lang === 'zh-TW' ? 'zh-Hant' : 'en';
-        
+        document.documentElement.lang = lang === 'zh-CN' ? 'zh-Hans' :
+            lang === 'zh-TW' ? 'zh-Hant' : 'en';
+
         // Dispatch language change event for other components
-        window.dispatchEvent(new CustomEvent('languageChanged', { 
-            detail: { language: lang } 
+        window.dispatchEvent(new CustomEvent('languageChanged', {
+            detail: { language: lang }
         }));
     }
-    
+
     updatePage() {
         // Update all elements with data-i18n attribute
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');
             const translation = this.t(key);
-            
+
             if (translation) {
                 // Check if it's an input placeholder
                 if (element.tagName === 'INPUT' && element.hasAttribute('placeholder')) {
@@ -816,32 +862,32 @@ class I18n {
                 }
             }
         });
-        
+
         // Update all elements with data-i18n-placeholder attribute
         document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
             const key = element.getAttribute('data-i18n-placeholder');
             const translation = this.t(key);
-            
+
             if (translation) {
                 element.placeholder = translation;
             }
         });
-        
+
         // Update all elements with data-i18n-title attribute (tooltips)
         document.querySelectorAll('[data-i18n-title]').forEach(element => {
             const key = element.getAttribute('data-i18n-title');
             const translation = this.t(key);
-            
+
             if (translation) {
                 element.title = translation;
             }
         });
-        
+
         // Update tooltip content
         document.querySelectorAll('[data-i18n-tooltip]').forEach(element => {
             const key = element.getAttribute('data-i18n-tooltip');
             const translation = this.t(key);
-            
+
             if (translation) {
                 const tooltipContent = element.querySelector('.tooltip-content');
                 if (tooltipContent) {
@@ -850,11 +896,11 @@ class I18n {
             }
         });
     }
-    
+
     t(key) {
         const keys = key.split('.');
         let value = this.translations[this.currentLanguage];
-        
+
         for (const k of keys) {
             if (value && typeof value === 'object') {
                 value = value[k];
@@ -862,10 +908,10 @@ class I18n {
                 return key; // Return key if translation not found
             }
         }
-        
+
         return value || key;
     }
-    
+
     getCurrentLanguage() {
         return this.currentLanguage;
     }
