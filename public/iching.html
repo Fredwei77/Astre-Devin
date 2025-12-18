@@ -1,0 +1,1953 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I-Ching Divination - Destiny AI</title>
+    <meta name="description"
+        content="Consult the ancient Book of Changes for guidance. Get personalized I-Ching readings with modern AI interpretation for better life decisions.">
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif:wght@400;700&family=Noto+Sans+SC:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Mystical Eastern Theme -->
+    <link rel="stylesheet" href="mystical-theme.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- User Menu Styles -->
+    <link rel="stylesheet" href="user-menu.css">
+
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.2.4/pixi.min.js"></script>
+
+    <!-- Language Switcher -->
+    <!-- Unified Translation System -->
+    <script src="translations.js"></script>
+    <script src="unified-i18n.js"></script>
+    <script src="config.js"></script>
+    <script src="subscription-manager.js"></script>
+    <script src="state-preserver.js"></script>
+    <script src="ai-service.js"></script>
+    <script src="iching-ai.js"></script>
+    <script src="iching-fixes.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-navy': '#1a237e',
+                        'mystic-gold': '#ffd700',
+                        'moon-silver': '#c0c0c0',
+                        'ink-black': '#2c2c2c',
+                        'warm-white': '#fafafa',
+                        'pale-gold': '#fff8dc',
+                        'mystic-purple': '#4a148c'
+                    },
+                    fontFamily: {
+                        'serif-sc': ['Noto Serif SC', 'serif'],
+                        'serif': ['Noto Serif', 'serif'],
+                        'sans-sc': ['Noto Sans SC', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Body background now handled by mystical-theme.css */
+
+        .divination-card {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Special styling for method selection with background image */
+        #methodSection .divination-card {
+            position: relative;
+            background-image: url('resources/iching-background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            overflow: hidden;
+        }
+
+        #methodSection .divination-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            z-index: 0;
+        }
+
+        #methodSection .divination-card>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hexagram-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .hexagram-line {
+            width: 120px;
+            height: 12px;
+            background: linear-gradient(90deg, #ffd700, #c0c0c0);
+            border-radius: 6px;
+            position: relative;
+            transition: all 0.5s ease;
+        }
+
+        .hexagram-line.broken {
+            background: linear-gradient(90deg, transparent 40%, #ffd700 40%, #ffd700 60%, transparent 60%);
+        }
+
+        .hexagram-line.changing {
+            background: linear-gradient(90deg, #ff6b6b, #ffd700);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .coin {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .coin-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 215, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .coin:hover .coin-image {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .coin.flipping {
+            animation: flip 1s ease-in-out;
+        }
+
+        @keyframes flip {
+            0% {
+                transform: rotateY(0deg) scale(1);
+            }
+
+            50% {
+                transform: rotateY(180deg) scale(1.2);
+            }
+
+            100% {
+                transform: rotateY(360deg) scale(1);
+            }
+        }
+
+        .glow-text {
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .method-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .method-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+
+        .method-card.selected {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #ffd700;
+        }
+
+        .interpretation-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #ffd700;
+            transition: all 0.3s ease;
+        }
+
+        .interpretation-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .question-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            color: #fafafa;
+            width: 100%;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .question-input:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+        }
+
+        .question-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .question-tag {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #c0c0c0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .question-tag:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #ffd700;
+            color: #ffd700;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+        }
+
+        .question-tag:active {
+            transform: translateY(0);
+        }
+
+        .casting-animation {
+            animation: casting 2s ease-in-out;
+        }
+
+        @keyframes casting {
+            0% {
+                transform: translateY(0px);
+            }
+
+            25% {
+                transform: translateY(-20px);
+            }
+
+            50% {
+                transform: translateY(-40px);
+            }
+
+            75% {
+                transform: translateY(-20px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        /* Mobile Music Controls Styling */
+        .touch-manipulation {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 80px;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(192, 192, 192, 0.3);
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ffd700;
+            cursor: pointer;
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ffd700;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Mobile-specific music notification */
+        .mobile-music-toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: #ffd700;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-music-toast.show {
+            opacity: 1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .mystical-particles {
+                display: none;
+                /* Reduce GPU load on mobile */
+            }
+
+            #musicControl button {
+                backdrop-filter: blur(8px);
+                /* Reduce blur for performance */
+            }
+        }
+    </style>
+</head>
+
+<body class="font-inter text-warm-white">
+    <!-- Background Music -->
+    <audio id="backgroundMusic" loop preload="auto">
+        <source src="Music/Meditation.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Music Control Button with Mobile Optimization -->
+    <div id="musicControl" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
+        <button id="musicToggle"
+            class="bg-mystic-gold/20 backdrop-blur-sm border border-mystic-gold/30 text-mystic-gold hover:bg-mystic-gold hover:text-deep-navy active:scale-95 transition-all duration-300 rounded-full w-14 h-14 sm:w-12 sm:h-12 flex items-center justify-center shadow-lg touch-manipulation"
+            title="Toggle Background Music">
+            <span id="musicIcon" class="text-xl sm:text-lg">🎵</span>
+        </button>
+        <!-- Volume Control Slider for Mobile -->
+        <div id="volumeSlider"
+            class="absolute bottom-16 right-0 bg-black/80 backdrop-blur-sm border border-mystic-gold/30 rounded-lg p-3 hidden">
+            <div class="flex items-center space-x-2">
+                <span class="text-xs text-mystic-gold">🔊</span>
+                <input type="range" id="volumeRange" min="0" max="100" value="30" class="volume-slider">
+                <span id="volumeDisplay" class="text-xs text-mystic-gold">30%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mystical Particle Effects -->
+    <div class="mystical-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 mystical-nav border-b border-moon-silver/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div
+                        class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border border-mystic-gold/50 bg-black/50">
+                        <img src="resources/logo-processed.png" alt="Dragon Logo" class="w-full h-full object-cover">
+                    </div>
+                    <span class="text-xl font-serif font-bold glow-text" data-i18n="brand.name">九 筮</span>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="hover:text-mystic-gold transition-colors" data-i18n="nav.home">Home</a>
+                    <a href="divination.html" class="hover:text-mystic-gold transition-colors"
+                        data-i18n="nav.divination">Divination</a>
+                    <a href="fengshui.html" class="hover:text-mystic-gold transition-colors"
+                        data-i18n="nav.fengshui">Feng Shui</a>
+                    <a href="iching.html" class="text-mystic-gold font-semibold" data-i18n="nav.iching">I-Ching</a>
+                    <a href="about.html" class="hover:text-mystic-gold transition-colors" data-i18n="nav.about">About
+                        Us</a>
+                    <a href="profile.html" class="hover:text-mystic-gold transition-colors"
+                        data-i18n="nav.profile">Profile</a>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <select id="languageSelect"
+                        class="bg-transparent border border-moon-silver/30 rounded px-3 py-1 text-sm">
+                        <option value="en">English</option>
+                        <option value="zh-CN">简体中文</option>
+                        <option value="zh-TW">繁體中文</option>
+                        <option value="es">Español</option>
+                    </select>
+
+                    <!-- Login/User Section -->
+                    <div id="authSection" class="flex items-center space-x-3">
+                        <!-- Guest View (Not Logged In) -->
+                        <div id="guestView" class="flex items-center space-x-3">
+                            <button id="loginBtn"
+                                class="text-moon-silver hover:text-mystic-gold transition-colors font-medium flex items-center gap-2"
+                                style="color: #c0c0c0;">
+                                <span data-i18n="nav.login">登入</span>
+                            </button>
+                            <a href="payment.html"
+                                class="bg-mystic-gold text-deep-navy px-4 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors"
+                                style="background: #ffd700; color: #1a237e;" data-i18n="nav.upgrade">
+                                Upgrade
+                            </a>
+                        </div>
+
+                        <!-- User View (Logged In) -->
+                        <div id="userView" class="hidden">
+                            <div class="flex items-center space-x-3">
+                                <!-- User Avatar and Name -->
+                                <div class="flex items-center space-x-2 user-avatar-container">
+                                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-mystic-gold to-moon-silver flex items-center justify-center border-2 border-mystic-gold/50 shadow-lg"
+                                        style="background: linear-gradient(135deg, #ffd700, #c0c0c0);">
+                                        <img id="userAvatar" src="" alt="User Avatar"
+                                            class="w-full h-full rounded-full object-cover hidden">
+                                        <i id="userIcon" class="fas fa-user text-deep-navy text-sm"
+                                            style="color: #1a237e;"></i>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span id="userName" class="text-moon-silver font-medium text-sm"
+                                            style="color: #c0c0c0;"></span>
+                                        <span id="userLevel" class="text-mystic-gold text-xs hidden"
+                                            style="color: #ffd700;">VIP</span>
+                                    </div>
+                                </div>
+
+                                <!-- Dropdown Menu Button -->
+                                <div class="relative">
+                                    <button id="userMenuBtn"
+                                        class="text-moon-silver hover:text-mystic-gold transition-all duration-300 p-2 hover:bg-mystic-gold/10 rounded-full"
+                                        style="color: #c0c0c0;">
+                                        <i class="fas fa-chevron-down text-sm"></i>
+                                    </button>
+
+                                    <!-- Dropdown Menu -->
+                                    <div id="userMenu"
+                                        class="absolute right-0 mt-2 w-56 bg-black/95 backdrop-blur-md border-2 border-mystic-gold/30 rounded-xl shadow-2xl hidden z-50 overflow-hidden">
+                                        <!-- User Info Card -->
+                                        <div class="user-info-card">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-mystic-gold to-moon-silver flex items-center justify-center border-2 border-mystic-gold/50"
+                                                    style="background: linear-gradient(135deg, #ffd700, #c0c0c0);">
+                                                    <i class="fas fa-user text-deep-navy" style="color: #1a237e;"></i>
+                                                </div>
+                                                <div class="flex-1">
+                                                    <div id="menuUserName"
+                                                        class="text-warm-white font-semibold text-sm"></div>
+                                                    <div id="menuUserEmail" class="user-email"></div>
+                                                    <div id="menuUserStatus" class="user-status">免费会员</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Menu Items -->
+                                        <div class="py-2">
+                                            <a href="profile.html"
+                                                class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-user-circle w-5"></i>
+                                                <span class="ml-3" data-i18n="nav.profile">个人信息</span>
+                                            </a>
+
+                                            <a href="profile.html#readings"
+                                                class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-history w-5"></i>
+                                                <span class="ml-3" data-i18n="nav.myReadings">我的占卜</span>
+                                            </a>
+
+                                            <a href="payment.html"
+                                                class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-crown w-5"></i>
+                                                <span class="ml-3" data-i18n="nav.upgrade">会员升级</span>
+                                                <span
+                                                    class="ml-auto text-xs bg-mystic-gold text-deep-navy px-2 py-1 rounded-full font-bold"
+                                                    style="background: #ffd700; color: #1a237e;">HOT</span>
+                                            </a>
+
+                                            <a href="profile.html#settings"
+                                                class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-cog w-5"></i>
+                                                <span class="ml-3" data-i18n="nav.settings">设置</span>
+                                            </a>
+                                        </div>
+
+                                        <hr class="border-mystic-gold/20 mx-3">
+
+                                        <!-- Logout Button -->
+                                        <div class="py-2">
+                                            <button id="logoutBtn"
+                                                class="w-full flex items-center px-4 py-3 text-moon-silver hover:text-red-400 hover:bg-red-400/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-sign-out-alt w-5"></i>
+                                                <span class="ml-3" data-i18n="nav.logout">退出登录</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-serif font-bold mb-6 glow-text" data-i18n="iching.title">
+                    I-Ching Divination
+                </h1>
+                <p class="text-xl text-moon-silver max-w-3xl mx-auto" data-i18n="iching.subtitle">
+                    Consult the ancient Book of Changes for guidance on important life decisions.
+                    Our AI interprets the hexagrams in the context of your modern life challenges.
+                </p>
+            </div>
+
+            <!-- Divination Methods -->
+            <div id="methodSection" class="max-w-4xl mx-auto mb-12">
+                <div class="divination-card rounded-xl p-8">
+                    <h2 class="text-2xl font-serif font-bold mb-6 text-center" data-i18n="iching.guidance.title">
+                        <span class="text-mystic-gold">📿</span> 卦前提示
+                    </h2>
+
+                    <!-- 卦前提示内容 -->
+                    <div class="bg-white/5 rounded-lg p-6 mb-8 border border-mystic-gold/30">
+                        <div class="space-y-4 text-moon-silver leading-relaxed">
+                            <div class="flex items-start space-x-3">
+                                <span class="text-mystic-gold font-bold text-lg flex-shrink-0">1.</span>
+                                <p><span class="text-mystic-gold font-semibold"
+                                        data-i18n="iching.guidance.rule1.title">无事不占</span>：
+                                    <span
+                                        data-i18n="iching.guidance.rule1.desc">卜卦是为了在迷茫时更好地抉择，成为更好的自己，顺其自然为上，先尽人事，后听天命。</span>
+                                </p>
+                            </div>
+
+                            <div class="flex items-start space-x-3">
+                                <span class="text-mystic-gold font-bold text-lg flex-shrink-0">2.</span>
+                                <p><span class="text-mystic-gold font-semibold"
+                                        data-i18n="iching.guidance.rule2.title">体耗不占</span>：
+                                    <span data-i18n="iching.guidance.rule2.desc">饮酒、性生活、剧烈运动后，在状态未恢复前尽量不进行易占。</span>
+                                </p>
+                            </div>
+
+                            <div class="flex items-start space-x-3">
+                                <span class="text-mystic-gold font-bold text-lg flex-shrink-0">3.</span>
+                                <p><span class="text-mystic-gold font-semibold"
+                                        data-i18n="iching.guidance.rule3.title">心疲不占</span>：
+                                    <span data-i18n="iching.guidance.rule3.desc">过分疲劳或精神、心理状态不佳时尽量不进行易占。</span>
+                                </p>
+                            </div>
+
+                            <div class="flex items-start space-x-3">
+                                <span class="text-mystic-gold font-bold text-lg flex-shrink-0">4.</span>
+                                <p><span class="text-mystic-gold font-semibold"
+                                        data-i18n="iching.guidance.rule4.title">天异不占</span>：
+                                    <span data-i18n="iching.guidance.rule4.desc">气候异常、环境特别和节令交替等特别时间里，尽量不进行易占。</span>
+                                </p>
+                            </div>
+
+                            <div class="flex items-start space-x-3">
+                                <span class="text-mystic-gold font-bold text-lg flex-shrink-0">5.</span>
+                                <p><span class="text-mystic-gold font-semibold"
+                                        data-i18n="iching.guidance.rule5.title">疑则不占</span>：
+                                    <span data-i18n="iching.guidance.rule5.desc">心诚则灵，如果内心还持有较大的怀疑，不建议进行易占。</span>
+                                </p>
+                            </div>
+
+                            <div class="flex items-start space-x-3">
+                                <span class="text-mystic-gold font-bold text-lg flex-shrink-0">6.</span>
+                                <p><span class="text-mystic-gold font-semibold"
+                                        data-i18n="iching.guidance.rule6.title">避众而占</span>：
+                                    <span data-i18n="iching.guidance.rule6.desc">尽量不在三人以上的场合为他人易占。</span>
+                                </p>
+                            </div>
+
+                            <div class="flex items-start space-x-3">
+                                <span class="text-mystic-gold font-bold text-lg flex-shrink-0">7.</span>
+                                <p><span class="text-mystic-gold font-semibold"
+                                        data-i18n="iching.guidance.rule7.title">静心而占</span>：
+                                    <span data-i18n="iching.guidance.rule7.desc">找一个安静的环境，不在易占的同时做与易占无关的事情。</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 占卜方法说明 -->
+                        <div class="mt-6 pt-6 border-t border-mystic-gold/20 text-center">
+                            <div class="inline-flex items-center space-x-3 bg-mystic-gold/10 rounded-lg px-6 py-3">
+                                <img src="resources/five-emperor-coin-front.png" alt="Five Emperor Coins"
+                                    class="w-12 h-12 rounded-full shadow-lg">
+                                <div class="text-left">
+                                    <h4 class="text-mystic-gold font-bold" data-i18n="iching.method.coins">三枚硬币法</h4>
+                                    <p class="text-xs text-moon-silver" data-i18n="iching.method.coins.desc">
+                                        使用三枚硬币投掷六次来构建卦象的传统方法</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question Input -->
+                    <div class="mb-8">
+                        <label class="block text-moon-silver mb-3 font-medium"
+                            data-i18n="iching.question.label">您的问题是什么？</label>
+                        <textarea id="questionInput" class="question-input"
+                            data-i18n-placeholder="iching.question.placeholder"
+                            placeholder="专注于您需要指导的具体问题或情况。清晰明确地说明您想知道什么。"></textarea>
+
+                        <!-- 常见问题选项 -->
+                        <div class="mt-4">
+                            <p class="text-sm text-moon-silver mb-3" data-i18n="iching.question.common">
+                                <span class="text-mystic-gold">💡</span> 常见问题（点击快速填入）：
+                            </p>
+                            <div class="flex flex-wrap gap-2">
+                                <button type="button" class="question-tag" data-question="我应该换工作吗？">
+                                    <span data-i18n="iching.question.sample1">我应该换工作吗？</span>
+                                </button>
+                                <button type="button" class="question-tag" data-question="这段感情能长久吗？">
+                                    <span data-i18n="iching.question.sample2">这段感情能长久吗？</span>
+                                </button>
+                                <button type="button" class="question-tag" data-question="这个项目能成功吗？">
+                                    <span data-i18n="iching.question.sample3">这个项目能成功吗？</span>
+                                </button>
+                                <button type="button" class="question-tag" data-question="我该如何改善财运？">
+                                    <span data-i18n="iching.question.sample4">我该如何改善财运？</span>
+                                </button>
+                                <button type="button" class="question-tag" data-question="现在是创业的好时机吗？">
+                                    <span data-i18n="iching.question.sample5">现在是创业的好时机吗？</span>
+                                </button>
+                                <button type="button" class="question-tag" data-question="我和TA的关系会如何发展？">
+                                    <span data-i18n="iching.question.sample6">我和TA的关系会如何发展？</span>
+                                </button>
+                                <button type="button" class="question-tag" data-question="我该选择哪个方向发展？">
+                                    <span data-i18n="iching.question.sample7">我该选择哪个方向发展？</span>
+                                </button>
+                                <button type="button" class="question-tag" data-question="如何化解当前的困境？">
+                                    <span data-i18n="iching.question.sample8">如何化解当前的困境？</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button id="startDivination"
+                            class="bg-mystic-gold text-deep-navy px-8 py-4 rounded-lg font-semibold text-lg hover:bg-yellow-400 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                            data-i18n="iching.button.begin">
+                            Begin Divination
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coin Casting Section -->
+            <div id="coinSection" class="max-w-4xl mx-auto mb-12 hidden">
+                <div class="divination-card rounded-xl p-8 text-center">
+                    <h2 class="text-2xl font-serif font-bold mb-6" data-i18n="iching.cast.title">Cast the Coins</h2>
+                    <p class="text-moon-silver mb-8" data-i18n="iching.cast.instruction">Focus on your question and
+                        click the coins to cast them. Repeat this process six times to build your hexagram.</p>
+
+                    <div class="mb-8">
+                        <div class="text-lg font-semibold mb-4"><span data-i18n="iching.cast.current">Casting</span>:
+                            <span id="currentCast">1</span> <span data-i18n="iching.cast.of">of</span> 6
+                        </div>
+                        <div class="flex justify-center space-x-6 mb-8">
+                            <div class="coin" id="coin1">
+                                <img src="resources/five-emperor-coin-front.png" alt="Five Emperor Coin"
+                                    class="coin-image">
+                            </div>
+                            <div class="coin" id="coin2">
+                                <img src="resources/five-emperor-coin-front.png" alt="Five Emperor Coin"
+                                    class="coin-image">
+                            </div>
+                            <div class="coin" id="coin3">
+                                <img src="resources/five-emperor-coin-front.png" alt="Five Emperor Coin"
+                                    class="coin-image">
+                            </div>
+                        </div>
+                        <button id="castCoins"
+                            class="bg-mystic-gold text-deep-navy px-6 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors"
+                            data-i18n="iching.cast.button">
+                            Cast Coins
+                        </button>
+                    </div>
+
+                    <!-- Hexagram Building -->
+                    <div class="hexagram-container">
+                        <h3 class="text-lg font-serif font-bold mb-4" data-i18n="iching.hexagram.your">Your Hexagram
+                        </h3>
+                        <div id="hexagramLines">
+                            <!-- Lines will be added here -->
+                        </div>
+                        <div class="mt-4 text-moon-silver">
+                            <p><span data-i18n="iching.hexagram.label">卦象</span>: <span id="hexagramName"
+                                    class="text-mystic-gold font-semibold"
+                                    data-i18n="iching.hexagram.building">Building...</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="max-w-6xl mx-auto hidden">
+                <div class="divination-card rounded-xl p-8">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-serif font-bold mb-4 glow-text" data-i18n="iching.result.title">Your
+                            I-Ching Reading</h2>
+                        <p class="text-moon-silver" data-i18n="iching.result.subtitle">The ancient wisdom of the Book of
+                            Changes reveals:</p>
+                    </div>
+
+                    <!-- Hexagram Display -->
+                    <div class="grid lg:grid-cols-2 gap-8 mb-8">
+                        <div class="text-center">
+                            <h3 class="text-xl font-serif font-bold mb-4" data-i18n="iching.result.primary">Primary
+                                Hexagram</h3>
+                            <div class="hexagram-container">
+                                <div id="finalHexagram">
+                                    <!-- Final hexagram will be displayed here -->
+                                </div>
+                                <div class="mt-4">
+                                    <h4 id="hexagramTitle" class="text-lg font-serif font-bold text-mystic-gold mb-2"
+                                        data-i18n="iching.default.hexagram.title">
+                                        Hexagram 1: The Creative</h4>
+                                    <p id="hexagramDescription" class="text-moon-silver text-sm"
+                                        data-i18n="iching.default.hexagram.desc">
+                                        The creative works sublime success, furthering through perseverance.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <h3 class="text-xl font-serif font-bold mb-4" data-i18n="iching.result.changing">Changing
+                                Lines</h3>
+                            <div id="changingLines" class="space-y-3">
+                                <!-- Changing lines will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Interpretation -->
+                    <div class="space-y-6 mb-8">
+                        <div class="interpretation-card rounded-lg p-6">
+                            <h4 class="text-lg font-serif font-bold mb-3 text-mystic-gold"
+                                data-i18n="iching.result.judgment">Judgment</h4>
+                            <p id="judgmentText" class="text-moon-silver leading-relaxed"
+                                data-i18n="iching.default.judgment">
+                                The creative principle manifests itself through the trigram of heaven.
+                                This hexagram symbolizes the beginning of all things, the primal creative force
+                                that brings order to chaos. It suggests that now is a time for action,
+                                for taking the initiative and leading with confidence.
+                            </p>
+                        </div>
+
+                        <div class="interpretation-card rounded-lg p-6">
+                            <h4 class="text-lg font-serif font-bold mb-3 text-mystic-gold"
+                                data-i18n="iching.result.image">Image</h4>
+                            <p id="imageText" class="text-moon-silver leading-relaxed" data-i18n="iching.default.image">
+                                The movement of heaven is powerful and constant. The superior person
+                                strengthens themselves and never stops their efforts. Just as heaven
+                                moves with enduring strength, you should persist in your goals with
+                                unwavering determination.
+                            </p>
+                        </div>
+
+                        <div class="interpretation-card rounded-lg p-6">
+                            <h4 class="text-lg font-serif font-bold mb-3 text-mystic-gold"
+                                data-i18n="iching.result.advice">Advice for Your Situation</h4>
+                            <p id="adviceText" class="text-moon-silver leading-relaxed"
+                                data-i18n="iching.default.advice">
+                                Based on your question and this hexagram, the I-Ching advises you to
+                                take a leadership role in your current situation. Trust your creative
+                                instincts and don't hesitate to act decisively. Your natural talents
+                                and abilities are sufficient to handle the challenges ahead.
+                            </p>
+                        </div>
+
+                        <!-- Changing Lines Analysis -->
+                        <div id="changingLinesCard" class="interpretation-card rounded-lg p-6 hidden">
+                            <h4 class="text-lg font-serif font-bold mb-3 text-mystic-gold"
+                                data-i18n="iching.result.changingAnalysis">Changing Lines Analysis</h4>
+                            <p id="changingLinesText" class="text-moon-silver leading-relaxed">
+                                <!-- Content will be populated by AI -->
+                            </p>
+                        </div>
+
+                        <!-- Future Hexagram -->
+                        <div id="futureHexagramCard" class="interpretation-card rounded-lg p-6 hidden">
+                            <h4 class="text-lg font-serif font-bold mb-3 text-mystic-gold"
+                                data-i18n="iching.result.future">Future Outlook (Related Hexagram)</h4>
+                            <p id="futureHexagramText" class="text-moon-silver leading-relaxed">
+                                <!-- Content will be populated by AI -->
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Action Steps -->
+                    <div class="bg-white/5 rounded-lg p-6 mb-8">
+                        <h3 class="text-xl font-serif font-bold mb-4 text-center text-mystic-gold"
+                            data-i18n="iching.result.actions">Recommended Actions</h3>
+                        <div id="actionsContainer" class="grid md:grid-cols-2 gap-4">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Warnings -->
+                    <div id="warningsSection" class="bg-red-500/10 border border-red-500/20 rounded-lg p-6 mb-8 hidden">
+                        <h3 class="text-xl font-serif font-bold mb-4 text-center text-red-400"
+                            data-i18n="iching.result.warnings">Warnings & Cautions</h3>
+                        <ul id="warningsList" class="space-y-3 text-moon-silver">
+                            <!-- Populated by JS -->
+                        </ul>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+                        <button id="saveReading"
+                            class="bg-mystic-gold text-deep-navy px-6 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors"
+                            data-i18n="iching.button.save">
+                            Save Reading
+                        </button>
+                        <button id="shareReading"
+                            class="border-2 border-moon-silver text-moon-silver px-6 py-3 rounded-lg font-semibold hover:bg-moon-silver hover:text-deep-navy transition-colors"
+                            data-i18n="iching.button.share">
+                            Share Reading
+                        </button>
+                        <button id="newDivination"
+                            class="border-2 border-mystic-gold text-mystic-gold px-6 py-3 rounded-lg font-semibold hover:bg-mystic-gold hover:text-deep-navy transition-colors"
+                            data-i18n="iching.button.new">
+                            New Divination
+                        </button>
+                    </div>
+
+                    <!-- AI Follow-up Questions Section -->
+                    <div
+                        class="bg-gradient-to-br from-mystic-gold/10 to-mystic-purple/10 rounded-xl p-6 border-2 border-mystic-gold/30">
+                        <div class="text-center mb-4">
+                            <h3 class="text-xl font-serif font-bold text-mystic-gold mb-2"
+                                data-i18n="iching.followup.title">
+                                <span class="text-2xl">🔮</span> 深挖真相
+                            </h3>
+                            <p class="text-sm text-moon-silver" data-i18n="iching.followup.subtitle">
+                                如需深挖真相，请在下方填写问题
+                            </p>
+                        </div>
+
+                        <!-- Follow-up Question Input -->
+                        <div class="mb-4">
+                            <textarea id="followupInput"
+                                class="w-full bg-white/10 border border-mystic-gold/30 rounded-lg px-4 py-3 text-warm-white placeholder-moon-silver/50 focus:border-mystic-gold focus:outline-none resize-vertical min-h-[80px]"
+                                data-i18n-placeholder="iching.followup.placeholder"
+                                placeholder="例如：如何把握这个机会？需要注意什么风险？"></textarea>
+                        </div>
+
+                        <!-- Suggested Follow-up Questions -->
+                        <div class="mb-4">
+                            <p class="text-xs text-moon-silver mb-2" data-i18n="iching.followup.suggested">
+                                💡 建议追问：
+                            </p>
+                            <div class="flex flex-wrap gap-2" id="followupSuggestions">
+                                <!-- Will be populated by JS based on divination result -->
+                            </div>
+                        </div>
+
+                        <!-- Ask Button -->
+                        <div class="text-center">
+                            <button id="askFollowup"
+                                class="bg-mystic-gold text-deep-navy px-8 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                                data-i18n="iching.followup.button">
+                                <span class="mr-2">🤖</span> AI 解答
+                            </button>
+                        </div>
+
+                        <!-- Loading Indicator -->
+                        <div id="followupLoading" class="hidden text-center mt-4">
+                            <div class="inline-flex items-center px-4 py-2 bg-mystic-gold/20 rounded-lg">
+                                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-mystic-gold"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                                <span class="text-mystic-gold">AI 正在解答中...</span>
+                            </div>
+                        </div>
+
+                        <!-- Follow-up Answer -->
+                        <div id="followupAnswer" class="hidden mt-6 pt-6 border-t border-mystic-gold/30">
+                            <h4 class="text-lg font-serif font-bold text-mystic-gold mb-3"
+                                data-i18n="iching.followup.answer">
+                                AI 解答：
+                            </h4>
+                            <div id="followupAnswerText"
+                                class="text-moon-silver leading-relaxed bg-white/5 rounded-lg p-4">
+                                <!-- AI answer will be displayed here -->
+                            </div>
+                        </div>
+
+                        <!-- Loading Indicator -->
+                        <div id="followupLoading" class="hidden mt-4 text-center">
+                            <div class="inline-flex items-center space-x-2 text-mystic-gold">
+                                <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-mystic-gold"></div>
+                                <span data-i18n="iching.followup.loading">AI 正在思考中...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-12" style="background: var(--jade-dark);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-moon-silver mb-6 max-w-2xl mx-auto" data-i18n="footer.description">
+                    Combining ancient Eastern wisdom with modern AI technology to help you discover your destiny.
+                </p>
+
+                <div class="flex justify-center space-x-6 mb-6 flex-wrap">
+                    <a href="privacy.html" class="text-moon-silver hover:text-mystic-gold transition-colors"
+                        data-i18n="footer.privacy">Privacy Policy</a>
+                    <a href="support.html" class="text-moon-silver hover:text-mystic-gold transition-colors"
+                        data-i18n="footer.support">Support</a>
+                    <a href="about.html" class="text-moon-silver hover:text-mystic-gold transition-colors"
+                        data-i18n="nav.about">About Us</a>
+                </div>
+
+                <!-- Social Media -->
+                <div class="mb-6">
+                    <h4 class="text-mystic-gold font-semibold mb-3" data-i18n="footer.social">Social Media</h4>
+                    <div class="flex justify-center gap-6">
+                        <a href="https://xhslink.com/m/40J0nrG5TNW" target="_blank" rel="noopener noreferrer"
+                            class="text-moon-silver hover:text-mystic-gold transition-all transform hover:scale-110 group"
+                            title="小红书: 魔缘文核">
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-red-400 to-pink-500 flex items-center justify-center shadow-lg group-hover:shadow-mystic-gold/50">
+                                <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+                                </svg>
+                            </div>
+                        </a>
+                        <a href="https://x.com/weiming5311" target="_blank" rel="noopener noreferrer"
+                            class="text-moon-silver hover:text-mystic-gold transition-all transform hover:scale-110 group"
+                            title="X: @weiming5311">
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-gray-800 to-black flex items-center justify-center shadow-lg group-hover:shadow-mystic-gold/50">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                                </svg>
+                            </div>
+                        </a>
+                        <a href="https://www.instagram.com/gentle_pacifier/" target="_blank" rel="noopener noreferrer"
+                            class="text-moon-silver hover:text-mystic-gold transition-all transform hover:scale-110 group"
+                            title="Instagram: @gentle_pacifier">
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 flex items-center justify-center shadow-lg group-hover:shadow-mystic-gold/50">
+                                <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                                </svg>
+                            </div>
+                        </a>
+                        <a href="mailto:fredwei77@gmail.com"
+                            class="text-moon-silver hover:text-mystic-gold transition-all transform hover:scale-110 group"
+                            title="Email: fredwei77@gmail.com">
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg group-hover:shadow-mystic-gold/50">
+                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                        </a>
+                        <a href="tel:+8618665860838"
+                            class="text-moon-silver hover:text-mystic-gold transition-all transform hover:scale-110 group"
+                            title="+86 186 6586 0838">
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg group-hover:shadow-mystic-gold/50">
+                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                </svg>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="border-t border-moon-silver/20 pt-6">
+                    <p class="text-moon-silver text-sm" data-i18n="footer.copyright">
+                        © 2024 Destiny AI. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        // I-Ching specific functionality
+        class IChingDivination {
+            constructor() {
+                this.selectedMethod = null;
+                this.currentCast = 0;
+                this.hexagramLines = [];
+                this.changingLines = [];
+                this.question = '';
+
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.setupMethods();
+            }
+
+            setupEventListeners() {
+                // Method selection
+                document.querySelectorAll('.method-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        this.selectMethod(card.dataset.method);
+                    });
+                });
+
+                // Start divination
+                const startBtn = document.getElementById('startDivination');
+                if (startBtn) {
+                    startBtn.addEventListener('click', () => this.startDivination());
+                }
+
+                // Coin casting
+                const castBtn = document.getElementById('castCoins');
+                if (castBtn) {
+                    castBtn.addEventListener('click', () => this.castCoins());
+                }
+
+                // Result actions
+                const saveBtn = document.getElementById('saveReading');
+                const shareBtn = document.getElementById('shareReading');
+                const newBtn = document.getElementById('newDivination');
+
+                if (saveBtn) saveBtn.addEventListener('click', () => this.saveReading());
+                if (shareBtn) shareBtn.addEventListener('click', () => this.shareReading());
+                if (newBtn) newBtn.addEventListener('click', () => this.newDivination());
+
+                // Question tags - 常见问题标签点击事件
+                document.querySelectorAll('.question-tag').forEach(tag => {
+                    tag.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        // 使用按钮的文本内容而不是 data-question 属性
+                        // 这样可以获取当前语言的翻译文本
+                        const questionSpan = tag.querySelector('[data-i18n]') || tag;
+                        const question = questionSpan.textContent.trim();
+                        const questionInput = document.getElementById('questionInput');
+                        if (questionInput && question) {
+                            questionInput.value = question;
+                            questionInput.focus();
+                            // 添加视觉反馈
+                            tag.style.transform = 'scale(0.95)';
+                            setTimeout(() => {
+                                tag.style.transform = '';
+                            }, 150);
+                        }
+                    });
+                });
+            }
+
+            setupMethods() {
+                // 只保留三枚硬币方法
+                this.methods = {
+                    coins: {
+                        name: 'Three Coins',
+                        description: 'Traditional coin casting method'
+                    }
+                };
+
+                // 自动选择三枚硬币方法
+                this.selectedMethod = 'coins';
+            }
+
+            selectMethod(method) {
+                this.selectedMethod = method;
+
+                // Update UI
+                document.querySelectorAll('.method-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+
+                document.querySelector(`[data-method="${method}"]`).classList.add('selected');
+            }
+
+            startDivination() {
+                const question = document.getElementById('questionInput').value.trim();
+
+                // 由于只有一个方法且已自动选择，不需要检查方法选择
+                // if (!this.selectedMethod) {
+                //     alert('Please select a divination method first.');
+                //     return;
+                // }
+
+                if (!question) {
+                    alert('Please enter your question.');
+                    return;
+                }
+
+                this.question = question;
+
+                // Hide method section, show coin casting
+                document.getElementById('methodSection').classList.add('hidden');
+                document.getElementById('coinSection').classList.remove('hidden');
+
+                // Initialize based on method
+                this.initializeCasting();
+            }
+
+            initializeCasting() {
+                this.currentCast = 0;
+                this.hexagramLines = [];
+                this.changingLines = [];
+
+                // Reset hexagram display
+                document.getElementById('hexagramLines').innerHTML = '';
+                document.getElementById('hexagramName').textContent = 'Building...';
+
+                // Update casting display
+                this.updateCastingDisplay();
+            }
+
+            updateCastingDisplay() {
+                // Modified to show completed casts (0-6) instead of current attempt (1-7)
+                const displayValue = Math.min(this.currentCast, 6); // Cap at 6
+                document.getElementById('currentCast').textContent = displayValue;
+            }
+
+            castCoins() {
+                if (this.currentCast >= 6) return;
+
+                // Animate coins
+                const coins = ['coin1', 'coin2', 'coin3'];
+                coins.forEach(coinId => {
+                    const coin = document.getElementById(coinId);
+                    coin.classList.add('flipping');
+                });
+
+                // Simulate casting delay
+                setTimeout(() => {
+                    this.processCast();
+                    coins.forEach(coinId => {
+                        const coin = document.getElementById(coinId);
+                        coin.classList.remove('flipping');
+                    });
+                }, 1000);
+            }
+
+            processCast() {
+                // Simulate coin results (2 = heads/yang, 3 = tails/yin)
+                const results = [
+                    Math.floor(Math.random() * 2) + 2, // 2 or 3
+                    Math.floor(Math.random() * 2) + 2,
+                    Math.floor(Math.random() * 2) + 2
+                ];
+
+                const sum = results.reduce((a, b) => a + b, 0);
+                let lineType, isChanging = false;
+
+                // Determine line type
+                if (sum === 6) {
+                    lineType = 'broken'; // Old yin (changing)
+                    isChanging = true;
+                } else if (sum === 7) {
+                    lineType = 'solid'; // Young yang
+                } else if (sum === 8) {
+                    lineType = 'broken'; // Young yin
+                } else if (sum === 9) {
+                    lineType = 'solid'; // Old yang (changing)
+                    isChanging = true;
+                }
+
+                // Add to hexagram (bottom to top)
+                this.hexagramLines.unshift({
+                    type: lineType,
+                    changing: isChanging,
+                    value: sum
+                });
+
+                if (isChanging) {
+                    this.changingLines.push(6 - this.currentCast); // Line number (1-6, bottom to top)
+                }
+
+                this.currentCast++;
+
+                // Update display
+                this.updateHexagramDisplay();
+                this.updateCastingDisplay();
+
+                // Check if complete
+                if (this.currentCast >= 6) {
+                    setTimeout(() => this.completeDivination(), 1000);
+                }
+            }
+
+            updateHexagramDisplay() {
+                const container = document.getElementById('hexagramLines');
+                container.innerHTML = '';
+
+                this.hexagramLines.forEach((line, index) => {
+                    const lineElement = document.createElement('div');
+                    lineElement.className = `hexagram-line ${line.type}`;
+
+                    if (line.changing) {
+                        lineElement.classList.add('changing');
+                    }
+
+                    container.appendChild(lineElement);
+                });
+
+                // Update hexagram name based on pattern
+                const hexData = this.getHexagramData();
+                document.getElementById('hexagramName').textContent = `Hexagram ${hexData.number}`;
+            }
+
+            getHexagramData() {
+                const pattern = this.hexagramLines.map(line => line.type === 'solid' ? 1 : 0).join('');
+
+                // Map patterns to King Wen numbers
+                const patterns = {
+                    '111111': 1, '000000': 2, '100010': 3, '010001': 4,
+                    '111010': 5, '010111': 6, '010000': 7, '000010': 8,
+                    '111011': 9, '110111': 10, '111000': 11, '000111': 12,
+                    '101111': 13, '111101': 14, '001010': 15, '010100': 16,
+                    '100110': 17, '011001': 18, '110000': 19, '000011': 20,
+                    '100101': 21, '101001': 22, '000001': 23, '100000': 24,
+                    '111001': 25, '100111': 26, '100001': 27, '011110': 28,
+                    '010010': 29, '101101': 30, '001110': 31, '011100': 32,
+                    '001111': 33, '111100': 34, '000101': 35, '101000': 36,
+                    '101011': 37, '110101': 38, '001011': 39, '110100': 40,
+                    '110110': 41, '011011': 42, '111110': 43, '011111': 44,
+                    '000100': 45, '001000': 46, '011101': 47, '101110': 48,
+                    '001101': 49, '101100': 50, '100100': 51, '001001': 52,
+                    '011010': 53, '010110': 54, '101010': 55, '010101': 56,
+                    '110010': 57, '010011': 58, '011000': 59, '000110': 60,
+                    '110011': 61, '001100': 62, '101000': 63, '000101': 64
+                };
+
+                const number = patterns[pattern] || 1;
+                return { number, pattern };
+            }
+
+            completeDivination() {
+                // Hide coin section, show results
+                document.getElementById('coinSection').classList.add('hidden');
+                document.getElementById('resultsSection').classList.remove('hidden');
+
+                // Animate results appearance
+                anime({
+                    targets: '#resultsSection',
+                    opacity: [0, 1],
+                    translateY: [30, 0],
+                    duration: 800,
+                    easing: 'easeOutQuart'
+                });
+
+                // Display initial structure
+                const hexData = this.getHexagramData();
+                this.displayStructure(hexData.number);
+
+                // Initialize follow-up questions
+                this.initializeFollowup();
+
+                // Call AI for interpretation
+                if (window.ichingAI) {
+                    // Update UI to show loading
+                    document.getElementById('judgmentText').innerHTML = '<span class="animate-pulse">Consulting the Oracle...</span>';
+                    document.getElementById('imageText').innerHTML = '<span class="animate-pulse">Interpreting symbols...</span>';
+                    document.getElementById('adviceText').innerHTML = '<span class="animate-pulse">Formulating advice...</span>';
+
+                    // Call AI
+                    window.ichingAI.performDivination(
+                        this.question,
+                        this.hexagramLines.slice().reverse(), // iching-ai expect Bottom-to-Top
+                        this.changingLines,
+                        hexData.number // Pass explicit number
+                    ).then(result => {
+                        console.log('AI Result:', result);
+                        // Initialize the new follow-up system with proper data structure
+                        const ichingResult = {
+                            mainHexagram: hexData.name || `Hexagram ${hexData.number}`,
+                            changingLines: this.changingLines,
+                            transformedHexagram: 'Calculating...',
+                            category: 'I-Ching',
+                            summary: result.summary || result.advice || 'I-Ching analysis completed',
+                            hexagramNumber: hexData.number,
+                            hexagram: {
+                                name: hexData.name || `Hexagram ${hexData.number}`,
+                                meaning: result.judgment || 'Ancient wisdom...',
+                                lines: result.lines || 'Guidance from the lines...'
+                            },
+                            analysis: result.summary || result.advice || 'Interpretation completed'
+                        };
+
+                        // 同步到多个修复脚本预期的全局变量
+                        window.currentIChing = ichingResult;
+                        window.ichingResult = ichingResult;
+
+                        // Initialize the deep truth exploration feature
+                        if (window.IChingFollowup) {
+                            window.IChingFollowup.init(ichingResult);
+                        }
+
+                        // Keep the original follow-up for backward compatibility
+                        this.generateFollowupSuggestions(result);
+                    }).catch(err => {
+                        console.error('AI Failed:', err);
+                        // Fallback could go here
+                        document.getElementById('judgmentText').textContent = 'The oracle is silent at the moment. Please try again later.';
+                    });
+                } else {
+                    console.error('IChingAI not loaded');
+                }
+            }
+
+            initializeFollowup() {
+                const followupInput = document.getElementById('followupInput');
+                const askButton = document.getElementById('askFollowup');
+
+                if (askButton) {
+                    // Removed to avoid conflict with iching-fixes.js
+                    // askButton.addEventListener('click', () => this.handleFollowupQuestion());
+                }
+
+                // Add event listeners for suggestion tags
+                setTimeout(() => {
+                    document.querySelectorAll('.followup-tag').forEach(tag => {
+                        tag.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const question = tag.dataset.question;
+                            if (followupInput && question) {
+                                followupInput.value = question;
+                                followupInput.focus();
+                            }
+                        });
+                    });
+                }, 500);
+            }
+
+            generateFollowupSuggestions(result) {
+                const container = document.getElementById('followupSuggestions');
+                if (!container) return;
+
+                // Generate suggestions based on the original question and result
+                const suggestions = this.getFollowupSuggestions(this.question, result);
+
+                container.innerHTML = suggestions.map(q => `
+                    <button type="button" class="followup-tag question-tag" data-question="${q}">
+                        ${q}
+                    </button>
+                `).join('');
+
+                // Re-bind event listeners
+                document.querySelectorAll('.followup-tag').forEach(tag => {
+                    tag.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const question = tag.dataset.question;
+                        const followupInput = document.getElementById('followupInput');
+                        if (followupInput && question) {
+                            followupInput.value = question;
+                            followupInput.focus();
+                        }
+                    });
+                });
+            }
+
+            getFollowupSuggestions(originalQuestion, result) {
+                // Generate contextual follow-up questions based on the original question
+                const questionLower = originalQuestion.toLowerCase();
+
+                // Default suggestions
+                let suggestions = [
+                    '具体应该如何行动？',
+                    '需要注意哪些风险？',
+                    '最佳时机是什么时候？',
+                    '如何提高成功率？'
+                ];
+
+                // Customize based on question type
+                if (questionLower.includes('工作') || questionLower.includes('职业') || questionLower.includes('事业')) {
+                    suggestions = [
+                        '如何把握这个机会？',
+                        '需要做哪些准备？',
+                        '可能遇到什么阻碍？',
+                        '如何与同事相处？'
+                    ];
+                } else if (questionLower.includes('感情') || questionLower.includes('爱情') || questionLower.includes('关系')) {
+                    suggestions = [
+                        '如何改善我们的关系？',
+                        '对方的真实想法是什么？',
+                        '我该如何表达？',
+                        '这段关系的转机在哪里？'
+                    ];
+                } else if (questionLower.includes('财') || questionLower.includes('钱') || questionLower.includes('投资')) {
+                    suggestions = [
+                        '如何增加收入？',
+                        '投资方向是什么？',
+                        '需要避免什么风险？',
+                        '财运何时转好？'
+                    ];
+                } else if (questionLower.includes('创业') || questionLower.includes('项目')) {
+                    suggestions = [
+                        '如何找到合适的合作伙伴？',
+                        '资金问题如何解决？',
+                        '市场前景如何？',
+                        '需要注意哪些细节？'
+                    ];
+                }
+
+                return suggestions;
+            }
+
+            async handleFollowupQuestion() {
+                console.log('🤖 开始处理易经追问...');
+
+                // 检查是否有占卜结果
+                if (!currentIChing || !currentIChing.hexagramNumber) {
+                    alert('请先进行易经占卜再提问');
+                    return;
+                }
+
+                const followupInput = document.getElementById('followupInput');
+                const askButton = document.getElementById('askFollowup');
+                const loadingDiv = document.getElementById('followupLoading');
+                const answerDiv = document.getElementById('followupAnswer');
+                const answerText = document.getElementById('followupAnswerText');
+
+                const question = followupInput.value.trim();
+                console.log('📝 用户追问:', question);
+
+                if (!question) {
+                    alert('请输入您的追问');
+                    return;
+                }
+
+                // 检查用户权限
+                if (typeof window !== 'undefined' && window.subscriptionManager) {
+                    const access = window.subscriptionManager.canUseService('iching');
+
+                    if (!access.allowed) {
+                        console.log('需要升级或按次付费才能使用AI追问功能');
+                        window.subscriptionManager.showUpgradePrompt('AI易经追问', 'iching');
+                        return;
+                    }
+                }
+
+                // Show loading
+                if (loadingDiv) loadingDiv.classList.remove('hidden');
+                if (answerDiv) answerDiv.classList.add('hidden');
+                if (askButton) askButton.disabled = true;
+
+                try {
+                    // Call AI service with optimized prompts
+                    if (window.aiService) {
+                        // Get current language
+                        const lang = localStorage.getItem('preferredLanguage') || 'zh';
+
+                        // Get hexagram data
+                        const hexData = this.getHexagramData();
+                        const hexagramNumber = hexData.number;
+                        const hexagramName = window.ichingAI?.hexagrams[hexagramNumber]?.chinese || '未知';
+
+                        // Get changing lines
+                        const changingLines = this.hexagramLines
+                            .map((line, index) => line.changing ? (index + 1) : null)
+                            .filter(n => n !== null);
+
+                        // Get optimized system prompt from CONFIG
+                        const systemPrompt = window.CONFIG?.PROMPTS?.ICHING?.FOLLOWUP_SYSTEM?.(lang) ||
+                            (lang === 'en' ?
+                                'You are a professional I Ching master.' :
+                                '你是一位专业的易经大师。');
+
+                        // Build user prompt with complete context
+                        const userPrompt = this.buildFollowupUserPrompt(
+                            this.question,
+                            hexagramNumber,
+                            hexagramName,
+                            changingLines,
+                            question,
+                            lang
+                        );
+
+                        const result = await window.aiService.sendRequest(systemPrompt, userPrompt, {
+                            type: 'iching-followup',
+                            temperature: 0.8,
+                            maxTokens: 2000
+                        });
+
+                        // Display answer with formatting
+                        if (answerText) {
+                            const formattedAnswer = this.formatFollowupAnswer(
+                                typeof result === 'string' ? result : result.answer || '无法获取回答',
+                                lang
+                            );
+                            answerText.innerHTML = formattedAnswer;
+                        }
+                        if (answerDiv) answerDiv.classList.remove('hidden');
+
+                    } else {
+                        throw new Error('AI服务未加载');
+                    }
+                } catch (error) {
+                    console.error('Follow-up question error:', error);
+                    if (answerText) {
+                        answerText.textContent = '抱歉，AI暂时无法回答。请稍后再试。';
+                    }
+                    if (answerDiv) answerDiv.classList.remove('hidden');
+                } finally {
+                    // Hide loading
+                    if (loadingDiv) loadingDiv.classList.add('hidden');
+                    if (askButton) askButton.disabled = false;
+                }
+            }
+
+            buildFollowupUserPrompt(originalQuestion, hexagramNumber, hexagramName, changingLines, followupQuestion, lang) {
+                const isEnglish = lang === 'en';
+
+                if (isEnglish) {
+                    return `Please provide deep I Ching analysis and answer the user's follow-up question based on the following divination results.
+
+**Task**: Based on the hexagram information below, conduct deep I Ching analysis and provide practical life guidance.
+
+**Input Data (Divination Information)**:
+- Original Question: ${originalQuestion}
+- Hexagram Number: ${hexagramNumber}
+- Hexagram Name: ${hexagramName}
+- Changing Lines: ${changingLines.length > 0 ? changingLines.join(', ') : 'None'}
+
+**User's Follow-up Question (Seeking Deeper Truth)**:
+${followupQuestion}
+
+**Analysis Framework & Output Requirements**:
+
+Please output the analysis following these steps, combining classical I Ching wisdom with modern practicality:
+
+**Part 1: Hexagram Structure & Symbolic Analysis**
+- Analyze the hexagram's upper and lower trigrams (e.g., Heaven above, Earth below)
+- Explain the Five Elements attributes and their mutual generation/restraint relationships
+- Interpret the hexagram name's etymology and symbolic meanings
+- **Requirement**: Must cite original texts from "Zhou Yi Ben Yi" or "Yi Zhuan" to support your analysis
+
+**Part 2: Judgment & Image Text Interpretation**
+- Cite the original hexagram judgment text
+- Provide vernacular interpretation of the judgment
+- Cite the image text (Da Xiang)
+- Explain how the judgment and image relate to the user's question
+
+**Part 3: Changing Lines Analysis & Transformation** (if applicable)
+- Analyze the meaning of each changing line
+- Explain the transformation from original hexagram to future hexagram
+- Reveal the development trend of the situation
+- Provide timing analysis (when changes will occur)
+
+**Part 4: Situational Assessment & Timing Analysis**
+- Assess current situation: favorable/unfavorable, timing, momentum
+- Provide timing analysis:
+  * When to act (optimal action window)
+  * When to wait (patience required periods)
+  * When to retreat (strategic withdrawal timing)
+
+**Part 5: Action Guidance & Decision Suggestions**
+- Provide specific, actionable advice (what to do, what to avoid)
+- Combine I Ching wisdom with modern decision science
+- Include:
+  * Immediate actions (within 1 week)
+  * Short-term strategies (1-3 months)
+  * Long-term planning (3-12 months)
+
+**Part 6: Psychological Insight & Mindset Adjustment**
+- Analyze the user's psychological state based on the question
+- Provide mindset adjustment suggestions
+- Combine Jungian synchronicity theory
+- Help users face situations with a calm, wise mind
+
+**Constraints**:
+- For complex I Ching terminology, must provide easy-to-understand explanations
+- Use Markdown formatting, bold key points
+- Provide specific, actionable advice, not vague generalizations
+- Maintain an objective, neutral, and wise tone
+- Cite original texts to support judgments
+
+**IMPORTANT: Please respond in ENGLISH. All text must be in English. Use wise yet accessible language.**`;
+                }
+
+                return `请根据以下占卜结果提供深度易经分析，并回答用户的追问。
+
+**Task（任务）**：根据下方的卦象信息，进行深度易经分析，并提供实用的人生指导。
+
+**Input Data（占卜信息）**：
+- 原始问题：${originalQuestion}
+- 卦象编号：${hexagramNumber}
+- 卦象名称：${hexagramName}
+- 变爻：${changingLines.length > 0 ? changingLines.join('、') : '无'}
+
+**用户的追问（寻求深挖真相）**：
+${followupQuestion}
+
+**Analysis Framework（分析框架&输出要求）**：
+
+请按以下步骤输出分析，结合易经经典智慧与现代实用性：
+
+**第一部分：卦象结构与象征分析**
+- 分析卦象的上下卦（如：上乾下坤）
+- 解释五行属性和相生相克关系
+- 阐释卦名的由来和象征意义
+- **要求**：必须引用《周易本义》或《易传》原文来佐证你的分析
+
+**第二部分：卦辞与象辞解读**
+- 引用原文卦辞
+- 用白话文解释卦辞含义
+- 引用象辞（大象）
+- 说明卦辞和象辞如何关联用户的问题
+
+**第三部分：变爻分析与转化**（如有变爻）
+- 分析每个变爻的含义
+- 解释本卦到之卦的转化
+- 揭示事态发展趋势
+- 提供时机分析（何时会发生变化）
+
+**第四部分：形势判断与时机分析**
+- 判断当前形势：吉凶、时机、势态
+- 提供时机分析：
+  * 何时行动（最佳行动窗口）
+  * 何时等待（需要耐心的时期）
+  * 何时退守（战略性撤退时机）
+
+**第五部分：行动指导与决策建议**
+- 提供具体可行的建议（应该做什么、避免什么）
+- 结合易经智慧和现代决策科学
+- 包括：
+  * 即刻行动（1周内）
+  * 短期策略（1-3个月）
+  * 长期规划（3-12个月）
+
+**第六部分：心理洞察与心态调整**
+- 根据问题分析用户的心理状态
+- 提供心态调整建议
+- 结合荣格的同步性理论
+- 帮助用户以平和、智慧的心态面对局势
+
+**Constraints（约束）**：
+- 对于复杂的易经术语，必须提供通俗易懂的解释
+- 使用Markdown排版，重点内容请加粗
+- 提供具体可行的建议，不要泛泛而谈
+- 保持客观、中立、智慧的语气
+- 引用原文佐证判断
+
+**重要：请用中文回复。所有文本必须是中文。使用智慧但易懂的语言。**`;
+            }
+
+            formatFollowupAnswer(answer, lang) {
+                // Convert newlines to HTML
+                let formatted = answer.replace(/\n/g, '<br>');
+
+                // Highlight keywords based on language
+                const keywords = lang === 'en' ? [
+                    'Hexagram', 'Judgment', 'Image', 'Changing Line', 'Transformation',
+                    'Favorable', 'Unfavorable', 'Timing', 'Action', 'Wait', 'Retreat',
+                    'Advice', 'Suggestion', 'Caution', 'Opportunity', 'Challenge',
+                    'Heaven', 'Earth', 'Thunder', 'Wind', 'Water', 'Fire', 'Mountain', 'Lake',
+                    'Important', 'Key', 'Essential', 'Critical'
+                ] : [
+                    '卦象', '卦辞', '象辞', '变爻', '转化', '之卦',
+                    '吉', '凶', '时机', '行动', '等待', '退守',
+                    '建议', '注意', '机会', '挑战', '风险',
+                    '乾', '坤', '震', '巽', '坎', '离', '艮', '兑',
+                    '天', '地', '雷', '风', '水', '火', '山', '泽',
+                    '重要', '关键', '必须', '应该', '避免'
+                ];
+
+                keywords.forEach(keyword => {
+                    const regex = new RegExp(`\\b(${keyword})\\b`, 'gi');
+                    formatted = formatted.replace(regex, '<span class="text-mystic-gold font-semibold">$1</span>');
+                });
+
+                // Format lists
+                formatted = formatted.replace(/(\d+)\.\s/g, '<br><strong class="text-mystic-gold">$1.</strong> ');
+
+                return formatted;
+            }
+
+            displayStructure(number) {
+                // Display final hexagram lines
+                const finalHexagram = document.getElementById('finalHexagram');
+                finalHexagram.innerHTML = '';
+                this.hexagramLines.forEach(line => {
+                    const lineElement = document.createElement('div');
+                    lineElement.className = `hexagram-line ${line.type}`;
+                    if (line.changing) lineElement.classList.add('changing');
+                    finalHexagram.appendChild(lineElement);
+                });
+
+                // Set temporary title
+                document.getElementById('hexagramTitle').textContent = `Hexagram ${number}`;
+                document.getElementById('hexagramDescription').textContent = '...';
+            }
+
+            displayFinalResults() {
+                // Display final hexagram
+                const finalHexagram = document.getElementById('finalHexagram');
+                finalHexagram.innerHTML = '';
+
+                this.hexagramLines.forEach(line => {
+                    const lineElement = document.createElement('div');
+                    lineElement.className = `hexagram-line ${line.type}`;
+
+                    if (line.changing) {
+                        lineElement.classList.add('changing');
+                    }
+
+                    finalHexagram.appendChild(lineElement);
+                });
+
+                // Display changing lines
+                const changingLinesContainer = document.getElementById('changingLines');
+                if (this.changingLines.length > 0) {
+                    // 获取当前语言
+                    const currentLang = localStorage.getItem('destinyai_language') || 'en';
+                    const translations = {
+                        'en': {
+                            line: 'Line',
+                            changing: 'This line is changing, indicating transformation in this aspect of your situation.',
+                            noChanging: 'No changing lines - the situation is stable.'
+                        },
+                        'zh-CN': {
+                            line: '第',
+                            changing: '此爻正在变化，表明您情况的这一方面正在转变。',
+                            noChanging: '无变爻 - 情况稳定。'
+                        },
+                        'zh-TW': {
+                            line: '第',
+                            changing: '此爻正在變化，表明您情況的這一方面正在轉變。',
+                            noChanging: '無變爻 - 情況穩定。'
+                        }
+                    };
+
+                    const t = translations[currentLang] || translations['en'];
+
+                    changingLinesContainer.innerHTML = this.changingLines.map(lineNum =>
+                        `<div class="bg-white/10 rounded-lg p-3">
+                            <span class="text-mystic-gold font-semibold">${t.line} ${lineNum} 爻</span>
+                            <p class="text-sm text-moon-silver mt-1">${t.changing}</p>
+                        </div>`
+                    ).join('');
+                } else {
+                    const currentLang = localStorage.getItem('destinyai_language') || 'en';
+                    const noChangingText = {
+                        'en': 'No changing lines - the situation is stable.',
+                        'zh-CN': '无变爻 - 情况稳定。',
+                        'zh-TW': '無變爻 - 情況穩定。'
+                    };
+                    changingLinesContainer.innerHTML = `<p class="text-moon-silver">${noChangingText[currentLang] || noChangingText['en']}</p>`;
+                }
+
+                // Update hexagram information
+                const hexagramName = this.getHexagramName();
+                document.getElementById('hexagramTitle').textContent = hexagramName;
+
+                // Generate personalized interpretation based on question
+                this.generatePersonalizedInterpretation();
+            }
+
+            generatePersonalizedInterpretation() {
+                const interpretations = {
+                    judgment: [
+                        "The creative principle manifests through persistent action and strong will. This is a time for leadership and initiative.",
+                        "The receptive earth energy suggests patience and nurturing. Allow things to develop naturally.",
+                        "Difficulty at the beginning is natural. Persevere through initial challenges with determination.",
+                        "Youthful folly requires guidance and learning. Remain humble and seek wisdom from others.",
+                        "Waiting with patience and preparation will lead to success. Use this time wisely.",
+                        "Conflict requires careful navigation. Seek resolution through diplomacy rather than force."
+                    ],
+                    image: [
+                        "The movement of heaven is powerful and constant. Strengthen yourself through persistent effort.",
+                        "The earth carries all things with devotion. Be supportive and nurturing in your relationships.",
+                        "Clouds and thunder bring difficulty. Prepare for challenges and remain adaptable.",
+                        "Spring water flows gently. Approach learning with humility and openness.",
+                        "Heaven above water creates waiting. Maintain faith while preparing for opportunities.",
+                        "Heaven and water move in opposite directions. Seek harmony in conflicting situations."
+                    ],
+                    advice: [
+                        "Trust your creative instincts and act decisively. Your natural talents will guide you to success.",
+                        "Practice patience and allow situations to develop naturally. Forcing outcomes may backfire.",
+                        "Embrace challenges as learning opportunities. Each obstacle strengthens your character.",
+                        "Remain humble and open to guidance. Wisdom comes from acknowledging what you don't know.",
+                        "Use waiting periods productively. Preparation meets opportunity when the time is right.",
+                        "Navigate conflicts with diplomacy. Understanding different perspectives leads to resolution."
+                    ]
+                };
+
+                // Select random interpretations
+                const randomIndex = Math.floor(Math.random() * interpretations.judgment.length);
+
+                document.getElementById('judgmentText').textContent = interpretations.judgment[randomIndex];
+                document.getElementById('imageText').textContent = interpretations.image[randomIndex];
+                document.getElementById('adviceText').textContent = interpretations.advice[randomIndex];
+            }
+
+            saveReading() {
+                const reading = {
+                    timestamp: new Date().toISOString(),
+                    method: this.selectedMethod,
+                    question: this.question,
+                    hexagram: this.hexagramLines,
+                    changingLines: this.changingLines
+                };
+
+                const savedReadings = JSON.parse(localStorage.getItem('ichingReadings') || '[]');
+                savedReadings.push(reading);
+                localStorage.setItem('ichingReadings', JSON.stringify(savedReadings));
+
+                alert('Reading saved successfully!');
+            }
+
+            shareReading() {
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'My I-Ching Reading',
+                        text: 'Check out my I-Ching divination from Destiny AI!',
+                        url: window.location.href
+                    });
+                } else {
+                    navigator.clipboard.writeText(window.location.href).then(() => {
+                        alert('Link copied to clipboard!');
+                    });
+                }
+            }
+
+            newDivination() {
+                // Reset everything
+                this.selectedMethod = null;
+                this.currentCast = 0;
+                this.hexagramLines = [];
+                this.changingLines = [];
+                this.question = '';
+
+                // Hide results and coin sections
+                document.getElementById('resultsSection').classList.add('hidden');
+                document.getElementById('coinSection').classList.add('hidden');
+
+                // Show method section
+                document.getElementById('methodSection').classList.remove('hidden');
+
+                // Reset form
+                document.getElementById('questionInput').value = '';
+                document.querySelectorAll('.method-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+            }
+        }
+
+        // Initialize I-Ching functionality when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new IChingDivination();
+        });
+    </script>
+
+    <!-- Supabase Integration -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script src="supabase-init.js"></script>
+
+    <!-- 认证系统 - 页面访问控制 -->
+    <script src="auth-service.js"></script>
+    <script src="auth-guard-enhanced.js"></script>
+
+    <!-- 用户菜单 -->
+    <script src="user-menu.js"></script>
+
+    <!-- AI Service -->
+    <script src="ai-service.js"></script>
+
+    <!-- I-Ching 深挖真相功能 -->
+    <script src="iching-followup.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('[SW] Registered'))
+                    .catch(err => console.log('[SW] Failed', err));
+            });
+        }
+    </script>
+</body>
+
+</html>

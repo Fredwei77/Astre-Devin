@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feng Shui Analysis - Destiny AI</title>
+    <meta name="description"
+        content="Optimize your living and working spaces with AI-powered Feng Shui analysis. Get personalized recommendations for better energy flow.">
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif:wght@400;700&family=Noto+Sans+SC:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Tooltip Styles -->
+    <link rel="stylesheet" href="tooltip.css">
+
+    <!-- Mystical Eastern Theme -->
+    <link rel="stylesheet" href="mystical-theme.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- User Menu Styles -->
+    <link rel="stylesheet" href="user-menu.css">
+
+    <!-- Cookie Consent -->
+    <link rel="stylesheet" href="cookie-consent.css">
+    <script src="cookie-consent.js"></script>
+
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.2.4/pixi.min.js"></script>
+
+    <!-- Language Switcher -->
+    <!-- Unified Translation System -->
+    <script src="translations.js"></script>
+    <script src="unified-i18n.js"></script>
+    <script src="config.js"></script>
+    <script src="subscription-manager.js"></script>
+    <script src="state-preserver.js"></script>
+    <script src="ai-service.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-navy': '#1a237e',
+                        'mystic-gold': '#ffd700',
+                        'moon-silver': '#c0c0c0',
+                        'ink-black': '#2c2c2c',
+                        'warm-white': '#fafafa',
+                        'pale-gold': '#fff8dc',
+                        'mystic-purple': '#4a148c'
+                    },
+                    fontFamily: {
+                        'serif-sc': ['Noto Serif SC', 'serif'],
+                        'serif': ['Noto Serif', 'serif'],
+                        'sans-sc': ['Noto Sans SC', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Body background now handled by mystical-theme.css */
+
+        .tool-card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .compass-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+
+        .compass-face {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg,
+                    #ffd700 0deg 22.5deg, #c0c0c0 22.5deg 45deg,
+                    #ffd700 45deg 67.5deg, #c0c0c0 67.5deg 90deg,
+                    #ffd700 90deg 112.5deg, #c0c0c0 112.5deg 135deg,
+                    #ffd700 135deg 157.5deg, #c0c0c0 157.5deg 180deg,
+                    #ffd700 180deg 202.5deg, #c0c0c0 202.5deg 225deg,
+                    #ffd700 225deg 247.5deg, #c0c0c0 247.5deg 270deg,
+                    #ffd700 270deg 292.5deg, #c0c0c0 292.5deg 315deg,
+                    #ffd700 315deg 337.5deg, #c0c0c0 337.5deg 360deg);
+            position: relative;
+            cursor: grab;
+            transition: transform 0.1s ease;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .compass-face:active {
+            cursor: grabbing;
+        }
+
+        .compass-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: var(--mystic-teal);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 14px;
+            border: 2px solid #ffd700;
+        }
+
+        .compass-needle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 4px;
+            height: 120px;
+            background: linear-gradient(to top, #c0c0c0 50%, #ff4444 50%);
+            transform-origin: center bottom;
+            transition: transform 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .compass-directions {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #1a237e;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .glow-text {
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(255, 215, 0, 0.5);
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .upload-area.dragover {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        .recommendation-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #ffd700;
+            transition: all 0.3s ease;
+        }
+
+        .recommendation-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .element-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .element-wood {
+            background: #2e7d32;
+        }
+
+        .element-fire {
+            background: #f57c00;
+        }
+
+        .element-earth {
+            background: #8d6e63;
+        }
+
+        .element-metal {
+            background: #c0c0c0;
+        }
+
+        .element-water {
+            background: #1565c0;
+        }
+
+        /* Mobile Music Controls Styling */
+        .touch-manipulation {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 80px;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(192, 192, 192, 0.3);
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ffd700;
+            cursor: pointer;
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ffd700;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Mobile-specific music notification */
+        .mobile-music-toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: #ffd700;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-music-toast.show {
+            opacity: 1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .mystical-particles {
+                display: none;
+                /* Reduce GPU load on mobile */
+            }
+
+            #musicControl button {
+                backdrop-filter: blur(8px);
+                /* Reduce blur for performance */
+            }
+        }
+    </style>
+</head>
+
+<body class="font-inter text-warm-white">
+    <!-- Background Music -->
+    <audio id="backgroundMusic" loop preload="auto">
+        <source src="Music/Meditation.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Music Control Button with Mobile Optimization -->
+    <div id="musicControl" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
+        <button id="musicToggle"
+            class="bg-mystic-gold/20 backdrop-blur-sm border border-mystic-gold/30 text-mystic-gold hover:bg-mystic-gold hover:text-deep-navy active:scale-95 transition-all duration-300 rounded-full w-14 h-14 sm:w-12 sm:h-12 flex items-center justify-center shadow-lg touch-manipulation"
+            title="Toggle Background Music">
+            <span id="musicIcon" class="text-xl sm:text-lg">🎵</span>
+        </button>
+        <!-- Volume Control Slider for Mobile -->
+        <div id="volumeSlider"
+            class="absolute bottom-16 right-0 bg-black/80 backdrop-blur-sm border border-mystic-gold/30 rounded-lg p-3 hidden">
+            <div class="flex items-center space-x-2">
+                <span class="text-xs text-mystic-gold">🔊</span>
+                <input type="range" id="volumeRange" min="0" max="100" value="30" class="volume-slider">
+                <span id="volumeDisplay" class="text-xs text-mystic-gold">30%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mystical Particle Effects -->
+    <div class="mystical-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 mystical-nav border-b border-moon-silver/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div
+                        class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border border-mystic-gold/50 bg-black/50">
+                        <img src="resources/logo-processed.png" alt="Dragon Logo" class="w-full h-full object-cover">
+                    </div>
+                    <span class="text-xl font-serif font-bold glow-text" data-i18n="brand.name">九 筮</span>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="hover:text-mystic-gold transition-colors" data-i18n="nav.home">Home</a>
+                    <a href="divination.html" class="hover:text-mystic-gold transition-colors"
+                        data-i18n="nav.divination">Divination</a>
+                    <a href="fengshui.html" class="text-mystic-gold font-semibold" data-i18n="nav.fengshui">Feng
+                        Shui</a>
+                    <a href="iching.html" class="hover:text-mystic-gold transition-colors"
+                        data-i18n="nav.iching">I-Ching</a>
+                    <a href="about.html" class="hover:text-mystic-gold transition-colors" data-i18n="nav.about">About
+                        Us</a>
+                    <a href="profile.html" class="hover:text-mystic-gold transition-colors"
+                        data-i18n="nav.profile">Profile</a>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <select id="languageSelect"
+                        class="bg-transparent border border-moon-silver/30 rounded px-3 py-1 text-sm">
+                        <option value="en">English</option>
+                        <option value="zh-CN">简体中文</option>
+                        <option value="zh-TW">繁體中文</option>
+                        <option value="es">Español</option>
+                    </select>
+
+                    <!-- Login/User Section -->
+                    <div id="authSection" class="flex items-center space-x-3">
+                        <!-- Guest View (Not Logged In) -->
+                        <div id="guestView" class="flex items-center space-x-3">
+                            <button id="loginBtn"
+                                class="text-moon-silver hover:text-mystic-gold transition-colors font-medium flex items-center gap-2"
+                                style="color: #c0c0c0;">
+                                <span data-i18n="nav.login">登入</span>
+                            </button>
+                            <a href="payment.html"
+                                class="bg-mystic-gold text-deep-navy px-4 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors"
+                                style="background: #ffd700; color: #1a237e;" data-i18n="nav.upgrade">
+                                Upgrade
+                            </a>
+                        </div>
+
+                        <!-- User View (Logged In) -->
+                        <div id="userView" class="hidden">
+                            <div class="flex items-center space-x-3">
+                                <!-- User Avatar and Name -->
+                                <div class="flex items-center space-x-2 user-avatar-container">
+                                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-mystic-gold to-moon-silver flex items-center justify-center border-2 border-mystic-gold/50 shadow-lg"
+                                        style="background: linear-gradient(135deg, #ffd700, #c0c0c0);">
+                                        <img id="userAvatar" src="" alt="User Avatar"
+                                            class="w-full h-full rounded-full object-cover hidden">
+                                        <i id="userIcon" class="fas fa-user text-deep-navy text-sm"
+                                            style="color: #1a237e;"></i>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span id="userName" class="text-moon-silver font-medium text-sm"
+                                            style="color: #c0c0c0;"></span>
+                                        <span id="userLevel" class="text-mystic-gold text-xs hidden"
+                                            style="color: #ffd700;">VIP</span>
+                                    </div>
+                                </div>
+
+                                <!-- Dropdown Menu Button -->
+                                <div class="relative">
+                                    <button id="userMenuBtn"
+                                        class="text-moon-silver hover:text-mystic-gold transition-all duration-300 p-2 hover:bg-mystic-gold/10 rounded-full"
+                                        style="color: #c0c0c0;">
+                                        <i class="fas fa-chevron-down text-sm"></i>
+                                    </button>
+
+                                    <!-- Dropdown Menu -->
+                                    <div id="userMenu"
+                                        class="absolute right-0 mt-2 w-56 bg-black/95 backdrop-blur-md border-2 border-mystic-gold/30 rounded-xl shadow-2xl hidden z-50 overflow-hidden">
+                                        <!-- User Info Card -->
+                                        <div class="user-info-card">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-mystic-gold to-moon-silver flex items-center justify-center border-2 border-mystic-gold/50"
+                                                    style="background: linear-gradient(135deg, #ffd700, #c0c0c0);">
+                                                    <i class="fas fa-user text-deep-navy" style="color: #1a237e;"></i>
+                                                </div>
+                                                <div class="flex-1">
+                                                    <div id="menuUserName"
+                                                        class="text-warm-white font-semibold text-sm"></div>
+                                                    <div id="menuUserEmail" class="user-email"></div>
+                                                    <div id="menuUserStatus" class="user-status">免费会员</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Menu Items -->
+                                        <div class="py-2">
+                                            <a href="profile.html"
+                                                class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-user-circle w-5"></i>
+                                                <span class="ml-3" data-i18n="nav.profile">个人信息</span>
+                                            </a>
+
+                                            <a href="profile.html#readings"
+                                                class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-history w-5"></i>
+                                                <span class="ml-3" data-i18n="nav.myReadings">我的占卜</span>
+                                            </a>
+
+                                            <a href="payment.html"
+                                                class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-crown w-5"></i>
+                                                <span class="ml-3" data-i18n="nav.upgrade">会员升级</span>
+                                                <span
+                                                    class="ml-auto text-xs bg-mystic-gold text-deep-navy px-2 py-1 rounded-full font-bold"
+                                                    style="background: #ffd700; color: #1a237e;">HOT</span>
+                                            </a>
+
+                                            <a href="profile.html#settings"
+                                                class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-cog w-5"></i>
+                                                <span class="ml-3" data-i18n="nav.settings">设置</span>
+                                            </a>
+                                        </div>
+
+                                        <hr class="border-mystic-gold/20 mx-3">
+
+                                        <!-- Logout Button -->
+                                        <div class="py-2">
+                                            <button id="logoutBtn"
+                                                class="w-full flex items-center px-4 py-3 text-moon-silver hover:text-red-400 hover:bg-red-400/10 transition-all"
+                                                style="color: #c0c0c0;">
+                                                <i class="fas fa-sign-out-alt w-5"></i>
+                                                <span class="ml-3" data-i18n="nav.logout">退出登录</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-serif font-bold mb-6 glow-text" data-i18n="fengshui.title">
+                    Feng Shui Analysis & Compass
+                </h1>
+                <p class="text-xl text-moon-silver max-w-3xl mx-auto" data-i18n="fengshui.subtitle">
+                    Optimize your living and working spaces with our interactive Feng Shui compass.
+                    Get real-time analysis and personalized recommendations for better energy flow.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Left Column: Compass Tool -->
+                <div class="space-y-8">
+                    <div class="tool-card rounded-xl p-8">
+                        <h2 class="text-2xl font-serif font-bold mb-6 text-center" data-i18n="fengshui.compass.title">
+                            Interactive Feng Shui Compass</h2>
+
+                        <!-- Compass -->
+                        <div class="compass-container mb-6">
+                            <div id="compassFace" class="compass-face">
+                                <div class="compass-directions">N</div>
+                                <div class="compass-needle" id="compassNeedle"></div>
+                                <div class="compass-center">中心</div>
+                            </div>
+                        </div>
+
+                        <!-- Compass Controls -->
+                        <div class="text-center space-y-4">
+                            <div class="flex justify-center space-x-4">
+                                <button id="rotateLeft"
+                                    class="bg-mystic-gold text-deep-navy px-4 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors"
+                                    data-i18n="fengshui.compass.rotateLeft">
+                                    ← Rotate Left
+                                </button>
+                                <button id="rotateRight"
+                                    class="bg-mystic-gold text-deep-navy px-4 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors"
+                                    data-i18n="fengshui.compass.rotateRight">
+                                    Rotate Right →
+                                </button>
+                            </div>
+
+                            <div class="text-moon-silver">
+                                <p><span data-i18n="fengshui.compass.direction">Current Direction</span>: <span
+                                        id="currentDirection" class="text-mystic-gold font-semibold">North</span></p>
+                                <p><span data-i18n="fengshui.compass.degrees">Degrees</span>: <span id="currentDegrees"
+                                        class="text-mystic-gold font-semibold">0°</span></p>
+                            </div>
+                        </div>
+
+                        <!-- Analyze Button -->
+                        <div class="text-center mt-8">
+                            <button id="analyzeBtn" onclick="submitFengshuiAnalysis()"
+                                class="bg-mystic-gold text-deep-navy px-8 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-all transform hover:scale-105 glow-button"
+                                data-i18n="fengshui.analyze.button">
+                                🔮 开始风水分析
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Environment Analysis -->
+                    <div class="tool-card rounded-xl p-8">
+                        <h2 class="text-2xl font-serif font-bold mb-6" data-i18n="fengshui.analysis.title">Environment
+                            Analysis</h2>
+
+                        <div id="uploadArea" class="upload-area rounded-lg p-8 text-center mb-6">
+                            <div class="text-4xl mb-4">📸</div>
+                            <h3 class="text-lg font-semibold mb-2" data-i18n="fengshui.analysis.upload.title">Upload
+                                Room Photo</h3>
+                            <p class="text-moon-silver mb-4" data-i18n="fengshui.analysis.upload.desc">Drag and drop
+                                your room photo or click to browse</p>
+                            <input type="file" id="roomPhoto" accept="image/*" class="hidden">
+                            <button id="browseBtn"
+                                class="bg-mystic-gold text-deep-navy px-6 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors"
+                                data-i18n="fengshui.analysis.upload.button">
+                                Choose Photo
+                            </button>
+                        </div>
+
+                        <div id="analysisResults" class="hidden">
+                            <h3 class="text-lg font-semibold mb-4" data-i18n="fengshui.analysis.results.title">Analysis
+                                Results</h3>
+                            <p id="directionAnalysisText"
+                                class="text-moon-silver text-sm mb-6 leading-relaxed bg-white/5 p-4 rounded-lg">
+                                <!-- Populated by JS -->
+                            </p>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span data-i18n="fengshui.analysis.results.energy">Overall Energy Flow</span>
+                                    <div class="flex items-center">
+                                        <div class="w-24 bg-white/20 rounded-full h-2 mr-2">
+                                            <div id="energyScore" class="bg-mystic-gold h-2 rounded-full"
+                                                style="width: 75%"></div>
+                                        </div>
+                                        <span id="energyPercent" class="text-mystic-gold font-semibold">75%</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <span data-i18n="fengshui.analysis.results.wealth">Wealth Corner</span>
+                                    <div class="flex items-center">
+                                        <div class="w-24 bg-white/20 rounded-full h-2 mr-2">
+                                            <div id="wealthScore" class="bg-mystic-gold h-2 rounded-full"
+                                                style="width: 60%"></div>
+                                        </div>
+                                        <span id="wealthPercent" class="text-mystic-gold font-semibold">60%</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <span data-i18n="fengshui.analysis.results.health">Health Area</span>
+                                    <div class="flex items-center">
+                                        <div class="w-24 bg-white/20 rounded-full h-2 mr-2">
+                                            <div id="healthScore" class="bg-mystic-gold h-2 rounded-full"
+                                                style="width: 85%"></div>
+                                        </div>
+                                        <span id="healthPercent" class="text-mystic-gold font-semibold">85%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feng Shui Product Showcase -->
+                    <div class="tool-card rounded-xl p-8 mt-8" style="max-height: 600px; overflow-y: auto;">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-serif font-bold" data-i18n="fengshui.shop.title">
+                                Feng Shui Items Shop
+                            </h2>
+                            <button id="viewCartBtn"
+                                class="bg-mystic-gold/20 text-mystic-gold px-4 py-2 rounded-lg hover:bg-mystic-gold/30 transition-colors flex items-center gap-2">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span data-i18n="fengshui.shop.cart">购物车</span>
+                                <span id="cartCount"
+                                    class="bg-mystic-gold text-deep-navy rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">0</span>
+                            </button>
+                        </div>
+
+                        <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- 商品将由 JavaScript 动态加载 -->
+                            <div class="col-span-full text-center py-8">
+                                <div
+                                    class="animate-spin rounded-full h-12 w-12 border-b-2 border-mystic-gold mx-auto mb-4">
+                                </div>
+                                <p class="text-moon-silver">加载商品中...</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Right Column: Recommendations -->
+                <div class="space-y-8">
+                    <!-- Five Elements Balance -->
+                    <div class="tool-card rounded-xl p-8">
+                        <h2 class="text-2xl font-serif font-bold mb-6" data-i18n="fengshui.elements.title">
+                            Five Elements Balance
+                            <span class="tooltip-container">
+                                <span class="tooltip-icon" tabindex="0">?</span>
+                                <span class="tooltip-content" data-i18n-tooltip="tooltip.elements">
+                                    The Five Elements (Wood, Fire, Earth, Metal, Water) are fundamental concepts in
+                                    Chinese philosophy.
+                                    They represent different types of energy that interact to create balance in your
+                                    environment and life.
+                                </span>
+                            </span>
+                        </h2>
+
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <span class="element-indicator element-wood"></span>
+                                    <span data-i18n="fengshui.elements.wood">Wood</span>
+                                    <span class="tooltip-container">
+                                        <span class="tooltip-icon" tabindex="0">?</span>
+                                        <span class="tooltip-content" data-i18n-tooltip="tooltip.wood">
+                                            Wood represents growth, vitality, and expansion. Associated with spring,
+                                            family, and new beginnings.
+                                            Enhance with plants, wooden furniture, and green colors.
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-32 bg-white/20 rounded-full h-3 mr-3">
+                                        <div class="bg-green-500 h-3 rounded-full" style="width: 70%"></div>
+                                    </div>
+                                    <span class="text-mystic-gold font-semibold">70%</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <span class="element-indicator element-fire"></span>
+                                    <span data-i18n="fengshui.elements.fire">Fire</span>
+                                    <span class="tooltip-container">
+                                        <span class="tooltip-icon" tabindex="0">?</span>
+                                        <span class="tooltip-content" data-i18n-tooltip="tooltip.fire">
+                                            Fire represents passion, energy, and transformation. Associated with summer,
+                                            fame, and recognition.
+                                            Enhance with candles, lighting, and red/orange colors.
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-32 bg-white/20 rounded-full h-3 mr-3">
+                                        <div class="bg-orange-500 h-3 rounded-full" style="width: 45%"></div>
+                                    </div>
+                                    <span class="text-mystic-gold font-semibold">45%</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <span class="element-indicator element-earth"></span>
+                                    <span data-i18n="fengshui.elements.earth">Earth</span>
+                                    <span class="tooltip-container">
+                                        <span class="tooltip-icon" tabindex="0">?</span>
+                                        <span class="tooltip-content" data-i18n-tooltip="tooltip.earth">
+                                            Earth represents stability, nourishment, and grounding. Associated with
+                                            center, health, and relationships.
+                                            Enhance with crystals, ceramics, and yellow/brown colors.
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-32 bg-white/20 rounded-full h-3 mr-3">
+                                        <div class="bg-yellow-600 h-3 rounded-full" style="width: 80%"></div>
+                                    </div>
+                                    <span class="text-mystic-gold font-semibold">80%</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <span class="element-indicator element-metal"></span>
+                                    <span data-i18n="fengshui.elements.metal">Metal</span>
+                                    <span class="tooltip-container">
+                                        <span class="tooltip-icon" tabindex="0">?</span>
+                                        <span class="tooltip-content" data-i18n-tooltip="tooltip.metal">
+                                            Metal represents precision, clarity, and efficiency. Associated with autumn,
+                                            children, and creativity.
+                                            Enhance with metal objects, white/gray colors, and circular shapes.
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-32 bg-white/20 rounded-full h-3 mr-3">
+                                        <div class="bg-gray-400 h-3 rounded-full" style="width: 60%"></div>
+                                    </div>
+                                    <span class="text-mystic-gold font-semibold">60%</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <span class="element-indicator element-water"></span>
+                                    <span data-i18n="fengshui.elements.water">Water</span>
+                                    <span class="tooltip-container">
+                                        <span class="tooltip-icon" tabindex="0">?</span>
+                                        <span class="tooltip-content" data-i18n-tooltip="tooltip.water">
+                                            Water represents flow, wisdom, and wealth. Associated with winter, career,
+                                            and life path.
+                                            Enhance with fountains, aquariums, and blue/black colors.
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-32 bg-white/20 rounded-full h-3 mr-3">
+                                        <div class="bg-blue-500 h-3 rounded-full" style="width: 35%"></div>
+                                    </div>
+                                    <span class="text-mystic-gold font-semibold">35%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 p-4 bg-white/5 rounded-lg">
+                            <h4 class="font-semibold mb-2 text-mystic-gold" data-i18n="fengshui.elements.balance.title">
+                                Balance Analysis</h4>
+                            <p class="text-sm text-moon-silver" data-i18n="fengshui.elements.balance.desc">
+                                Your space has strong Earth and Wood elements but lacks Water and Fire energy.
+                                Consider adding water features and warm lighting to achieve better balance.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Personalized Recommendations -->
+                    <div class="tool-card rounded-xl p-8">
+                        <h2 class="text-2xl font-serif font-bold mb-6" data-i18n="fengshui.recommendations.title">
+                            Personalized Recommendations</h2>
+
+                        <div id="recommendationsContainer" class="space-y-4">
+                            <div class="recommendation-card rounded-lg p-4">
+                                <div class="flex items-start space-x-3">
+                                    <div class="text-2xl">💧</div>
+                                    <div>
+                                        <h4 class="font-semibold mb-1" data-i18n="fengshui.recommendations.water.title">
+                                            Add Water Element</h4>
+                                        <p class="text-sm text-moon-silver"
+                                            data-i18n="fengshui.recommendations.water.desc">
+                                            Place a small fountain or aquarium in the North area of your space to
+                                            enhance career opportunities and wealth flow.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="recommendation-card rounded-lg p-4">
+                                <div class="flex items-start space-x-3">
+                                    <div class="text-2xl">🔥</div>
+                                    <div>
+                                        <h4 class="font-semibold mb-1" data-i18n="fengshui.recommendations.fire.title">
+                                            Increase Fire Energy</h4>
+                                        <p class="text-sm text-moon-silver"
+                                            data-i18n="fengshui.recommendations.fire.desc">
+                                            Add warm lighting, candles, or red/orange decorations in the South area to
+                                            boost recognition and fame.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="recommendation-card rounded-lg p-4">
+                                <div class="flex items-start space-x-3">
+                                    <div class="text-2xl">🌿</div>
+                                    <div>
+                                        <h4 class="font-semibold mb-1" data-i18n="fengshui.recommendations.plant.title">
+                                            Optimize Plant Placement</h4>
+                                        <p class="text-sm text-moon-silver"
+                                            data-i18n="fengshui.recommendations.plant.desc">
+                                            Position healthy green plants in the East and Southeast areas to support
+                                            family harmony and wealth growth.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="recommendation-card rounded-lg p-4">
+                                <div class="flex items-start space-x-3">
+                                    <div class="text-2xl">🪞</div>
+                                    <div>
+                                        <h4 class="font-semibold mb-1"
+                                            data-i18n="fengshui.recommendations.mirror.title">Strategic Mirror Placement
+                                        </h4>
+                                        <p class="text-sm text-moon-silver"
+                                            data-i18n="fengshui.recommendations.mirror.desc">
+                                            Place mirrors to reflect beautiful views and expand space, but avoid
+                                            reflecting clutter or sharp corners.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="recommendation-card rounded-lg p-4">
+                                <div class="flex items-start space-x-3">
+                                    <div class="text-2xl">🛏️</div>
+                                    <div>
+                                        <h4 class="font-semibold mb-1"
+                                            data-i18n="fengshui.recommendations.bedroom.title">Bedroom Optimization</h4>
+                                        <p class="text-sm text-moon-silver"
+                                            data-i18n="fengshui.recommendations.bedroom.desc">
+                                            Position your bed in the command position (diagonal from door, not directly
+                                            in line) for better sleep and relationships.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lucky Items & Taboos Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                        <!-- Lucky Items -->
+                        <div class="tool-card rounded-xl p-8">
+                            <h2 class="text-2xl font-serif font-bold mb-6" data-i18n="fengshui.luckyItems.title">
+                                Lucky Items</h2>
+                            <div id="luckyItemsContainer" class="grid grid-cols-2 gap-4">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Taboos -->
+                        <div class="tool-card rounded-xl p-8 border border-red-900/30">
+                            <h2 class="text-2xl font-serif font-bold mb-6 text-red-400"
+                                data-i18n="fengshui.taboos.title">
+                                Taboos to Avoid</h2>
+                            <div id="taboosContainer" class="space-y-3">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Follow-up Questions Section -->
+                    <div
+                        class="tool-card rounded-xl p-8 mt-8 bg-gradient-to-br from-mystic-gold/10 to-mystic-purple/10 border-2 border-mystic-gold/30">
+                        <div class="text-center mb-4">
+                            <h3 class="text-xl font-serif font-bold text-mystic-gold mb-2"
+                                data-i18n="fengshui.followup.title">
+                                <span class="text-2xl">🏠</span> 替代方案咨询
+                            </h3>
+                            <p class="text-sm text-moon-silver" data-i18n="fengshui.followup.subtitle">
+                                如需替代方案，请在下方填写问题
+                            </p>
+                        </div>
+
+                        <!-- Follow-up Question Input -->
+                        <div class="mb-4">
+                            <textarea id="fengshuiFollowupInput"
+                                class="w-full bg-white/10 border border-mystic-gold/30 rounded-lg px-4 py-3 text-warm-white placeholder-moon-silver/50 focus:border-mystic-gold focus:outline-none resize-vertical min-h-[80px]"
+                                data-i18n-placeholder="fengshui.followup.placeholder"
+                                placeholder="例如：如何改善我的财位布局？卧室应该如何摆放？"></textarea>
+                        </div>
+
+                        <!-- Suggested Follow-up Questions -->
+                        <div class="mb-4">
+                            <p class="text-xs text-moon-silver mb-2" data-i18n="fengshui.followup.suggested">
+                                💡 建议追问：
+                            </p>
+                            <div class="flex flex-wrap gap-2" id="fengshuiFollowupSuggestions">
+                                <!-- Will be populated by JS based on feng shui result -->
+                            </div>
+                        </div>
+
+                        <!-- Ask Button -->
+                        <div class="text-center">
+                            <button id="askFengshuiFollowup"
+                                class="bg-mystic-gold text-deep-navy px-8 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                                data-i18n="fengshui.followup.button">
+                                <span class="mr-2">🤖</span> AI 解答
+                            </button>
+                        </div>
+
+                        <!-- Follow-up Answer -->
+                        <div id="fengshuiFollowupAnswer" class="hidden mt-6 pt-6 border-t border-mystic-gold/30">
+                            <h4 class="text-lg font-serif font-bold text-mystic-gold mb-3"
+                                data-i18n="fengshui.followup.answer">
+                                AI 解答：
+                            </h4>
+                            <div id="fengshuiFollowupAnswerText"
+                                class="text-moon-silver leading-relaxed bg-white/5 rounded-lg p-4">
+                                <!-- AI answer will be displayed here -->
+                            </div>
+                        </div>
+
+                        <!-- Loading Indicator -->
+                        <div id="fengshuiFollowupLoading" class="hidden mt-4 text-center">
+                            <div class="inline-flex items-center space-x-2 text-mystic-gold">
+                                <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-mystic-gold"></div>
+                                <span data-i18n="fengshui.followup.loading">AI 正在思考中...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-12" style="background: var(--jade-dark);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-moon-silver mb-6 max-w-2xl mx-auto" data-i18n="footer.description">
+                    Combining ancient Eastern wisdom with modern AI technology to help you discover your destiny.
+                </p>
+
+                <div class="flex justify-center space-x-6 mb-6 flex-wrap">
+                    <a href="privacy.html" class="text-moon-silver hover:text-mystic-gold transition-colors"
+                        data-i18n="footer.privacy">Privacy Policy</a>
+                    <a href="support.html" class="text-moon-silver hover:text-mystic-gold transition-colors"
+                        data-i18n="footer.support">Support</a>
+                    <a href="about.html" class="text-moon-silver hover:text-mystic-gold transition-colors"
+                        data-i18n="nav.about">About Us</a>
+                </div>
+
+                <!-- Social Media -->
+                <div class="mb-6">
+                    <h4 class="text-mystic-gold font-semibold mb-3" data-i18n="footer.social">Social Media</h4>
+                    <div class="flex justify-center gap-6">
+                        <a href="https://xhslink.com/m/40J0nrG5TNW" target="_blank" rel="noopener noreferrer"
+                            class="text-moon-silver hover:text-mystic-gold transition-all transform hover:scale-110 group"
+                            title="小红书: 魔缘文核">
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-red-400 to-pink-500 flex items-center justify-center shadow-lg group-hover:shadow-mystic-gold/50">
+                                <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+                                </svg>
+                            </div>
+                        </a>
+                        <a href="https://x.com/weiming5311" target="_blank" rel="noopener noreferrer"
+                            class="text-moon-silver hover:text-mystic-gold transition-all transform hover:scale-110 group"
+                            title="X: @weiming5311">
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-gray-800 to-black flex items-center justify-center shadow-lg group-hover:shadow-mystic-gold/50">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                                </svg>
+                            </div>
+                        </a>
+                        <a href="https://www.instagram.com/gentle_pacifier/" target="_blank" rel="noopener noreferrer"
+                            class="text-moon-silver hover:text-mystic-gold transition-all transform hover:scale-110 group"
+                            title="Instagram: @gentle_pacifier">
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 flex items-center justify-center shadow-lg group-hover:shadow-mystic-gold/50">
+                                <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                                </svg>
+                            </div>
+                        </a>
+                        <a href="mailto:fredwei77@gmail.com"
+                            class="text-moon-silver hover:text-mystic-gold transition-all transform hover:scale-110 group"
+                            title="Email: fredwei77@gmail.com">
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg group-hover:shadow-mystic-gold/50">
+                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                        </a>
+                        <a href="tel:+8618665860838"
+                            class="text-moon-silver hover:text-mystic-gold transition-all transform hover:scale-110 group"
+                            title="+86 186 6586 0838">
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg group-hover:shadow-mystic-gold/50">
+                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                </svg>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="border-t border-moon-silver/20 pt-6">
+                    <p class="text-moon-silver text-sm" data-i18n="footer.copyright">
+                        © 2024 Destiny AI. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Supabase Integration -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script src="supabase-init.js"></script>
+
+    <!-- 认证系统 - 页面访问控制 -->
+    <script src="auth-service.js"></script>
+    <script src="auth-guard-enhanced.js"></script>
+
+    <!-- 主程序 -->
+    <script src="main.js"></script>
+
+    <!-- 风水AI功能 -->
+    <script src="fengshui-ai.js"></script>
+    <script src="fengshui-followup.js"></script>
+    <script src="fengshui-analysis.js"></script>
+
+    <!-- 商店系统 - 使用多语言版本 -->
+    <script src="shop-service.js"></script>
+    <script src="shop-ui-i18n.js"></script>
+
+    <!-- 用户菜单 -->
+    <script src="user-menu.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('[SW] Registered'))
+                    .catch(err => console.log('[SW] Failed', err));
+            });
+        }
+    </script>
+</body>
+
+</html>

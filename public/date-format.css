@@ -1,0 +1,213 @@
+/* Date and Time Input Formatting for Western Users */
+/* Ensures consistent date/time display across browsers */
+
+/* Date Input Styling */
+input[type="date"],
+input[type="time"] {
+    position: relative;
+    font-family: 'Inter', sans-serif;
+    color: #fafafa;
+}
+
+/* Force English locale for date picker */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/* Firefox date input */
+input[type="date"]::-moz-calendar-picker-indicator,
+input[type="time"]::-moz-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+/* Ensure date format is visible */
+input[type="date"]::-webkit-datetime-edit-text,
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-year-field {
+    color: #fafafa;
+}
+
+input[type="time"]::-webkit-datetime-edit-text,
+input[type="time"]::-webkit-datetime-edit-hour-field,
+input[type="time"]::-webkit-datetime-edit-minute-field,
+input[type="time"]::-webkit-datetime-edit-ampm-field {
+    color: #fafafa;
+}
+
+/* Placeholder styling */
+input[type="date"]::placeholder,
+input[type="time"]::placeholder {
+    color: rgba(192, 192, 192, 0.5);
+    opacity: 1;
+}
+
+/* Focus state */
+input[type="date"]:focus,
+input[type="time"]:focus {
+    outline: none;
+    border-color: #ffd700 !important;
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+}
+
+/* Helper text styling */
+.date-helper-text {
+    font-size: 0.75rem;
+    color: rgba(192, 192, 192, 0.7);
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
+/* Date format indicator */
+.date-format-badge {
+    display: inline-block;
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    color: #ffd700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+/* US Date Format Preference */
+input[type="date"][lang="en-US"],
+input[type="time"][lang="en-US"] {
+    /* Ensure US format is used */
+    direction: ltr;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+    input[type="date"],
+    input[type="time"] {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    .date-helper-text {
+        font-size: 0.7rem;
+    }
+}
+
+/* Dark mode compatibility */
+@media (prefers-color-scheme: dark) {
+    input[type="date"]::-webkit-calendar-picker-indicator,
+    input[type="time"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+    }
+}
+
+/* Accessibility improvements */
+input[type="date"]:focus-visible,
+input[type="time"]:focus-visible {
+    outline: 2px solid #ffd700;
+    outline-offset: 2px;
+}
+
+/* Invalid state */
+input[type="date"]:invalid,
+input[type="time"]:invalid {
+    border-color: #ef4444;
+}
+
+input[type="date"]:invalid:focus,
+input[type="time"]:invalid:focus {
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+/* Valid state */
+input[type="date"]:valid,
+input[type="time"]:valid {
+    border-color: rgba(192, 192, 192, 0.3);
+}
+
+/* Date range indicators */
+.date-range-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: rgba(192, 192, 192, 0.6);
+    margin-top: 0.25rem;
+}
+
+/* Tooltip for date format */
+.date-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.date-tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: rgba(26, 35, 126, 0.95);
+    color: #fafafa;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.75rem;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.date-tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Format examples */
+.format-example {
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 3px solid #ffd700;
+    padding: 8px 12px;
+    margin-top: 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.format-example strong {
+    color: #ffd700;
+}
+
+/* Browser-specific fixes */
+
+/* Chrome/Edge */
+@supports (-webkit-appearance: none) {
+    input[type="date"]::-webkit-inner-spin-button,
+    input[type="date"]::-webkit-clear-button {
+        display: none;
+    }
+}
+
+/* Firefox */
+@-moz-document url-prefix() {
+    input[type="date"],
+    input[type="time"] {
+        appearance: none;
+        -moz-appearance: none;
+    }
+}
+
+/* Safari */
+@supports (-webkit-touch-callout: none) {
+    input[type="date"],
+    input[type="time"] {
+        min-height: 44px; /* iOS touch target size */
+    }
+}

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>下拉菜单完整修复测试</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- User Menu Styles -->
+    <link rel="stylesheet" href="user-menu.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #0d2626 0%, #1a4d4d 100%);
+            min-height: 100vh;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        
+        .test-nav {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px auto;
+            max-width: 800px;
+        }
+        
+        .success {
+            color: #4caf50;
+        }
+        
+        .error {
+            color: #f44336;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+            color: #1a237e;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Test Navigation -->
+    <nav class="test-nav fixed top-0 w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 rounded-full bg-mystic-gold/20 flex items-center justify-center border border-mystic-gold/50">
+                        <span class="text-xl font-bold" style="color: #ffd700;">�?/span>
+                    </div>
+                    <span class="text-xl font-bold" style="color: #ffd700;">Destiny AI</span>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <!-- Language Selector -->
+                    <select id="languageSelect" class="bg-transparent border border-moon-silver/30 rounded px-3 py-1 text-sm" style="color: #c0c0c0;">
+                        <option value="en">English</option>
+                        <option value="zh-CN" selected>简体中�?/option>
+                        <option value="zh-TW">繁體中文</option>
+                    </select>
+                    
+                    <!-- Login/User Section -->
+                    <div id="authSection" class="flex items-center space-x-3">
+                        <!-- Guest View (Not Logged In) -->
+                        <div id="guestView" class="flex items-center space-x-3">
+                            <button id="loginBtn" 
+                                class="text-moon-silver hover:text-mystic-gold transition-colors font-medium flex items-center gap-2"
+                                style="color: #c0c0c0;">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>登入</span>
+                            </button>
+                            <a href="payment.html"
+                                class="bg-mystic-gold text-deep-navy px-4 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors"
+                                style="background: #ffd700; color: #1a237e;">
+                                开始使�?                            </a>
+                        </div>
+                        
+                        <!-- User View (Logged In) -->
+                        <div id="userView" class="hidden">
+                            <div class="flex items-center space-x-3">
+                                <!-- User Avatar and Name -->
+                                <div class="flex items-center space-x-2 user-avatar-container">
+                                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-mystic-gold to-moon-silver flex items-center justify-center border-2 border-mystic-gold/50 shadow-lg"
+                                        style="background: linear-gradient(135deg, #ffd700, #c0c0c0);">
+                                        <img id="userAvatar" src="" alt="User Avatar" class="w-full h-full rounded-full object-cover hidden">
+                                        <i id="userIcon" class="fas fa-user text-deep-navy text-sm" style="color: #1a237e;"></i>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span id="userName" class="text-moon-silver font-medium text-sm" style="color: #c0c0c0;"></span>
+                                        <span id="userLevel" class="text-mystic-gold text-xs hidden" style="color: #ffd700;">VIP</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Dropdown Menu Button -->
+                                <div class="relative">
+                                    <button id="userMenuBtn" class="text-moon-silver hover:text-mystic-gold transition-all duration-300 p-2 hover:bg-mystic-gold/10 rounded-full"
+                                        sty

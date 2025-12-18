@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase 配置助手</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .step {
+            margin-bottom: 40px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .step h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        
+        .input-group {
+            margin: 20px 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .copy-btn {
+            background: #28a745;
+            padding: 8px 16px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .help-text {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .progress {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s;
+        }
+        
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .checklist li {
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .checklist li::before {
+            content: '�?;
+            margin-right: 10px;
+            font-size: 20px;
+            color: #667eea;
+        }
+        
+        .checklist li.checked::before {
+            content: '�?;
+            color: #28a745;
+        }
+        
+        .link-button {
+            display: inline-block;
+            background: #17a2b8;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin: 10px 5px;
+            transition: background 0.3s;
+        }
+        
+        .link-button:hover {
+            background: #138496;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔮 Supabase 配置助手</h1>
+            <p>一步步引导你完成Supabase配置</p>
+        </div>
+        
+        <div class="content">
+            <!-- 进度�?-->
+            <div class="progress">
+                <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+            </div>
+            
+            <!-- 步骤1: 选择配置方式 -->
+            <div class="step" id="step1">
+                <h2>
+                    <span class="step-number">1</span>
+                    选择配置方式
+                </h2>
+                <p style="margin-bottom: 20px;">你有Supabase项目的访问权限吗�?/p>
+                <button onclick="selectOption('existing')">�?有，使用现有项目</button>
+                <button onclick="selectOption('new')" class="btn-secondary">🆕 没有，创建新项目</button>
+            </div>
+            
+            <!-- 步骤2A: 现有项目 -->
+            <div class="step" id="step2a" style="display: none;">
+                <h2>
+                    <span class="step-number">2</span>
+                    获取现有项目的API密钥
+                </h2>
+                <div class="alert alert-info">
+                    <strong>📍 操作步骤�?/strong><br>
+                    1. 访问你的Supabase项目Dashboard<br>
+                    2. 点击左侧 Settings (⚙️) �?API<br>
+                    3. 复制 Project URL �?anon public 密钥
+                </div>
+                <a href="https://supabase.com/dashboard/project/izkcgqvxecfxqtgxpmaj/settings/api" 
+                   target="_blank" class="link-button">
+                    🔗 打开Supabase Dashboard
+                </a>
+                <button onclick="showStep('step3')" class="btn-success">�?已获取密钥，继续</button>
+            </div>
+            
+            <!-- 步骤2B: 新项�?-->
+            <div class="step" id="step2b" style="display: none;">
+                <h2>
+                    <span class="step-number">2</span>
+                    创建新的Supabase项目
+                </h2>
+                <div class="alert alert-info">
+                    <strong>📍 操作步骤�?/strong><br>
+                    1. 访问 Supabase 官网<br>
+                    2. 注册/登录账号（推荐使用GitHub登录�?br>
+                    3. 点击 "New Project"<br>
+                    4. 填写项目信息并创�?br>
+                    5. 等待项目创建完成（约2分钟�?br>
+                    6. 进入 Settings �?API 获取密钥
+                </div>
+                <a href="https://supabase.com" target="_blank" class="link-button">
+                    🔗 访问Supabase官网
+                </a>
+                <button onclick="showStep('step3')" class="btn-success">�?项目已创建，继续</button>
+            </div>
+            
+            <!-- 步骤3: 输入配置 -->
+            <div class="step" id="step3" style="display: none;">
+                <h2>
+                    <span class="step-number">3</span>
+                    输入API配置
+                </h2>
+                
+                <div class="input-group">
+                    <label>Project URL:</label>
+                    <input type="text" id="projectUrl" 
+                           placeholder="https://你的项目ID.supabase.co"
+                           value="https://izkcgqvxecfxqtgxpmaj.supabase.co">
+                    <p class="help-text">�?Supabase Dashboard �?Settings �?API 复制</p>
+                </div>
+                
+                <div class="input-group">
+                    <label>Anon Public Key:</label>
+                    <textarea id="anonKey" 
+                              placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."></textarea>
+                    <p class="help-text">�?Supabase Dashboard �?Settings �?API �?anon public 复制</p>
+                </div>
+                
+                <button onclick="validateAndGenerate()">🔍 验证并生成配�?/button>
+                <div id="validationResult"></div>
+            </div>
+            
+            <!-- 步骤4: 生成配置代码 -->
+            <div class="step" id="step4" style="display: none;">
+                <h2>
+                    <span class="step-number">4</span>
+                    更新配置文件
+                </h2>
+                
+                <div class="alert alert-success">
+                    �?配置验证成功！请按照以下步骤更新文件�?                </div>
+                
+                <h3 style="margin: 20px 0 10px 0;">📄 更新 .env 文件</h3>
+                <div class="code-block" id="envCode"></div>
+                <button class="copy-btn" onclick="copyCode('envCode')">📋 复制代码</button>
+                
+                <h3 style="margin: 20px 0 10px 0;">📄 更新 supabase-client.js</h3>
+                <div class="code-block" id="clientCode"></div>
+                <button class="copy-btn" onclick="copyCode('clientCode')">📋 复制代码</button>
+                
+                <h3 style="margin: 20px 0 10px 0;">📄 更新 supabase-init.js</h3>
+                <div class="code-block" id="initCode"></div>
+                <button class="copy-btn" onclick="copyCode('initCode')">📋 复制代码</button>
+                
+                <button onclick="showStep('step5')" class="btn-success" style="margin-top: 20px;">
+                    �?已更新文件，继续
+                </button>
+            </div>
+            
+            <!-- 步骤5: 创建数据库表 -->
+            <div class="step" id="step5" style="display: none;">
+                <h2>
+                    <span class="step-number">5</span>
+                    创建数据库表
+                </h2>
+                
+                <div class="alert alert-info">
+                    <strong>📍 操作步骤�?/strong><br>
+                    1. 在Supabase Dashboard中点�?SQL Editor<br>
+                    2. 点击 New Query<br>
+                    3. 复制项目中的 supabase-schema.sql 文件内容<br>
+                    4. 粘贴到SQL Editor并点�?Run<br>
+                    5. �?Table Editor 中验证表已创�?                </div>
+                
+                <a href="https://supabase.com/dashboard/project/izkcgqvxecfxqtgxpmaj/editor" 
+                   target="_blank" class="link-button">
+                    🔗 打开SQL Editor
+                </a>
+                
+                <button onclick="showStep('step6')" class="btn-success">�?表已创建，继�?/button>
+            </div>
+            
+            <!-- 步骤6: 测试配置 -->
+            <div class="step" id="step6" style="display: none;">
+                <h2>
+                    <span class="step-number">6</span>
+                    测试配置
+                </h2>
+                
+                <div class="alert alert-warning">
+                    ⚠️ 在测试前，请确保�?                </div>
+                
+                <ul class="checklist">
+                    <li id="check1">已更�?.env 文件</li>
+                    <li id="check2">已更�?supabase-client.js</li>
+                    <li id="check3">已更�?supabase-init.js</li>
+                    <li id="check4">已执�?supabase-schema.sql</li>
+                    <li id="check5">已保存所有文�?/li>
+                    <li id="check6">已关闭并重新打开浏览�?/li>
+                </ul>
+                
+                <button onclick="markAllChecked()" class="btn-secondary">�?全部完成</button>
+                <a href="test-supabase.html" target="_blank" class="link-button">
+                    🧪 打开测试页面
+                </a>
+                
+                <div class="alert alert-success" style="margin-top: 20px;">
+                    <strong>🎉 配置完成�?/strong><br>
+                    如果测试页面不再显示"Invalid API key"错误，说明配置成功！
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentStep = 1;
+        let configData = {};
+        
+        function selectOption(option) {
+            if (option === 'existing') {
+                showStep('step2a');
+            } else {
+                showStep('step2b');
+            }
+            updateProgress(33);
+        }
+        
+        function showStep(stepId) {
+            // 隐藏所有步�?            document.querySelectorAll('.step').forEach(step => {
+                step.style.display = 'none';
+            });
+            
+            // 显示指定步骤
+            document.getElementById(stepId).style.display = 'block';
+            
+            // 更新进度
+            const stepNumber = parseInt(stepId.replace('step', '').replace(/[ab]/, ''));
+            updateProgress(stepNumber * 16.67);
+        }
+        
+        function updateProgress(percent) {
+            document.getElementById('progressBar').style.width = percent + '%';
+        }
+        
+        function validateAndGenerate() {
+            const url = document.getElementById('projectUrl').value.trim();
+            const key = document.getElementById('anonKey').value.trim();
+            const result = document.getElementById('validationResult');
+            
+            // 验证
+            if (!url || !key) {
+                result.innerHTML = '<div class="alert alert-error">�?请填写所有字�?/div>';
+                return;
+            }
+            
+            if (!url.startsWith('https://') || !url.includes('.supabase.co')) {
+                result.innerHTML = '<div class="alert alert-error">�?Project URL 格式不正�?/div>';
+                return;
+            }
+            
+            if (!key.startsWith('eyJ')) {
+                result.innerHTML = '<div class="alert alert-error">�?Anon Key 应该�?eyJ 开�?/div>';
+                return;
+            }
+            
+            if (key.length < 100) {
+                result.innerHTML = '<div class="alert alert-warning">⚠️ Anon Key 长度可能不正�?/div>';
+                return;
+            }
+            
+            // 保存配置
+            configData = { url, key };
+            
+            // 生成代码
+            generateCode(url, key);
+            
+            // 显示成功并进入下一�?            result.innerHTML = '<div class="alert alert-success">�?验证成功�?/div>';
+            setTimeout(() => {
+                showStep('step4');
+                updateProgress(66);
+            }, 1000);
+        }
+        
+        function generateCode(url, key) {
+            // .env
+            document.getElementById('envCode').textContent = 
+`NEXT_PUBLIC_SUPABASE_URL=${url}
+NEXT_PUBLIC_SUPABASE_ANON_KEY=${key}`;
+            
+            // supabase-client.js
+            document.getElementById('clientCode').textContent = 
+`const SUPABASE_URL = '${url}';
+const SUPABASE_ANON_KEY = '${key}';`;
+            
+            // supabase-init.js
+            document.getElementById('initCode').textContent = 
+`const SUPABASE_CONFIG = {
+    url: '${url}',
+    anonKey: '${key}'
+};`;
+        }
+        
+        function copyCode(elementId) {
+            const code = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('�?代码已复制到剪贴板！');
+            });
+        }
+        
+        function markAllChecked() {
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById('check' + i).classList.add('checked');
+            }
+            updateProgress(100);
+        }
+    </script>
+</body>
+</html>

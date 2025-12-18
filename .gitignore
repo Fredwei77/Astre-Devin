@@ -27,7 +27,7 @@ dist/
 build/
 .cache/
 # Netlify构建输出（由构建脚本生成）
-public/
+# public/ (Vite Source now)
 
 # 测试
 coverage/
@@ -54,4 +54,4 @@ process-logo.js
 # 备份文件
 *.backup
 *_backup.*
-package-*.json
+# package-*.json (Need package.json)

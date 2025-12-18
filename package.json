@@ -4,8 +4,10 @@
   "description": "Destiny AI Backend for Netlify Functions",
   "main": "netlify/functions/api.js",
   "scripts": {
-    "dev": "netlify dev",
-    "build": "node build.js || echo 'Build completed'",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "build:legacy": "node build.js || echo 'Build completed'",
     "start": "node server.js",
     "postinstall": "echo 'Dependencies installed successfully'"
   },
@@ -22,12 +24,23 @@
     "sharp": "^0.33.0"
   },
   "devDependencies": {
-    "netlify-cli": "^17.10.1"
+    "glob": "^13.0.0",
+    "netlify-cli": "^17.10.1",
+    "rollup": "^4.53.5",
+    "vite": "^7.3.0",
+    "vite-plugin-pwa": "^1.2.0",
+    "workbox-build": "^7.4.0",
+    "workbox-window": "^7.4.0"
   },
   "engines": {
     "node": ">=18.0.0"
   },
-  "keywords": ["netlify", "functions", "express", "destiny-ai"],
+  "keywords": [
+    "netlify",
+    "functions",
+    "express",
+    "destiny-ai"
+  ],
   "author": "Destiny AI",
   "license": "MIT"
 }

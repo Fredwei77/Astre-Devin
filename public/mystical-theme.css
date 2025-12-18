@@ -1,0 +1,579 @@
+/* ============================================
+   Mystical Eastern Theme - Global Stylesheet
+   ============================================ */
+
+:root {
+    /* Primary Deep Green Gradient Colors */
+    --mystic-teal-dark: #0d2626;
+    --mystic-teal: #1a3a3a;
+    --mystic-green: #2d5a5a;
+    --jade-dark: #081a1a;
+    --jade-medium: #0f2f2f;
+    --jade-light: #1a4040;
+    
+    /* Accent Colors */
+    --mystic-gold: #d4af37;
+    --mystic-gold-light: #e6c35c;
+    --jade-accent: #4a7c7c;
+    --teal-soft: #5a8f8f;
+    
+    /* Text Colors */
+    --text-primary: #fafafa;
+    --text-secondary: #b8c5c5;
+    --text-muted: #8a9999;
+    
+    /* Shadow & Depth */
+    --shadow-deep: #051515;
+    --overlay-light: rgba(26, 58, 58, 0.1);
+    --overlay-medium: rgba(13, 38, 38, 0.3);
+    --overlay-heavy: rgba(8, 26, 26, 0.6);
+}
+
+/* ============================================
+   Global Background Gradient
+   ============================================ */
+body {
+    background: linear-gradient(135deg, var(--mystic-teal) 0%, var(--mystic-teal-dark) 50%, var(--jade-dark) 100%);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Alternative gradient for variety */
+.gradient-variant-1 {
+    background: linear-gradient(160deg, var(--jade-medium) 0%, var(--mystic-teal-dark) 40%, var(--jade-dark) 100%);
+}
+
+.gradient-variant-2 {
+    background: linear-gradient(120deg, var(--mystic-green) 0%, var(--mystic-teal) 50%, var(--jade-medium) 100%);
+}
+
+/* ============================================
+   Atmospheric Particle Effects
+   ============================================ */
+.mystical-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, rgba(184, 197, 197, 0.6) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float-particle linear infinite;
+    opacity: 0;
+}
+
+/* Create multiple particle variations */
+.particle:nth-child(1) { left: 10%; animation-duration: 15s; animation-delay: 0s; }
+.particle:nth-child(2) { left: 20%; animation-duration: 18s; animation-delay: 2s; }
+.particle:nth-child(3) { left: 30%; animation-duration: 20s; animation-delay: 4s; }
+.particle:nth-child(4) { left: 40%; animation-duration: 16s; animation-delay: 1s; }
+.particle:nth-child(5) { left: 50%; animation-duration: 22s; animation-delay: 3s; }
+.particle:nth-child(6) { left: 60%; animation-duration: 19s; animation-delay: 5s; }
+.particle:nth-child(7) { left: 70%; animation-duration: 17s; animation-delay: 2.5s; }
+.particle:nth-child(8) { left: 80%; animation-duration: 21s; animation-delay: 4.5s; }
+.particle:nth-child(9) { left: 90%; animation-duration: 18s; animation-delay: 1.5s; }
+.particle:nth-child(10) { left: 15%; animation-duration: 20s; animation-delay: 3.5s; }
+.particle:nth-child(11) { left: 25%; animation-duration: 16s; animation-delay: 0.5s; }
+.particle:nth-child(12) { left: 35%; animation-duration: 19s; animation-delay: 2.8s; }
+.particle:nth-child(13) { left: 45%; animation-duration: 17s; animation-delay: 4.2s; }
+.particle:nth-child(14) { left: 55%; animation-duration: 21s; animation-delay: 1.8s; }
+.particle:nth-child(15) { left: 65%; animation-duration: 18s; animation-delay: 3.2s; }
+.particle:nth-child(16) { left: 75%; animation-duration: 20s; animation-delay: 5.5s; }
+.particle:nth-child(17) { left: 85%; animation-duration: 16s; animation-delay: 2.2s; }
+.particle:nth-child(18) { left: 95%; animation-duration: 19s; animation-delay: 4.8s; }
+.particle:nth-child(19) { left: 12%; animation-duration: 22s; animation-delay: 1.2s; }
+.particle:nth-child(20) { left: 88%; animation-duration: 17s; animation-delay: 3.8s; }
+
+@keyframes float-particle {
+    0% {
+        transform: translateY(100vh) translateX(0) scale(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 0.5;
+        transform: translateY(50vh) translateX(20px) scale(1);
+    }
+    90% {
+        opacity: 0.3;
+    }
+    100% {
+        transform: translateY(-10vh) translateX(-20px) scale(0.5);
+        opacity: 0;
+    }
+}
+
+/* Disable particles on mobile for performance */
+@media (max-width: 768px) {
+    .mystical-particles {
+        display: none;
+    }
+}
+
+/* ============================================
+   Enhanced Card Styles
+   ============================================ */
+.mystical-card {
+    background: rgba(26, 58, 58, 0.15);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(90, 143, 143, 0.2);
+    box-shadow: 0 8px 32px rgba(5, 21, 21, 0.4);
+    transition: all 0.3s ease;
+}
+
+.mystical-card:hover {
+    background: rgba(26, 58, 58, 0.25);
+    border-color: rgba(90, 143, 143, 0.4);
+    box-shadow: 0 12px 48px rgba(5, 21, 21, 0.6);
+    transform: translateY(-2px);
+}
+
+/* ============================================
+   Navigation Enhancements
+   ============================================ */
+.mystical-nav {
+    background: rgba(13, 38, 38, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(90, 143, 143, 0.2);
+}
+
+/* ============================================
+   Button Styles
+   ============================================ */
+.btn-mystical-gold {
+    background: linear-gradient(135deg, var(--mystic-gold), var(--mystic-gold-light));
+    color: var(--jade-dark);
+    border: none;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-mystical-gold:hover {
+    background: linear-gradient(135deg, var(--mystic-gold-light), var(--mystic-gold));
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+    transform: translateY(-2px);
+}
+
+.btn-mystical-outline {
+    background: transparent;
+    border: 2px solid var(--teal-soft);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.btn-mystical-outline:hover {
+    background: rgba(90, 143, 143, 0.2);
+    border-color: var(--mystic-gold);
+    color: var(--mystic-gold);
+}
+
+/* ============================================
+   Glow Effects
+   ============================================ */
+.mystical-glow {
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.5),
+                 0 0 40px rgba(212, 175, 55, 0.3);
+}
+
+.jade-glow {
+    box-shadow: 0 0 30px rgba(74, 124, 124, 0.4),
+                0 0 60px rgba(74, 124, 124, 0.2);
+}
+
+/* ============================================
+   Subtle Texture Overlay
+   ============================================ */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(90, 143, 143, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(74, 124, 124, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ============================================
+   Scrollbar Styling
+   ============================================ */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--jade-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--jade-accent);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--teal-soft);
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+.text-mystical-gold {
+    color: var(--mystic-gold) !important;
+}
+
+.text-jade {
+    color: var(--jade-accent) !important;
+}
+
+.bg-mystical-overlay {
+    background: var(--overlay-medium);
+}
+
+.border-mystical {
+    border-color: rgba(90, 143, 143, 0.3) !important;
+}
+
+/* ============================================
+   Animation Enhancements
+   ============================================ */
+@keyframes mystical-pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+.pulse-mystical {
+    animation: mystical-pulse 3s ease-in-out infinite;
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+@media (max-width: 768px) {
+    .mystical-card {
+        backdrop-filter: blur(8px);
+    }
+    
+    body::before {
+        opacity: 0.5;
+    }
+}
+
+ 
+/* ============================================
+   Login Modal Styles
+   ============================================ */
+
+/* Additional responsive breakpoints */
+@media (max-width: 320px) {
+    .xxs\:hidden { display: none !important; }
+    .xxs\:inline { display: inline !important; }
+}
+
+@media (min-width: 321px) {
+    .xxs\:hidden { display: inline !important; }
+    .xxs\:inline { display: none !important; }
+}
+
+/* Modal Base Styles */
+#loginModal {
+    animation: modalBackdropFadeIn 0.3s ease-out;
+}
+
+#loginModal.hidden {
+    animation: modalBackdropFadeOut 0.3s ease-out;
+}
+
+.modal-backdrop {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+}
+
+.modal-container {
+    padding: 0.5rem;
+}
+
+@media (min-width: 640px) {
+    .modal-container {
+        padding: 1rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .modal-container {
+        padding: 1.5rem;
+    }
+}
+
+/* Login Modal Container */
+.login-modal-container {
+    animation: modalFadeInUp 0.4s ease-out;
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        0 0 80px rgba(218, 165, 32, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+@media (max-width: 640px) {
+    .login-modal-container {
+        border-radius: 0;
+        border: none;
+        border-top: 2px solid var(--mystic-gold);
+    }
+}
+
+/* Modal Content */
+.modal-content {
+    max-height: 100%;
+    overflow-y: auto;
+}
+
+@media (max-width: 640px) {
+    .modal-content {
+        padding: 1rem !important;
+    }
+}
+
+/* Tab Buttons */
+.modal-tab-btn {
+    color: rgba(245, 245, 220, 0.7);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-tab-btn.active {
+    background: linear-gradient(135deg, var(--mystic-gold), #e6b82a);
+    color: var(--deep-navy);
+    box-shadow: 0 4px 15px rgba(218, 165, 32, 0.3);
+}
+
+.modal-tab-btn:hover:not(.active) {
+    color: var(--mystic-gold);
+    background: rgba(218, 165, 32, 0.1);
+}
+
+@media (max-width: 320px) {
+    .modal-tab-btn {
+        font-size: 0.75rem;
+        padding: 0.5rem !important;
+    }
+    
+    /* Additional spacing adjustments for very small screens */
+    .modal-content {
+        padding: 0.75rem !important;
+    }
+    
+    /* Ensure buttons have minimum touch target */
+    button[type="submit"], .social-btn {
+        min-height: 44px; /* iOS minimum touch target */
+        font-size: 0.8rem;
+    }
+}
+
+/* Form Inputs */
+.modal-input {
+    transition: all 0.3s ease;
+    font-size: 16px; /* Prevent zoom on iOS */
+}
+
+.modal-input:focus {
+    box-shadow: 0 0 20px rgba(218, 165, 32, 0.3);
+    transform: translateY(-1px);
+    border-width: 2px;
+}
+
+@media (max-width: 640px) {
+    .modal-input {
+        padding: 0.625rem !important;
+        border-radius: 0.5rem;
+    }
+}
+
+/* Buttons */
+button[type="submit"], .social-btn {
+    transition: all 0.2s ease;
+    min-height: 2.75rem;
+}
+
+@media (max-width: 640px) {
+    button[type="submit"], .social-btn {
+        min-height: 2.5rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* Social Login Buttons */
+#modalGoogleLogin, #modalGithubLogin {
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+#modalGoogleLogin:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 5px 15px rgba(66, 133, 244, 0.2);
+}
+
+#modalGithubLogin:hover {
+    background: rgba(128, 128, 128, 0.5) !important;
+    box-shadow: 0 5px 15px rgba(51, 51, 51, 0.3);
+}
+
+/* Animations */
+@keyframes modalBackdropFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalBackdropFadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes modalFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Mobile specific optimizations */
+@media (max-width: 640px) {
+    @keyframes modalFadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(100%) scale(1);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+}
+
+/* User menu styles */
+#userMenu {
+    animation: fadeInDown 0.2s ease-out;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header auth section hover effects */
+#loginBtn:hover {
+    transform: translateY(-1px);
+    text-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
+}
+
+#userMenuBtn:hover {
+    transform: scale(1.05);
+}
+
+/* Toast container responsive positioning */
+#toast-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10000;
+    max-width: calc(100vw - 2rem);
+}
+
+@media (max-width: 640px) {
+    #toast-container {
+        top: 0.5rem;
+        right: 0.5rem;
+        left: 0.5rem;
+        max-width: none;
+    }
+}
+
+/* Scrollbar styling for modal */
+.modal-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: rgba(218, 165, 32, 0.5);
+    border-radius: 2px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(218, 165, 32, 0.7);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .login-modal-container {
+        border: 3px solid var(--mystic-gold);
+        background: rgba(0, 0, 0, 0.95);
+    }
+    
+    .modal-input {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .modal-input:focus {
+        transform: none;
+    }
+    
+    button:hover {
+        transform: none;
+    }
+}
+ 
+ 
