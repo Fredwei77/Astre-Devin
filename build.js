@@ -34,6 +34,7 @@ const filesToCopy = [
   'payment-status-checker.html',
   'test-language-sync.html',
   'fix-dropdown-complete.html',
+  'support.html',
 ];
 
 const dirsToCopy = [
@@ -46,7 +47,7 @@ const dirsToCopy = [
 filesToCopy.forEach(file => {
   const srcPath = path.join(__dirname, file);
   const destPath = path.join(publicDir, file);
-  
+
   if (fs.existsSync(srcPath)) {
     fs.copyFileSync(srcPath, destPath);
     console.log(`✅ 复制文件: ${file}`);
@@ -57,7 +58,7 @@ filesToCopy.forEach(file => {
 dirsToCopy.forEach(dir => {
   const srcPath = path.join(__dirname, dir);
   const destPath = path.join(publicDir, dir);
-  
+
   if (fs.existsSync(srcPath)) {
     copyDir(srcPath, destPath);
     console.log(`✅ 复制目录: ${dir}`);
@@ -65,9 +66,9 @@ dirsToCopy.forEach(dir => {
 });
 
 // 复制所有 JS 文件
-const jsFiles = fs.readdirSync(__dirname).filter(file => 
-  file.endsWith('.js') && 
-  !file.startsWith('build') && 
+const jsFiles = fs.readdirSync(__dirname).filter(file =>
+  file.endsWith('.js') &&
+  !file.startsWith('build') &&
   !file.startsWith('server') &&
   !file.startsWith('generate')
 );
@@ -95,13 +96,13 @@ function copyDir(src, dest) {
   if (!fs.existsSync(dest)) {
     fs.mkdirSync(dest, { recursive: true });
   }
-  
+
   const entries = fs.readdirSync(src, { withFileTypes: true });
-  
+
   for (const entry of entries) {
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
-    
+
     if (entry.isDirectory()) {
       copyDir(srcPath, destPath);
     } else {
