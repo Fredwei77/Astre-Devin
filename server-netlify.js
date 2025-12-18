@@ -253,7 +253,7 @@ app.post('/api/divination', authenticateToken, async (req, res) => {
         });
 
         const aiResponse = await response.json();
-        
+
         if (!response.ok) {
             throw new Error(aiResponse.error?.message || 'AI服务暂时不可用');
         }
@@ -315,6 +315,61 @@ app.post('/api/create-payment-intent', authenticateToken, async (req, res) => {
             success: false,
             message: '支付初始化失败',
             error: error.message
+        });
+    }
+});
+
+// ============================================
+// AI API PROXY
+// ============================================
+
+app.post('/api/ai/chat', async (req, res) => {
+    console.log('--- AI Request Start (Netlify) ---');
+    console.log('Method:', req.method);
+
+    try {
+        const apiKey = process.env.OPENROUTER_API_KEY;
+
+        if (!apiKey) {
+            console.error('Missing OPENROUTER_API_KEY');
+            return res.status(500).json({
+                error: 'Server configuration error: Missing API Key'
+            });
+        }
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout
+
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json',
+                'HTTP-Referer': process.env.FRONTEND_URL || 'https://astredevin.netlify.app',
+                'X-Title': 'Destiny AI'
+            },
+            body: JSON.stringify(req.body),
+            signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        const data = await response.json();
+
+        // Sync OpenRouter status code
+        console.log(`OpenRouter Status: ${response.status}`);
+
+        if (!response.ok) {
+            console.error('OpenRouter Error Data:', JSON.stringify(data));
+        }
+
+        res.status(response.status).json(data);
+
+    } catch (error) {
+        console.error('AI API error:', error);
+        res.status(500).json({
+            error: 'AI service temporarily unavailable',
+            details: error.message
         });
     }
 });
