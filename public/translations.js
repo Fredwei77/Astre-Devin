@@ -989,7 +989,7 @@ const TRANSLATIONS = {
         'fengshui.footer': '© 2024 命运AI。保留所有权利。和谐空间，提升生活。',
 
         // 易经页面
-        'iching.title': '易经占卜',
+        'iching.title': '易经解卦',
         'iching.subtitle': '咨询古老的易经以获得重要人生决策的指导。我们的AI在您现代生活挑战的背景下解释卦象。',
         'iching.method.title': '选择您的占卜方法',
         'iching.guidance.title': '卦前提示',
@@ -1026,7 +1026,7 @@ const TRANSLATIONS = {
         'iching.question.sample6': '我和TA的关系会如何发展？',
         'iching.question.sample7': '我该选择哪个方向发展？',
         'iching.question.sample8': '如何化解当前的困境？',
-        'iching.button.begin': '开始占卜',
+        'iching.button.begin': '开始起卦',
         'iching.cast.title': '投掷硬币',
         'iching.cast.instruction': '专注于您的问题并点击硬币来投掷它们。重复此过程六次以构建您的卦象。',
         'iching.cast.current': '投掷',
@@ -1755,7 +1755,7 @@ const TRANSLATIONS = {
         'fengshui.footer': '© 2024 命運AI。保留所有權利。和諧空間，提升生活。',
 
         // 易經頁面
-        'iching.title': '易經占卜',
+        'iching.title': '易經解卦',
         'iching.subtitle': '諮詢古老的易經以獲得重要人生決策的指導。我們的AI在您現代生活挑戰的背景下解釋卦象。',
         'iching.method.title': '選擇您的占卜方法',
         'iching.guidance.title': '卦前提示',

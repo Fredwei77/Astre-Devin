@@ -10,7 +10,7 @@ console.log('🔧 加载易经页面修复...');
         const checkButton = () => {
             const startBtn = document.getElementById('startDivination');
             if (startBtn) {
-                console.log('✅ 找到开始占卜按钮，添加权限检查...');
+                console.log('✅ 找到开始起卦按钮，添加权限检查...');
 
                 // 重写点击事件
                 const newClickHandler = function (e) {
@@ -24,10 +24,15 @@ console.log('🔧 加载易经页面修复...');
                     if (window.subscriptionManager) {
                         const access = window.subscriptionManager.canUseService('iching');
 
-                        if (!access.allowed) {
-                            console.log('需要升级或按次付费才能使用AI易经功能');
-                            window.subscriptionManager.showUpgradePrompt('AI易经解读', 'iching');
-                            return;
+                        if (!access.allowed || window.subscriptionManager.isMockDataOnly()) {
+                            console.log('检测到免费版或权限受限，显示模拟数据/升级提示');
+                            // 只有在明确需要升级时（access.allowed 为 false）才显示提示
+                            if (!access.allowed) {
+                                window.subscriptionManager.showUpgradePrompt('AI易经解读', 'iching');
+                                return;
+                            }
+                            // 如果是 isMockDataOnly()，但 allowed 为 true（理论上 free 计划 allowed 为 false，除非 logic 以后变了）
+                            // 保持现有逻辑：free 计划用户此处的 access.allowed 应该是 false
                         }
 
                         console.log('✅ 用户有权限使用易经功能，权限类型:', access.type);
@@ -59,7 +64,7 @@ console.log('🔧 加载易经页面修复...');
                 // 添加新的事件监听器
                 newBtn.addEventListener('click', newClickHandler);
 
-                console.log('✅ 开始占卜按钮权限检查已添加');
+                console.log('✅ 开始起卦按钮权限检查已添加');
             } else {
                 // 如果按钮还没加载，继续检查
                 setTimeout(checkButton, 100);
@@ -108,10 +113,13 @@ console.log('🔧 加载易经页面修复...');
             if (window.subscriptionManager) {
                 const access = window.subscriptionManager.canUseService('iching');
 
-                if (!access.allowed) {
+                if (!access.allowed || window.subscriptionManager.isMockDataOnly()) {
                     console.log('需要升级或按次付费才能使用AI追问功能');
-                    window.subscriptionManager.showUpgradePrompt('AI易经追问', 'iching');
-                    return;
+                    if (!access.allowed) {
+                        window.subscriptionManager.showUpgradePrompt('AI易经追问', 'iching');
+                        return;
+                    }
+                    // 如果是 isMockDataOnly()，此处可以抛出提示或引导
                 }
 
                 // 扣除使用次数（如果是单次付费）

@@ -10,7 +10,7 @@ console.log('🔧 加载易经页面修复...');
         const checkButton = () => {
             const startBtn = document.getElementById('startDivination');
             if (startBtn) {
-                console.log('✅ 找到开始占卜按钮，添加权限检查...');
+                console.log('✅ 找到开始起卦按钮，添加权限检查...');
 
                 // 重写点击事件
                 const newClickHandler = function (e) {
@@ -59,7 +59,7 @@ console.log('🔧 加载易经页面修复...');
                 // 添加新的事件监听器
                 newBtn.addEventListener('click', newClickHandler);
 
-                console.log('✅ 开始占卜按钮权限检查已添加');
+                console.log('✅ 开始起卦按钮权限检查已添加');
             } else {
                 // 如果按钮还没加载，继续检查
                 setTimeout(checkButton, 100);

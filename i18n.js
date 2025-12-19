@@ -446,7 +446,7 @@ class I18n {
                 'tooltip.water': '水代表流动、智慧和财富。与冬天、事业和人生道路相关。用喷泉、水族箱和蓝/黑色增强。',
 
                 // 易经页面
-                'iching.title': '易经占卜',
+                'iching.title': '易经解卦',
                 'iching.subtitle': '咨询古老的易经以获得重要人生决策的指导。我们的AI在您现代生活挑战的背景下解释卦象。',
                 'iching.method.title': '选择您的占卜方法',
                 'iching.method.coins': '三枚硬币',
@@ -459,7 +459,7 @@ class I18n {
                 'iching.method.voice.desc': '说出您的问题，让AI分析并创建您的卦象。',
                 'iching.question.label': '您的问题是什么？',
                 'iching.question.placeholder': '专注于您需要指导的具体问题或情况。请清晰具体地说明您想了解什么。',
-                'iching.button.begin': '开始占卜',
+                'iching.button.begin': '开始起卦',
                 'iching.cast.title': '投掷硬币',
                 'iching.cast.instruction': '专注于您的问题，点击硬币进行投掷。重复此过程六次以构建您的卦象。',
                 'iching.cast.current': '投掷',
@@ -700,7 +700,7 @@ class I18n {
                 'tooltip.water': '水代表流動、智慧和財富。與冬天、事業和人生道路相關。用噴泉、水族箱和藍/黑色增強。',
 
                 // 易經頁面
-                'iching.title': '易經占卜',
+                'iching.title': '易經解卦',
                 'iching.subtitle': '諮詢古老的易經以獲得重要人生決策的指導。我們的AI在您現代生活挑戰的背景下解釋卦象。',
                 'iching.method.title': '選擇您的占卜方法',
                 'iching.method.coins': '三枚硬幣',

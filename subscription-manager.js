@@ -16,7 +16,7 @@ class SubscriptionManager {
             },
             premium: {
                 name: 'Premium',
-                price: 19.99,
+                price: 29.99,
                 features: {
                     mockDataOnly: false,
                     aiEnabled: true,
@@ -27,7 +27,7 @@ class SubscriptionManager {
             },
             professional: {
                 name: 'Professional',
-                price: 49.99,
+                price: 299.99,
                 features: {
                     mockDataOnly: false,
                     aiEnabled: true,
@@ -87,15 +87,18 @@ class SubscriptionManager {
      * 检查用户是否有权限使用AI功能 - 修正：默认允许使用，由后端处理额度
      */
     canUseAI() {
-        // 解除限制，让所有用户都能尝试调用 AI
-        return true;
+        // 只有 premium 和 professional 计划允许直接使用 AI
+        const plan = this.getCurrentPlan();
+        return plan === 'premium' || plan === 'professional';
     }
 
     /**
      * 检查用户是否只能使用模拟数据 - 修正：不再强制降级
      */
     isMockDataOnly() {
-        return false;
+        const plan = this.getCurrentPlan();
+        // 只有 free 计划用户强制使用模拟数据
+        return plan === 'free';
     }
 
     /**
@@ -192,7 +195,7 @@ class SubscriptionManager {
                     <div class="bg-white/5 rounded-lg p-4 border border-mystic-gold/30">
                         <div class="flex justify-between items-center mb-2">
                             <span class="font-semibold text-mystic-gold">${isEnglish ? 'Premium' : '高级版'}</span>
-                            <span class="text-2xl font-bold text-mystic-gold">$19.99/${isEnglish ? 'mo' : '月'}</span>
+                            <span class="text-2xl font-bold text-mystic-gold">$29.99/${isEnglish ? 'mo' : '月'}</span>
                         </div>
                         <ul class="text-sm text-moon-silver space-y-1">
                             <li>✓ ${isEnglish ? 'Full AI Analysis' : '完整AI分析功能'}</li>
@@ -204,7 +207,7 @@ class SubscriptionManager {
                     <div class="bg-white/5 rounded-lg p-4 border border-mystic-gold/30">
                         <div class="flex justify-between items-center mb-2">
                             <span class="font-semibold text-mystic-gold">${isEnglish ? 'Professional' : '专业版'}</span>
-                            <span class="text-2xl font-bold text-mystic-gold">$49.99/${isEnglish ? 'mo' : '月'}</span>
+                            <span class="text-2xl font-bold text-mystic-gold">$299.99/${isEnglish ? '3 mos' : '三个月'}</span>
                         </div>
                         <ul class="text-sm text-moon-silver space-y-1">
                             <li>✓ ${isEnglish ? 'All Premium Features' : '所有高级版功能'}</li>
