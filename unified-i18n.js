@@ -224,8 +224,8 @@
     window.i18n = new UnifiedI18n();
 
     // Load translations from translations.js if available
-    if (typeof TRANSLATIONS !== 'undefined') {
-        window.i18n.loadTranslations(TRANSLATIONS);
+    if (typeof window.TRANSLATIONS !== 'undefined') {
+        window.i18n.loadTranslations(window.TRANSLATIONS);
         console.log('[UnifiedI18n] Translations loaded from translations.js');
     } else {
         console.warn('[UnifiedI18n] TRANSLATIONS object not found. Make sure translations.js is loaded before unified-i18n.js');
