@@ -74,6 +74,8 @@ const TRANSLATIONS = {
         // Home Page - Pricing
         'home.pricing.title': 'Choose Your Path',
         'home.pricing.subtitle': 'Start with free readings or unlock the full power of ancient wisdom with our premium features.',
+        'payment.plan.perMonth': '/month',
+        'payment.plan.perQuarter': '/3 months',
 
         // Home Page - Disclaimer
         'home.disclaimer.title': '⚠️ Important Disclaimer',
@@ -403,6 +405,7 @@ const TRANSLATIONS = {
         'payment.plan.forever': 'Forever Free',
         'payment.plan.premium': 'Premium',
         'payment.plan.perMonth': '/mo',
+        'payment.plan.perQuarter': '/3 months',
         'payment.button.getStarted': 'Get Started Free',
         'payment.button.choosePremium': 'Choose Premium',
         'payment.button.contactSales': 'Contact Sales',
@@ -841,6 +844,8 @@ const TRANSLATIONS = {
         // 首页 - 定价
         'home.pricing.title': '选择您的道路',
         'home.pricing.subtitle': '从免费测算开始，或通过高级功能解锁古老智慧的全部力量。',
+        'payment.plan.perMonth': '/月',
+        'payment.plan.perQuarter': '/三个月',
 
         // 首页 - 免责声明
         'home.disclaimer.title': '⚠️ 重要免责声明',
@@ -1188,6 +1193,7 @@ const TRANSLATIONS = {
         'payment.plan.forever': '永久免费',
         'payment.plan.premium': '高级版',
         'payment.plan.perMonth': '/月',
+        'payment.plan.perQuarter': '/三个月',
         'payment.button.getStarted': '免费开始',
         'payment.button.choosePremium': '选择高级版',
         'payment.button.contactSales': '联系销售',
@@ -1619,6 +1625,8 @@ const TRANSLATIONS = {
         // 首頁 - 定價
         'home.pricing.title': '選擇您的道路',
         'home.pricing.subtitle': '從免費測算開始，或通過高級功能解鎖古老智慧的全部力量。',
+        'payment.plan.perMonth': '/月',
+        'payment.plan.perQuarter': '/三個月',
 
         // 首頁 - 免責聲明
         'home.disclaimer.title': '⚠️ 重要免責聲明',
@@ -1927,6 +1935,7 @@ const TRANSLATIONS = {
         'payment.plan.forever': '永久免費',
         'payment.plan.premium': '高級版',
         'payment.plan.perMonth': '/月',
+        'payment.plan.perQuarter': '/三個月',
         'payment.button.getStarted': '免費開始',
         'payment.button.choosePremium': '選擇高級版',
         'payment.button.contactSales': '聯絡銷售',
@@ -2372,6 +2381,8 @@ const TRANSLATIONS = {
         // Home - Pricing
         'home.pricing.title': 'Elige Tu Camino',
         'home.pricing.subtitle': 'Comienza con nuestras lecturas gratuitas o desbloquea todo el poder de la sabiduría antigua con funciones premium.',
+        'payment.plan.perMonth': '/mes',
+        'payment.plan.perQuarter': '/3 meses',
 
         // Home - Disclaimer
         'home.disclaimer.title': '⚠️ Descargo de Responsabilidad Importante',
@@ -2509,6 +2520,7 @@ const TRANSLATIONS = {
         'payment.plan.professional': 'Profesional',
         'payment.plan.forever': 'Para Siempre',
         'payment.plan.perMonth': 'por mes',
+        'payment.plan.perQuarter': '/3 meses',
         'payment.plan.mostPopular': 'Más Popular',
         'payment.button.getStarted': 'Empezar Gratis',
         'payment.button.choosePremium': 'Elegir Premium',

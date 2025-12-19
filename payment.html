@@ -879,6 +879,15 @@
             init() {
                 this.setupPaymentForm();
                 this.setupAnimations();
+                this.checkPlanParam();
+            }
+
+            checkPlanParam() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const plan = urlParams.get('plan');
+                if (plan === 'premium') {
+                    showPaymentForm('premium');
+                }
             }
 
             setupPaymentForm() {

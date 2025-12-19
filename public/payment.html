@@ -478,7 +478,7 @@
                     <h3 class="text-2xl font-serif font-bold mb-4" data-i18n="payment.plan.professional">Professional
                     </h3>
                     <div class="text-5xl font-bold text-mystic-gold mb-2">$49</div>
-                    <div class="text-moon-silver mb-6" data-i18n="payment.plan.perMonth">per month</div>
+                    <div class="text-moon-silver mb-6" data-i18n="payment.plan.perQuarter">per 3 months</div>
 
                     <ul class="text-left space-y-3 mb-8">
                         <li class="flex items-center space-x-3">
@@ -879,6 +879,15 @@
             init() {
                 this.setupPaymentForm();
                 this.setupAnimations();
+                this.checkPlanParam();
+            }
+
+            checkPlanParam() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const plan = urlParams.get('plan');
+                if (plan === 'premium') {
+                    showPaymentForm('premium');
+                }
             }
 
             setupPaymentForm() {
