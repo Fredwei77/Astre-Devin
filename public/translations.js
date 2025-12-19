@@ -5,6 +5,7 @@ const TRANSLATIONS = {
         'nav.divination': 'Divination',
         'nav.fengshui': 'Feng Shui',
         'nav.iching': 'I-Ching',
+        'nav.calendar': 'Calendar',
         'nav.profile': 'Profile',
         'nav.upgrade': 'Upgrade',
         'nav.getStarted': 'Get Started',
@@ -14,6 +15,7 @@ const TRANSLATIONS = {
         'nav.userInfo': 'Profile',
         'nav.myReadings': 'My Readings',
         'nav.settings': 'Settings',
+        'nav.about': 'About Us',
 
         // Brand
         'brand.name': 'Astre Devin',
@@ -770,6 +772,21 @@ const TRANSLATIONS = {
         'support.compensation_desc': 'For any dissatisfaction, we offer a complimentary Feng Shui E-book ($29 value) instead of a refund.',
         'support.chat_placeholder': 'Type your concern here...',
         'support.ai_greeting': 'Greetings. I am your Oracle AI Assistant. How may I guide you through your journey today?',
+
+        // Perpetual Calendar
+        'calendar.title': 'Perpetual Calendar',
+        'calendar.subtitle': 'Professional tool for Bazi, auspicious/inauspicious days, and fortune telling.',
+        'calendar.solar': 'Gregorian Calendar',
+        'calendar.lunar': 'Lunar Calendar',
+        'calendar.ganzhi': 'Gan Zhi (Heavenly Stems & Earthly Branches)',
+        'calendar.year': 'Year',
+        'calendar.month': 'Month',
+        'calendar.day': 'Day',
+        'calendar.hour': 'Hour',
+        'calendar.convert': 'Convert',
+        'calendar.reverse': 'Reverse Gan Zhi',
+        'calendar.result': 'Result',
+        'calendar.info': 'Today\'s Auspicious/Inauspicious',
     },
 
     'zh-CN': {
@@ -778,6 +795,8 @@ const TRANSLATIONS = {
         'nav.divination': '占卜',
         'nav.fengshui': '风水',
         'nav.iching': '易经',
+        'nav.calendar': '万年历',
+        'nav.about': '关于我们',
         'nav.profile': '个人档案',
         'nav.upgrade': '升级',
         'nav.getStarted': '开始使用',
@@ -1169,8 +1188,10 @@ const TRANSLATIONS = {
         'profile.settings.privacy.desc': '隐藏我的测算历史',
         'profile.settings.danger.title': '危险区域',
         'profile.settings.danger.desc': '删除账号及所有数据',
-        'profile.footer': '© 2024 Destiny AI. 保留所有权利。追踪您的命运之旅。',
-
+        'profile.settings.gdpr.download_title': '导出我的数据',
+        'profile.settings.gdpr.download_desc': '以 JSON 格式导出您存储在本地的所有数据',
+        'profile.settings.gdpr.delete_confirm': '您确定要删除所有数据吗？此操作不可逆，且您将被注销登录。',
+        'profile.settings.gdpr.download_success': '数据导出成功。',
         'profile.footer': '© 2024 命运AI。保留所有权利。追踪您的命运之旅。',
 
         // 支付页面
@@ -1189,6 +1210,22 @@ const TRANSLATIONS = {
         'support.compensation_desc': '若对结果不满意，我们将赠送价值 $29 的《风水布局电子书》作为补偿，替代退款。',
         'support.chat_placeholder': '请描述您的问题...',
         'support.ai_greeting': '您好，我是您的九筮 AI 助手。请问今天有什么可以帮到您的吗？',
+
+        // 万年历
+        'calendar.title': '万年历',
+        'calendar.subtitle': '排八字、查宜忌、定吉凶的专业工具。',
+        'calendar.solar': '公历',
+        'calendar.lunar': '农历',
+        'calendar.ganzhi': '干支',
+        'calendar.year': '年',
+        'calendar.month': '月',
+        'calendar.day': '日',
+        'calendar.hour': '时',
+        'calendar.convert': '转换',
+        'calendar.reverse': '干支反推',
+        'calendar.result': '结果',
+        'calendar.info': '今日宜忌',
+
         'payment.plan.free': '免费版',
         'payment.plan.forever': '永久免费',
         'payment.plan.premium': '高级版',
@@ -1359,6 +1396,9 @@ const TRANSLATIONS = {
         'chart.elements.water': '水',
         'chart.series.elements': '您的五行',
 
+        // Brand
+        'brand.name': '九 筮',
+
         // 品牌
         'brand.name': '九 筮',
 
@@ -1382,7 +1422,7 @@ const TRANSLATIONS = {
         'about.team.intro': 'Astre Devin 的团队成员背景多元，既有来自国内顶尖学府和知名大公司，也有来自二本院校、小型创业公司，还有人曾经历过延期毕业和休学，但这些经历塑造了我们。我们坦然面对过去，脚踏实地，专注于当下，不美化未曾走过的路。',
         'about.team.distribution': '团队成员分布在全球各地，中国境内多在长三角，其余多在东南亚和北美，这并不是大多数成员参与的第一个创业项目。',
         'about.team.founder.title': '创始人兼 CEO',
-        'about.team.founder.bio': 'Fred Wai 毕业于北京科技大学，拥有丰富的职业经历。他曾在 Baby Book 公司担任首席运营官，该公司利用人工智能技术帮助律师事务所降低时间和人力成本。此外，他还曾是字节跳动 DOUBAO 产品的产品经理。近期，他将大型人工智能模型开创性地应用于中国文化研究和更广泛的心理学领域。',
+        'about.team.founder.bio': 'Fred Wai 毕业于北京科技大学，拥有丰富的职业经历。他曾在 Baby Book 公司担任首席运营官，该公司利用人工智能技术帮助律师事务所降低时间和人力成本。此外，他还在字节跳动 DOUBAO 产品的产品经理。近期，他将大型人工智能模型开创性地应用于中国文化研究和更广泛的心理学领域。',
         'about.vision.title': '我们的愿景',
         'about.vision.quote': 'Be Your Own Fate Teller',
         'about.vision.quote_desc': 'Astre Devin希望帮助大家实现的，不是坠入情绪的深渊一昧依赖他者的解读，而是Be Your Own Fate Teller，照亮自我前行的路。',
@@ -1559,6 +1599,8 @@ const TRANSLATIONS = {
         'nav.divination': '占卜',
         'nav.fengshui': '風水',
         'nav.iching': '易經',
+        'nav.calendar': '萬年曆',
+        'nav.about': '關於我們',
         'nav.profile': '個人檔案',
         'nav.upgrade': '升級',
         'nav.getStarted': '開始使用',
@@ -2311,6 +2353,8 @@ const TRANSLATIONS = {
         'nav.divination': 'Divinación',
         'nav.fengshui': 'Feng Shui',
         'nav.iching': 'I-Ching',
+        'nav.calendar': 'Calendario',
+        'nav.about': 'Sobre Nosotros',
         'nav.profile': 'Perfil',
         'nav.upgrade': 'Actualizar',
         'nav.getStarted': 'Empezar',
