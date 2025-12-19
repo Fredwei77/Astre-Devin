@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perpetual Calendar - Destiny AI</title>
+    <meta name="description"
+        content="Professional Perpetual Calendar for BaZi, Lunar Date, and Auspicious Timing provided by Destiny AI.">
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif:wght@400;700&family=Noto+Sans+SC:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Mystical Eastern Theme -->
+    <link rel="stylesheet" href="mystical-theme.css">
+
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+    <!-- Lunar Javascript -->
+    <!-- Lunar Javascript -->
+    <script src="https://unpkg.com/lunar-javascript/lunar.js"></script>
+    <script>
+        if (typeof Solar === 'undefined') {
+            document.write('<script src="../node_modules/lunar-javascript/lunar.js"><\/script>');
+        }
+    </script>
+
+    <!-- Language Switcher -->
+    <script src="translations.js"></script>
+    <script src="unified-i18n.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-navy': '#1a237e',
+                        'mystic-gold': '#ffd700',
+                        'moon-silver': '#c0c0c0',
+                        'ink-black': '#2c2c2c',
+                        'warm-white': '#fafafa',
+                        'pale-gold': '#fff8dc',
+                        'mystic-purple': '#4a148c'
+                    },
+                    fontFamily: {
+                        'serif-sc': ['Noto Serif SC', 'serif'],
+                        'serif': ['Noto Serif', 'serif'],
+                        'sans-sc': ['Noto Sans SC', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .calendar-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .pillar-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            text-align: center;
+        }
+
+        .pillar-title {
+            color: #c0c0c0;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pillar-content {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffd700;
+            font-family: 'Noto Serif SC', serif;
+        }
+
+        .input-dark {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(192, 192, 192, 0.2);
+            color: #fafafa;
+        }
+
+        .input-dark:focus {
+            outline: none;
+            border-color: #ffd700;
+        }
+    </style>
+</head>
+
+<body class="font-inter text-warm-white bg-deep-navy">
+    <!-- Simplified Nav for Calendar -->
+    <nav class="fixed top-0 w-full z-50 mystical-nav border-b border-moon-silver/20 bg-deep-navy/90 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div
+                        class="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden border border-mystic-gold/50 bg-black/50">
+                        <img src="resources/logo-processed.png" alt="Logo" class="w-full h-full object-cover">
+                    </div>
+                    <a href="index.html"
+                        class="text-xl font-serif font-bold glow-text hover:text-mystic-gold transition-colors"
+                        data-i18n="brand.name">九 筮</a>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="hover:text-mystic-gold transition-colors" data-i18n="nav.home">Home</a>
+                    <a href="divination.html" class="hover:text-mystic-gold transition-colors"
+                        data-i18n="nav.divination">Divination</a>
+                    <a href="calendar.html" class="text-mystic-gold" data-i18n="nav.calendar">Calendar</a>
+                    <a href="profile.html" class="hover:text-mystic-gold transition-colors"
+                        data-i18n="nav.profile">Profile</a>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <select id="languageSelect"
+                        class="bg-transparent border border-moon-silver/30 rounded px-3 py-1 text-sm text-moon-silver">
+                        <option value="en">English</option>
+                        <option value="zh-CN">简体中文</option>
+                        <option value="zh-TW">繁體中文</option>
+                        <option value="es">Español</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-24 pb-12 px-4 max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-serif font-bold mb-4 glow-text" data-i18n="calendar.title">Perpetual
+                Calendar</h1>
+            <p class="text-moon-silver text-lg" data-i18n="calendar.subtitle">Ancient wisdom for precise calculation</p>
+        </div>
+
+        <!-- Main Interface -->
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Control Panel -->
+            <div class="calendar-card rounded-xl p-6 h-fit">
+                <div class="flex space-x-2 mb-6 border-b border-white/10 pb-4">
+                    <button id="modeSolar"
+                        class="flex-1 py-2 rounded bg-mystic-gold text-deep-navy font-bold transition-all"
+                        onclick="setMode('solar')" data-i18n="calendar.solar">Gregorian</button>
+                    <button id="modeReverse"
+                        class="flex-1 py-2 rounded hover:bg-white/10 transition-all text-moon-silver"
+                        onclick="setMode('reverse')" data-i18n="calendar.reverse">Reverse</button>
+                </div>
+
+                <!-- Solar Input -->
+                <div id="solarInput" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-moon-silver mb-1" data-i18n="calendar.year">Year</label>
+                            <input type="number" id="yearInput" class="w-full input-dark rounded p-2" min="0" max="9999"
+                                value="2024">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-moon-silver mb-1" data-i18n="calendar.month">Month</label>
+                            <select id="monthInput" class="w-full input-dark rounded p-2">
+                                <!-- JS will populate -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-moon-silver mb-1" data-i18n="calendar.day">Day</label>
+                            <select id="dayInput" class="w-full input-dark rounded p-2">
+                                <!-- JS will populate -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-moon-silver mb-1" data-i18n="calendar.hour">Hour</label>
+                            <select id="hourInput" class="w-full input-dark rounded p-2">
+                                <!-- JS will populate -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reverse Input (Hidden by default) -->
+                <div id="reverseInput" class="space-y-4 hidden">
+                    <p class="text-sm text-moon-silver mb-2" data-i18n="calendar.reverse_desc">Find dates matching these
+                        pillars:</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-moon-silver mb-1" data-i18n="calendar.year_pillar">Year
+                                Pillar</label>
+                            <input type="text" id="yearPillarInput" class="w-full input-dark rounded p-2"
+                                placeholder="e.g. 甲子">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-moon-silver mb-1" data-i18n="calendar.month_pillar">Month
+                                Pillar</label>
+                            <input type="text" id="monthPillarInput" class="w-full input-dark rounded p-2"
+                                placeholder="e.g. 丙寅">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-moon-silver mb-1" data-i18n="calendar.day_pillar">Day
+                                Pillar</label>
+                            <input type="text" id="dayPillarInput" class="w-full input-dark rounded p-2"
+                                placeholder="e.g. 戊辰">
+                        </div>
+                        <div class="flex items-end">
+                            <button class="w-full bg-mystic-gold text-deep-navy font-bold py-2 rounded"
+                                onclick="doReverseLookup()" data-i18n="calendar.search">Search</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="actionBtnContainer" class="mt-6">
+                    <button
+                        class="w-full bg-mystic-gold text-deep-navy font-bold py-3 rounded-lg shadow-lg hover:shadow-gold/20 transition-all"
+                        onclick="calculate()" data-i18n="calendar.convert">Calculate</button>
+                </div>
+            </div>
+
+            <!-- Result Display -->
+            <div class="lg:col-span-2 space-y-6">
+
+                <!-- BaZi Display -->
+                <div class="calendar-card rounded-xl p-8">
+                    <h3 class="text-xl font-serif text-mystic-gold mb-6 border-l-4 border-mystic-gold pl-4"
+                        data-i18n="calendar.result">The Four Pillars</h3>
+
+                    <div class="grid grid-cols-4 gap-4">
+                        <div class="pillar-box rounded-lg p-4">
+                            <div class="pillar-title" data-i18n="calendar.hour">Hour</div>
+                            <div id="hourPillar" class="pillar-content">--</div>
+                        </div>
+                        <div class="pillar-box rounded-lg p-4">
+                            <div class="pillar-title" data-i18n="calendar.day">Day</div>
+                            <div id="dayPillar" class="pillar-content">--</div>
+                        </div>
+                        <div class="pillar-box rounded-lg p-4">
+                            <div class="pillar-title" data-i18n="calendar.month">Month</div>
+                            <div id="monthPillar" class="pillar-content">--</div>
+                        </div>
+                        <div class="pillar-box rounded-lg p-4">
+                            <div class="pillar-title" data-i18n="calendar.year">Year</div>
+                            <div id="yearPillar" class="pillar-content">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Info -->
+                <div class="calendar-card rounded-xl p-8">
+                    <h3 class="text-xl font-serif text-mystic-gold mb-6 border-l-4 border-mystic-gold pl-4"
+                        data-i18n="calendar.info">Daily Information</h3>
+
+                    <div class="space-y-4">
+                        <div class="flex border-b border-white/10 pb-2">
+                            <span class="w-32 text-moon-silver" data-i18n="calendar.solar">Gregorian:</span>
+                            <span id="resSolar" class="font-mono text-warm-white">--</span>
+                        </div>
+                        <div class="flex border-b border-white/10 pb-2">
+                            <span class="w-32 text-moon-silver" data-i18n="calendar.lunar">Lunar:</span>
+                            <span id="resLunar" class="font-serif-sc text-mystic-gold text-lg">--</span>
+                        </div>
+                        <div class="flex border-b border-white/10 pb-2">
+                            <span class="w-32 text-moon-silver" data-i18n="calendar.solar_term">Solar Term:</span>
+                            <span id="resTerm" class="text-warm-white">--</span>
+                        </div>
+                        <div class="flex border-b border-white/10 pb-2">
+                            <span class="w-32 text-moon-silver" data-i18n="calendar.zodiac">Zodiac:</span>
+                            <span id="resZodiac" class="text-warm-white">--</span>
+                        </div>
+                        <div class="flex">
+                            <span class="w-32 text-moon-silver" data-i18n="calendar.conflict">Conflict:</span>
+                            <span id="resConflict" class="text-red-400">--</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="calendar.js"></script>
+</body>
+
+</html>
