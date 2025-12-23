@@ -219,15 +219,24 @@ class AIService {
         } catch (error) {
             console.error('AI请求错误:', error);
 
-            // 检查用户是否已付费，如果已付费则不应该回退到模拟模式
+            // 特殊处理 CORS/网络拦截错误（通常表现为 TypeError: Failed to fetch）
+            const isCorsError = error instanceof TypeError && error.message.includes('fetch');
+            let friendlyErrorMessage = error.message;
+
+            if (isCorsError && window.location.protocol === 'file:') {
+                friendlyErrorMessage = '环境受到限制：由于浏览器安全策略 (CORS)，直接双击打开本地 HTML 文件无法调用 AI 服务。请使用本地服务器运行（例如在 VS Code 中点击 "Go Live"）或者将项目部署到 Web 环境。';
+                console.error('检测到跨域拦截，当前处于 file:// 协议');
+            }
+
+            // 检查用户是否有权限
             if (typeof window !== 'undefined' && window.subscriptionManager) {
                 const canUseAI = window.subscriptionManager.canUseAI();
                 const isPaidUser = window.subscriptionManager.isPremiumUser() || window.subscriptionManager.hasSingleUseCredits();
 
-                if (isPaidUser && canUseAI) {
-                    // 付费用户，AI请求失败时应该报错而不是降级到模拟数据
-                    console.error('付费用户AI请求失败，不应该降级到模拟数据');
-                    throw new Error('AI服务暂时不可用，请稍后重试。如果问题持续存在，请联系客服。');
+                if (isPaidUser || canUseAI) {
+                    // 有权用户（包括付费用户和单次使用用户），不应该回退到模拟模式
+                    console.error('有权用户AI请求失败，不应该降级到模拟数据');
+                    throw new Error(friendlyErrorMessage || 'AI服务暂时不可用，请稍后重试。');
                 }
             }
 
@@ -381,8 +390,17 @@ class AIService {
             return this.getMockResponse('iching');
         }
 
-        const systemPrompt = CONFIG.PROMPTS.ICHING.SYSTEM;
-        const userPrompt = CONFIG.PROMPTS.ICHING.USER(questionData);
+        // 获取当前语言
+        const lang = (window.i18n && window.i18n.currentLanguage) || 'zh';
+
+        // 获取系统提示词和用户提示词（现在是函数）
+        const systemPrompt = typeof CONFIG.PROMPTS.ICHING.SYSTEM === 'function'
+            ? CONFIG.PROMPTS.ICHING.SYSTEM(lang)
+            : CONFIG.PROMPTS.ICHING.SYSTEM;
+
+        const userPrompt = typeof CONFIG.PROMPTS.ICHING.USER === 'function'
+            ? CONFIG.PROMPTS.ICHING.USER(questionData, lang)
+            : CONFIG.PROMPTS.ICHING.USER(questionData);
 
         return await this.sendRequest(systemPrompt, userPrompt, {
             type: 'iching',

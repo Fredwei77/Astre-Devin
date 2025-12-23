@@ -254,25 +254,58 @@ class SubscriptionManager {
             return;
         }
 
-        // 关闭当前模态框
-        const modal = document.querySelector('.fixed.inset-0');
+        // 保存当前页面状态，以便支付后恢复
+        if (window.statePreserver) {
+            window.statePreserver.saveCurrentPage();
+        }
+
+        // 关闭当前选择模态框
+        const modal = document.querySelector('.fixed.inset-0:not(.payment-processing-modal)');
         if (modal) modal.remove();
 
-        // 显示支付处理提示
-        this.showPaymentProcessing(payInfo, isEnglish);
+        try {
+            // 显示支付处理提示
+            this.showPaymentProcessing(payInfo, isEnglish);
 
-        // 模拟支付处理（实际应该调用支付API）
-        setTimeout(() => {
-            // 支付成功，授予一次使用权限
-            this.grantSingleUse(serviceType);
+            // 1. 调用支付服务创建支付意图
+            const paymentService = window.EnhancedStripePaymentService || window.StripePaymentService;
+            if (!paymentService) throw new Error('Payment service not found');
 
-            // 关闭支付处理提示
+            // 检查商品 ID 是否需要映射
+            const productId = `product_${serviceType}`;
+
+            // 2. 调用商品购买逻辑 (Stripe Client 处理弹窗和确认)
+            // 注意：因为 purchaseProduct 内部可能已经处理了确认逻辑，我们在这里直接调用
+            const result = await paymentService.purchaseProduct(productId, 1, {
+                serviceType: serviceType,
+                name: 'User', // 理想情况下从 auth 获取
+                email: 'user@example.com'
+            });
+
+            // 关闭正在处理模态框
             const processingModal = document.querySelector('.payment-processing-modal');
             if (processingModal) processingModal.remove();
 
-            // 显示支付成功提示
-            this.showPaymentSuccess(payInfo, isEnglish);
-        }, 2000);
+            if (result.success) {
+                // 3. 授予一次使用权限
+                this.grantSingleUse(serviceType);
+
+                // 4. 显示支付成功提示
+                this.showPaymentSuccess(payInfo, isEnglish);
+            } else {
+                throw new Error(result.error || 'Payment failed');
+            }
+        } catch (error) {
+            console.error('Payment error:', error);
+            const processingModal = document.querySelector('.payment-processing-modal');
+            if (processingModal) processingModal.remove();
+
+            if (window.showErrorMessage) {
+                window.showErrorMessage(isEnglish ? 'Payment Failed' : '支付失败', error.message);
+            } else {
+                alert(error.message);
+            }
+        }
     }
 
     /**
@@ -307,13 +340,37 @@ class SubscriptionManager {
                 <p class="text-moon-silver mb-4">
                     ${isEnglish ? `You can now use ${payInfo.nameEn}` : `您现在可以使用${payInfo.name}`}
                 </p>
-                <button onclick="this.closest('.fixed').remove(); window.location.href = '${payInfo.url}';" 
+                <button onclick="window.subscriptionManager.handleContinueAfterPay('${payInfo.url}')" 
                         class="bg-mystic-gold text-deep-navy px-8 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors">
                     ${isEnglish ? 'Continue' : '继续'}
                 </button>
             </div>
         `;
         document.body.appendChild(modal);
+    }
+
+    /**
+     * 支付成功后的继续逻辑：尝试恢复状态并跳转
+     */
+    handleContinueAfterPay(targetUrl) {
+        // 关闭当前页面的模态框
+        const modal = document.querySelector('.fixed.inset-0');
+        if (modal) modal.remove();
+
+        const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+
+        if (currentPath === targetUrl) {
+            // 如果已经在目标页面，尝试恢复状态
+            if (window.statePreserver) {
+                window.statePreserver.restoreCurrentPage();
+            } else {
+                window.location.reload();
+            }
+        } else {
+            // 如果在不同页面（如从 payment.html 过来），跳转到对应页面
+            // statePreserver 已经在跳转前保存了（如果是从 showUpgradePrompt 跳转的话）
+            window.location.href = targetUrl;
+        }
     }
 
     /**

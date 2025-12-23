@@ -24,15 +24,14 @@ console.log('🔧 加载易经页面修复...');
                     if (window.subscriptionManager) {
                         const access = window.subscriptionManager.canUseService('iching');
 
-                        if (!access.allowed || window.subscriptionManager.isMockDataOnly()) {
-                            console.log('检测到免费版或权限受限，显示模拟数据/升级提示');
-                            // 只有在明确需要升级时（access.allowed 为 false）才显示提示
-                            if (!access.allowed) {
-                                window.subscriptionManager.showUpgradePrompt('AI易经解读', 'iching');
-                                return;
-                            }
-                            // 如果是 isMockDataOnly()，但 allowed 为 true（理论上 free 计划 allowed 为 false，除非 logic 以后变了）
-                            // 保持现有逻辑：free 计划用户此处的 access.allowed 应该是 false
+                        if (!access.allowed) {
+                            console.log('检测到权限受限，显示升级提示');
+                            window.subscriptionManager.showUpgradePrompt('AI易经解读', 'iching');
+                            return;
+                        }
+
+                        if (window.subscriptionManager.isMockDataOnly()) {
+                            console.log('检测到当前处于模拟数据模式');
                         }
 
                         console.log('✅ 用户有权限使用易经功能，权限类型:', access.type);

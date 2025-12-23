@@ -55,6 +55,7 @@
         /* Body background now handled by mystical-theme.css */
 
         .pricing-card {
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -250,6 +251,7 @@
             }
 
             #musicControl button {
+                -webkit-backdrop-filter: blur(8px);
                 backdrop-filter: blur(8px);
                 /* Reduce blur for performance */
             }
@@ -340,7 +342,7 @@
                         <option value="zh-TW">繁體中文</option>
                         <option value="es">Español</option>
                     </select>
-                    <span class="text-mystic-gold font-semibold">Pricing</span>
+                    <span class="text-mystic-gold font-semibold" data-i18n="payment.nav.pricing">Pricing</span>
                 </div>
             </div>
         </div>
@@ -797,35 +799,18 @@
 
                     <form id="paymentForm" class="space-y-4">
                         <div>
-                            <label class="block text-moon-silver mb-2 font-medium" data-i18n="payment.modal.card">Card
-                                Number</label>
-                            <input type="text" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19">
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-moon-silver mb-2 font-medium"
-                                    data-i18n="payment.modal.expiry">Expiry Date</label>
-                                <input type="text" class="form-input" placeholder="MM/YY" maxlength="5">
-                            </div>
-                            <div>
-                                <label class="block text-moon-silver mb-2 font-medium"
-                                    data-i18n="payment.modal.cvv">CVV</label>
-                                <input type="text" class="form-input" placeholder="123" maxlength="4">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-moon-silver mb-2 font-medium"
-                                data-i18n="payment.modal.name">Cardholder Name</label>
-                            <input type="text" class="form-input" placeholder="John Doe"
-                                data-i18n-placeholder="payment.placeholder.name">
-                        </div>
-
-                        <div>
                             <label class="block text-moon-silver mb-2 font-medium" data-i18n="payment.modal.email">Email
                                 Address</label>
-                            <input type="email" class="form-input" placeholder="john@example.com">
+                            <input type="email" id="cardholderEmail" class="form-input" placeholder="john@example.com"
+                                required>
+                        </div>
+
+                        <!-- Stripe Card Element -->
+                        <div class="mb-4">
+                            <label class="block text-moon-silver mb-2 font-medium"
+                                data-i18n="payment.modal.card">Payment Information</label>
+                            <div id="stripe-card-element" class="form-input"></div>
+                            <div id="card-errors" class="text-red-500 text-sm mt-2"></div>
                         </div>
 
                         <div class="security-badge rounded-lg p-3 text-center text-sm" data-i18n="payment.modal.secure">
@@ -869,6 +854,13 @@
         </div>
     </footer>
 
+    <!-- Stripe Payment Integration -->
+    <script src="api-config.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="stripe-client-enhanced.js"></script>
+    <script src="subscription-manager.js"></script>
+    <script src="state-preserver.js"></script>
+
     <script src="main.js"></script>
     <script>
         // Payment page specific functionality
@@ -892,79 +884,52 @@
                 }
             }
 
-            setupPaymentForm() {
-                const form = document.getElementById('paymentForm');
-                if (form) {
-                    form.addEventListener('submit', (e) => {
-                        e.preventDefault();
-                        this.processPayment();
-                    });
-
-                    // Format card number input
-                    const cardInput = form.querySelector('input[placeholder="1234 5678 9012 3456"]');
-                    if (cardInput) {
-                        cardInput.addEventListener('input', (e) => {
-                            let value = e.target.value.replace(/\s/g, '');
-                            let formattedValue = value.replace(/(.{4})/g, '$1 ').trim();
-                            e.target.value = formattedValue;
-                        });
-                    }
-
-                    // Format expiry date input
-                    const expiryInput = form.querySelector('input[placeholder="MM/YY"]');
-                    if (expiryInput) {
-                        expiryInput.addEventListener('input', (e) => {
-                            let value = e.target.value.replace(/\D/g, '');
-                            if (value.length >= 2) {
-                                value = value.substring(0, 2) + '/' + value.substring(2, 4);
-                            }
-                            e.target.value = value;
-                        });
-                    }
-                }
-            }
-
-            setupAnimations() {
-                // Animate pricing cards on scroll
-                const observerOptions = {
-                    threshold: 0.1,
-                    rootMargin: '0px 0px -50px 0px'
-                };
-
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            anime({
-                                targets: entry.target,
-                                opacity: [0, 1],
-                                translateY: [30, 0],
-                                duration: 800,
-                                easing: 'easeOutQuart',
-                                delay: anime.stagger(200)
-                            });
-                        }
-                    });
-                }, observerOptions);
-
-                document.querySelectorAll('.pricing-card').forEach(card => {
-                    observer.observe(card);
-                });
-            }
-
             processPayment() {
-                // Simulate payment processing
+                const planType = this.selectedPlan || 'premium';
+                const emailInput = document.getElementById('cardholderEmail');
+                const email = emailInput ? emailInput.value : '';
+
+                // 使用统一的支付服务
+                const paymentService = window.EnhancedStripePaymentService || window.StripePaymentService;
+                if (!paymentService) {
+                    alert('Payment service not found');
+                    return;
+                }
+
                 const submitBtn = document.querySelector('#paymentForm button[type="submit"]');
                 const originalText = submitBtn.textContent;
-
                 submitBtn.textContent = window.i18n.t('payment.message.processing');
                 submitBtn.disabled = true;
 
-                setTimeout(() => {
-                    this.showSuccessMessage();
-                    hidePaymentForm();
-                    submitBtn.textContent = originalText;
-                    submitBtn.disabled = false;
-                }, 2000);
+                paymentService.purchaseSubscription(planType, { email })
+                    .then(result => {
+                        if (result.success) {
+                            this.showSuccessMessage();
+                            hidePaymentForm();
+
+                            // 支付成功后的重定向与状态恢复
+                            setTimeout(() => {
+                                if (window.statePreserver) {
+                                    const savedState = JSON.parse(localStorage.getItem('saved_page_state') || '{}');
+                                    if (savedState && savedState.path && savedState.path !== 'payment.html') {
+                                        window.location.href = savedState.path;
+                                        return;
+                                    }
+                                }
+                                window.location.reload();
+                            }, 2000);
+                        } else {
+                            throw new Error(result.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Payment failed:', error);
+                        alert('Payment failed: ' + error.message);
+                    })
+                    .finally(() => {
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    });
             }
 
             showSuccessMessage() {
@@ -992,6 +957,26 @@
         function showPaymentForm(plan) {
             document.getElementById('paymentModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
+
+            // 设置选中的计划
+            if (window.paymentManager) {
+                window.paymentManager.selectedPlan = plan;
+            }
+
+            // 初始化 Stripe 元素
+            setTimeout(() => {
+                const cardElement = window.createPaymentElements('stripe-card-element');
+                if (cardElement) {
+                    cardElement.on('change', (event) => {
+                        const displayError = document.getElementById('card-errors');
+                        if (event.error) {
+                            displayError.textContent = event.error.message;
+                        } else {
+                            displayError.textContent = '';
+                        }
+                    });
+                }
+            }, 100);
         }
 
         function hidePaymentForm() {
@@ -1005,7 +990,7 @@
 
         // Initialize payment manager when page loads
         document.addEventListener('DOMContentLoaded', () => {
-            new PaymentManager();
+            window.paymentManager = new PaymentManager();
         });
     </script>
 </body>

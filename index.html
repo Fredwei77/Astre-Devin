@@ -41,9 +41,15 @@
     <!-- <script src="language-switcher-final.js"></script> -->
 
     <!-- Configuration and AI Service -->
+    <script src="api-config.js"></script>
     <script src="config.js"></script>
     <script src="subscription-manager.js"></script>
     <script src="ai-service.js"></script>
+
+    <!-- Stripe Payment Integration -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="stripe-client-enhanced.js"></script>
+    <script src="state-preserver.js"></script>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -110,6 +116,7 @@
         }
 
         .feature-card {
+            -webkit-backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             background: rgba(255, 255, 255, 0.1);

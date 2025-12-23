@@ -6,10 +6,10 @@
 const API_CONFIG = {
     // 后端API基础URL - 请修改为您的实际后端地址
     BASE_URL: 'https://api.jiushiai.com', // 替换为您的后端API地址
-    
+
     // API版本
     VERSION: 'v1',
-    
+
     // API端点
     ENDPOINTS: {
         // 认证相关
@@ -22,7 +22,7 @@ const API_CONFIG = {
             RESET_PASSWORD: '/auth/reset-password',
             VERIFY_EMAIL: '/auth/verify-email'
         },
-        
+
         // 用户相关
         USER: {
             PROFILE: '/user/profile',
@@ -30,7 +30,7 @@ const API_CONFIG = {
             DELETE: '/user/delete',
             UPLOAD_AVATAR: '/user/upload-avatar'
         },
-        
+
         // 占卜相关
         DIVINATION: {
             ICHING: '/divination/iching',
@@ -38,29 +38,33 @@ const API_CONFIG = {
             TAROT: '/divination/tarot',
             HISTORY: '/divination/history'
         },
-        
+
         // 支付相关
         PAYMENT: {
             CREATE_ORDER: '/payment/create',
             VERIFY: '/payment/verify',
-            WEBHOOK: '/payment/webhook'
+            WEBHOOK: '/payment/webhook',
+            CREATE_PAYMENT_INTENT: '/stripe/create-payment-intent',
+            CREATE_SUBSCRIPTION: '/stripe/create-subscription',
+            CANCEL_SUBSCRIPTION: '/stripe/cancel-subscription',
+            GET_SUBSCRIPTION: '/stripe/subscription'
         }
     },
-    
+
     // OAuth配置
     OAUTH: {
         GOOGLE: {
             CLIENT_ID: '你的Google客户端ID.apps.googleusercontent.com', // 替换为实际的Google Client ID
             REDIRECT_URI: window.location.origin + '/auth/google/callback'
         },
-        
+
         GITHUB: {
             CLIENT_ID: '你的GitHub客户端ID', // 替换为实际的GitHub Client ID
             REDIRECT_URI: window.location.origin + '/auth/github/callback',
             SCOPE: 'user:email'
         }
     },
-    
+
     // 请求配置
     REQUEST: {
         TIMEOUT: 15000, // 15秒超时
@@ -78,7 +82,7 @@ class APIClient {
         this.baseURL = window.API_BASE_URL;
         this.timeout = API_CONFIG.REQUEST.TIMEOUT;
     }
-    
+
     // 获取认证头
     getAuthHeaders() {
         const token = localStorage.getItem('destinyai_token');
@@ -89,12 +93,12 @@ class APIClient {
             'Content-Type': 'application/json'
         };
     }
-    
+
     // 处理API响应
     async handleResponse(response) {
         if (!response.ok) {
             const error = await response.json().catch(() => ({ message: '请求失败' }));
-            
+
             // 处理认证错误
             if (response.status === 401) {
                 // Token过期，尝试刷新
@@ -109,19 +113,19 @@ class APIClient {
                 }
                 throw new Error('请重试操作');
             }
-            
+
             throw new Error(error.message || '请求失败');
         }
-        
+
         return await response.json();
     }
-    
+
     // 刷新令牌
     async refreshToken() {
         try {
             const refreshToken = localStorage.getItem('destinyai_refresh_token');
             if (!refreshToken) return false;
-            
+
             const response = await fetch(`${this.baseURL}${API_CONFIG.ENDPOINTS.AUTH.REFRESH}`, {
                 method: 'POST',
                 headers: {
@@ -129,7 +133,7 @@ class APIClient {
                 },
                 body: JSON.stringify({ refreshToken })
             });
-            
+
             if (response.ok) {
                 const data = await response.json();
                 localStorage.setItem('destinyai_token', data.token);
@@ -138,14 +142,14 @@ class APIClient {
                 }
                 return true;
             }
-            
+
             return false;
         } catch (error) {
             console.error('Token refresh failed:', error);
             return false;
         }
     }
-    
+
     // 通用GET请求
     async get(endpoint) {
         try {
@@ -154,14 +158,14 @@ class APIClient {
                 headers: this.getAuthHeaders(),
                 signal: AbortSignal.timeout(this.timeout)
             });
-            
+
             return await this.handleResponse(response);
         } catch (error) {
             console.error(`GET ${endpoint} failed:`, error);
             throw error;
         }
     }
-    
+
     // 通用POST请求
     async post(endpoint, data) {
         try {
@@ -171,14 +175,14 @@ class APIClient {
                 body: JSON.stringify(data),
                 signal: AbortSignal.timeout(this.timeout)
             });
-            
+
             return await this.handleResponse(response);
         } catch (error) {
             console.error(`POST ${endpoint} failed:`, error);
             throw error;
         }
     }
-    
+
     // 通用PUT请求
     async put(endpoint, data) {
         try {
@@ -188,14 +192,14 @@ class APIClient {
                 body: JSON.stringify(data),
                 signal: AbortSignal.timeout(this.timeout)
             });
-            
+
             return await this.handleResponse(response);
         } catch (error) {
             console.error(`PUT ${endpoint} failed:`, error);
             throw error;
         }
     }
-    
+
     // 通用DELETE请求
     async delete(endpoint) {
         try {
@@ -204,35 +208,35 @@ class APIClient {
                 headers: this.getAuthHeaders(),
                 signal: AbortSignal.timeout(this.timeout)
             });
-            
+
             return await this.handleResponse(response);
         } catch (error) {
             console.error(`DELETE ${endpoint} failed:`, error);
             throw error;
         }
     }
-    
+
     // 文件上传
     async upload(endpoint, file, additionalData = {}) {
         try {
             const formData = new FormData();
             formData.append('file', file);
-            
+
             // 添加其他数据
             Object.keys(additionalData).forEach(key => {
                 formData.append(key, additionalData[key]);
             });
-            
+
             const token = localStorage.getItem('destinyai_token');
             const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-            
+
             const response = await fetch(`${this.baseURL}${endpoint}`, {
                 method: 'POST',
                 headers: headers,
                 body: formData,
                 signal: AbortSignal.timeout(this.timeout * 2) // 文件上传允许更长时间
             });
-            
+
             return await this.handleResponse(response);
         } catch (error) {
             console.error(`UPLOAD ${endpoint} failed:`, error);
@@ -250,7 +254,7 @@ window.apiClient = new APIClient();
 async function callLoginAPI(credentials) {
     try {
         const response = await window.apiClient.post(API_CONFIG.ENDPOINTS.AUTH.LOGIN, credentials);
-        
+
         // 存储令牌和用户信息
         if (response.token) {
             localStorage.setItem('destinyai_token', response.token);
@@ -261,7 +265,7 @@ async function callLoginAPI(credentials) {
         if (response.user) {
             localStorage.setItem('destinyai_user', JSON.stringify(response.user));
         }
-        
+
         return { success: true, user: response.user, token: response.token };
     } catch (error) {
         return { success: false, message: error.message };
@@ -319,7 +323,7 @@ async function initiateGoogleOAuth() {
         access_type: 'offline',
         prompt: 'consent'
     });
-    
+
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
     window.location.href = authUrl;
 }
@@ -332,16 +336,16 @@ async function initiateGitHubOAuth() {
         scope: API_CONFIG.OAUTH.GITHUB.SCOPE,
         allow_signup: 'true'
     });
-    
+
     const authUrl = `https://github.com/login/oauth/authorize?${params.toString()}`;
     window.location.href = authUrl;
 }
 
 // 开发环境检测和模拟API
 function isDevelopmentMode() {
-    return window.location.hostname === 'localhost' || 
-           window.location.hostname === '127.0.0.1' || 
-           window.location.hostname.startsWith('192.168.');
+    return window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1' ||
+        window.location.hostname.startsWith('192.168.');
 }
 
 // Toast通知功能
@@ -354,11 +358,11 @@ function showToastMessage(message, type = 'info', duration = 3000) {
         toastContainer.className = 'fixed top-4 right-4 z-50 space-y-2';
         document.body.appendChild(toastContainer);
     }
-    
+
     // 创建toast元素
     const toast = document.createElement('div');
     toast.className = `toast-item p-4 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full opacity-0`;
-    
+
     // 根据类型设置样式
     const typeStyles = {
         success: 'bg-green-600 text-white',
@@ -366,9 +370,9 @@ function showToastMessage(message, type = 'info', duration = 3000) {
         warning: 'bg-yellow-600 text-black',
         info: 'bg-blue-600 text-white'
     };
-    
+
     toast.className += ` ${typeStyles[type] || typeStyles.info}`;
-    
+
     // 设置内容
     const icons = {
         success: 'fas fa-check-circle',
@@ -376,7 +380,7 @@ function showToastMessage(message, type = 'info', duration = 3000) {
         warning: 'fas fa-exclamation-triangle',
         info: 'fas fa-info-circle'
     };
-    
+
     toast.innerHTML = `
         <div class="flex items-center">
             <i class="${icons[type] || icons.info} mr-2"></i>
@@ -384,15 +388,15 @@ function showToastMessage(message, type = 'info', duration = 3000) {
             <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-xl leading-none">&times;</button>
         </div>
     `;
-    
+
     // 添加到容器
     toastContainer.appendChild(toast);
-    
+
     // 显示动画
     setTimeout(() => {
         toast.classList.remove('translate-x-full', 'opacity-0');
     }, 100);
-    
+
     // 自动隐藏
     setTimeout(() => {
         toast.classList.add('translate-x-full', 'opacity-0');

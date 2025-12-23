@@ -3,12 +3,21 @@
  * Enhanced Stripe Client Configuration with Mock Mode
  */
 
-(function() {
+(function () {
     'use strict';
 
     // Stripe 可发布密钥 - 从环境变量加载
     // ⚠️ 在 Netlify 中配置环境变量：VITE_STRIPE_PUBLISHABLE_KEY
-    const STRIPE_PUBLISHABLE_KEY = import.meta?.env?.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_51SXG0rPyLPASs4oMIUPfLppXKefnEycFKqZ8abmH9c7DqcuOi1RpVxR1d2e3bnM3dDzuj3uvpNFYjeio68hOOMJV008ByjCRw8';
+    let STRIPE_PUBLISHABLE_KEY = 'pk_test_51SXG0rPyLPASs4oMIUPfLppXKefnEycFKqZ8abmH9c7DqcuOi1RpVxR1d2e3bnM3dDzuj3uvpNFYjeio68hOOMJV008ByjCRw8';
+
+    try {
+        // 尝试从 Vite 环境变量或共享配置加载
+        if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY) {
+            STRIPE_PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+        }
+    } catch (e) {
+        // 非 ESM 环境忽略
+    }
 
     // 初始化 Stripe
     let stripe = null;
@@ -19,10 +28,10 @@
      * 检查是否为测试模式
      */
     function isTestMode() {
-        return localStorage.getItem('payment_test_mode') === 'true' || 
-               window.location.hostname === 'localhost' ||
-               window.location.hostname === '127.0.0.1' ||
-               !navigator.onLine;
+        return localStorage.getItem('payment_test_mode') === 'true' ||
+            window.location.hostname === 'localhost' ||
+            window.location.hostname === '127.0.0.1' ||
+            !navigator.onLine;
     }
 
     /**
@@ -146,7 +155,10 @@
                     };
                 }
 
-                const response = await fetch('/api/stripe/create-payment-intent', {
+                const baseUrl = window.API_BASE_URL || '';
+                const endpoint = baseUrl + '/stripe/create-payment-intent';
+
+                const response = await fetch(endpoint, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -171,7 +183,7 @@
                 };
             } catch (error) {
                 console.error('创建支付意图失败:', error);
-                
+
                 // 网络错误时自动切换到测试模式
                 if (error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
                     console.log('🔄 网络错误，使用测试模式');
@@ -264,7 +276,10 @@
                     };
                 }
 
-                const response = await fetch('/api/stripe/create-subscription', {
+                const baseUrl = window.API_BASE_URL || '';
+                const endpoint = baseUrl + '/stripe/create-subscription';
+
+                const response = await fetch(endpoint, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -307,7 +322,7 @@
                 };
             } catch (error) {
                 console.error('创建订阅失败:', error);
-                
+
                 // 网络错误时自动切换到测试模式
                 if (error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
                     console.log('🔄 网络错误，使用测试模式');
@@ -351,7 +366,10 @@
                     };
                 }
 
-                const response = await fetch('/api/stripe/cancel-subscription', {
+                const baseUrl = window.API_BASE_URL || '';
+                const endpoint = baseUrl + '/stripe/cancel-subscription';
+
+                const response = await fetch(endpoint, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

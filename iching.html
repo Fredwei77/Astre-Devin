@@ -13,6 +13,10 @@
         href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif:wght@400;700&family=Noto+Sans+SC:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet">
 
+    <!-- PDF Generation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <!-- Mystical Eastern Theme -->
     <link rel="stylesheet" href="mystical-theme.css">
 
@@ -31,12 +35,23 @@
     <!-- Unified Translation System -->
     <script src="translations.js"></script>
     <script src="unified-i18n.js"></script>
+    <script src="api-config.js"></script>
     <script src="config.js"></script>
+    <script src="subscription-manager.js"></script>
+    <script src="ai-service.js"></script>
+
+    <!-- Stripe Payment Integration -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="stripe-client-enhanced.js"></script>
+    <script src="state-preserver.js"></script>
+
+    <script src="main.js"></script>
     <script src="subscription-manager.js"></script>
     <script src="state-preserver.js"></script>
     <script src="ai-service.js"></script>
     <script src="iching-ai.js"></script>
     <script src="iching-fixes.js"></script>
+    <script src="report-export.js"></script>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -68,7 +83,9 @@
         /* Body background now handled by mystical-theme.css */
 
         .divination-card {
-            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(10px);
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -870,22 +887,23 @@
                         </ul>
                     </div>
 
-                    <!-- Action Buttons -->
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                        <button id="saveReading"
-                            class="bg-mystic-gold text-deep-navy px-6 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors"
-                            data-i18n="iching.button.save">
-                            Save Reading
+                    <!-- Export Buttons -->
+                    <div
+                        class="flex flex-col sm:flex-row gap-4 justify-center mb-8 pt-6 border-t border-mystic-gold/20">
+                        <button id="exportPDF"
+                            class="bg-gradient-to-r from-mystic-purple to-mystic-gold text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2"
+                            data-i18n="iching.button.exportPDF">
+                            <span>📄</span> 保存为 PDF
                         </button>
-                        <button id="shareReading"
-                            class="border-2 border-moon-silver text-moon-silver px-6 py-3 rounded-lg font-semibold hover:bg-moon-silver hover:text-deep-navy transition-colors"
-                            data-i18n="iching.button.share">
-                            Share Reading
+                        <button id="exportHTML"
+                            class="border-2 border-mystic-purple text-mystic-purple px-6 py-3 rounded-lg font-semibold hover:bg-mystic-purple hover:text-white transition-all flex items-center justify-center gap-2"
+                            data-i18n="iching.button.exportHTML">
+                            <span>💾</span> 保存网页
                         </button>
-                        <button id="newDivination"
-                            class="border-2 border-mystic-gold text-mystic-gold px-6 py-3 rounded-lg font-semibold hover:bg-mystic-gold hover:text-deep-navy transition-colors"
-                            data-i18n="iching.button.new">
-                            New Divination
+                        <button id="resetReading"
+                            class="border-2 border-moon-silver text-moon-silver px-6 py-3 rounded-lg font-semibold hover:bg-moon-silver hover:text-deep-navy transition-all flex items-center justify-center gap-2"
+                            data-i18n="iching.button.reset">
+                            <span>🔄</span> 重新排盘
                         </button>
                     </div>
 
@@ -1941,6 +1959,40 @@ ${followupQuestion}
 
     <!-- I-Ching 深挖真相功能 -->
     <script src="iching-followup.js"></script>
+
+    <!-- 导出功能事件监听器 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // PDF 导出
+            const exportPDFBtn = document.getElementById('exportPDF');
+            if (exportPDFBtn) {
+                exportPDFBtn.addEventListener('click', function () {
+                    const filename = `易经卦象分析_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.pdf`;
+                    exportToPDF('resultsSection', filename);
+                });
+            }
+
+            // HTML 保存
+            const exportHTMLBtn = document.getElementById('exportHTML');
+            if (exportHTMLBtn) {
+                exportHTMLBtn.addEventListener('click', function () {
+                    const filename = `易经卦象分析_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.html`;
+                    saveAsHTML('resultsSection', filename);
+                });
+            }
+
+            // 重新排盘
+            const resetBtn = document.getElementById('resetReading');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', function () {
+                    if (confirm(window.i18n ? window.i18n.t('iching.confirm_reset') : '确定要重新排盘吗？当前结果将被清除。')) {
+                        resetIChingReading();
+                    }
+                });
+            }
+        });
+    </script>
+
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
