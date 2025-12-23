@@ -46,9 +46,6 @@
     <script src="state-preserver.js"></script>
 
     <script src="main.js"></script>
-    <script src="subscription-manager.js"></script>
-    <script src="state-preserver.js"></script>
-    <script src="ai-service.js"></script>
     <script src="iching-ai.js"></script>
     <script src="iching-fixes.js"></script>
     <script src="report-export.js"></script>
@@ -594,8 +591,8 @@
             <!-- Divination Methods -->
             <div id="methodSection" class="max-w-4xl mx-auto mb-12">
                 <div class="divination-card rounded-xl p-8">
-                    <h2 class="text-2xl font-serif font-bold mb-6 text-center" data-i18n="iching.guidance.title">
-                        <span class="text-mystic-gold">📿</span> 卦前提示
+                    <h2 class="text-2xl font-serif font-bold mb-6 text-center">
+                        <span class="text-mystic-gold">📿</span> <span data-i18n="iching.guidance.title">卦前提示</span>
                     </h2>
 
                     <!-- 卦前提示内容 -->
@@ -683,8 +680,9 @@
 
                         <!-- 常见问题选项 -->
                         <div class="mt-4">
-                            <p class="text-sm text-moon-silver mb-3" data-i18n="iching.question.common">
-                                <span class="text-mystic-gold">💡</span> 常见问题（点击快速填入）：
+                            <p class="text-sm text-moon-silver mb-3">
+                                <span class="text-mystic-gold">💡</span> <span
+                                    data-i18n="iching.question.common">常见问题（点击快速填入）：</span>
                             </p>
                             <div class="flex flex-wrap gap-2">
                                 <button type="button" class="question-tag" data-question="我应该换工作吗？">
@@ -887,23 +885,22 @@
                         </ul>
                     </div>
 
-                    <!-- Export Buttons -->
                     <div
                         class="flex flex-col sm:flex-row gap-4 justify-center mb-8 pt-6 border-t border-mystic-gold/20">
                         <button id="exportPDF"
-                            class="bg-gradient-to-r from-mystic-purple to-mystic-gold text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2"
-                            data-i18n="iching.button.exportPDF">
-                            <span>📄</span> 保存为 PDF
+                            class="bg-gradient-to-r from-mystic-purple to-mystic-gold text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2">
+                            <span data-i18n="iching.button.exportPDF_icon">📄</span> <span
+                                data-i18n="iching.button.exportPDF">保存为 PDF</span>
                         </button>
                         <button id="exportHTML"
-                            class="border-2 border-mystic-purple text-mystic-purple px-6 py-3 rounded-lg font-semibold hover:bg-mystic-purple hover:text-white transition-all flex items-center justify-center gap-2"
-                            data-i18n="iching.button.exportHTML">
-                            <span>💾</span> 保存网页
+                            class="border-2 border-mystic-purple text-mystic-purple px-6 py-3 rounded-lg font-semibold hover:bg-mystic-purple hover:text-white transition-all flex items-center justify-center gap-2">
+                            <span data-i18n="iching.button.exportHTML_icon">💾</span> <span
+                                data-i18n="iching.button.exportHTML">保存网页</span>
                         </button>
                         <button id="resetReading"
-                            class="border-2 border-moon-silver text-moon-silver px-6 py-3 rounded-lg font-semibold hover:bg-moon-silver hover:text-deep-navy transition-all flex items-center justify-center gap-2"
-                            data-i18n="iching.button.reset">
-                            <span>🔄</span> 重新排盘
+                            class="border-2 border-moon-silver text-moon-silver px-6 py-3 rounded-lg font-semibold hover:bg-moon-silver hover:text-deep-navy transition-all flex items-center justify-center gap-2">
+                            <span data-i18n="iching.button.reset_icon">🔄</span> <span
+                                data-i18n="iching.button.reset">重新排盘</span>
                         </button>
                     </div>
 
@@ -911,9 +908,9 @@
                     <div
                         class="bg-gradient-to-br from-mystic-gold/10 to-mystic-purple/10 rounded-xl p-6 border-2 border-mystic-gold/30">
                         <div class="text-center mb-4">
-                            <h3 class="text-xl font-serif font-bold text-mystic-gold mb-2"
-                                data-i18n="iching.followup.title">
-                                <span class="text-2xl">🔮</span> 深挖真相
+                            <h3 class="text-xl font-serif font-bold text-mystic-gold mb-2">
+                                <span class="text-2xl" data-i18n="iching.followup.icon">🔮</span> <span
+                                    data-i18n="iching.followup.title">深挖真相</span>
                             </h3>
                             <p class="text-sm text-moon-silver" data-i18n="iching.followup.subtitle">
                                 如需深挖真相，请在下方填写问题
@@ -930,8 +927,8 @@
 
                         <!-- Suggested Follow-up Questions -->
                         <div class="mb-4">
-                            <p class="text-xs text-moon-silver mb-2" data-i18n="iching.followup.suggested">
-                                💡 建议追问：
+                            <p class="text-xs text-moon-silver mb-2">
+                                💡 <span data-i18n="iching.followup.suggested">建议追问：</span>
                             </p>
                             <div class="flex flex-wrap gap-2" id="followupSuggestions">
                                 <!-- Will be populated by JS based on divination result -->
@@ -941,9 +938,9 @@
                         <!-- Ask Button -->
                         <div class="text-center">
                             <button id="askFollowup"
-                                class="bg-mystic-gold text-deep-navy px-8 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-                                data-i18n="iching.followup.button">
-                                <span class="mr-2">🤖</span> AI 解答
+                                class="bg-mystic-gold text-deep-navy px-8 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <span class="mr-2" data-i18n="iching.followup.button_icon">🤖</span> <span
+                                    data-i18n="iching.followup.button">AI 解答</span>
                             </button>
                         </div>
 
@@ -974,13 +971,7 @@
                             </div>
                         </div>
 
-                        <!-- Loading Indicator -->
-                        <div id="followupLoading" class="hidden mt-4 text-center">
-                            <div class="inline-flex items-center space-x-2 text-mystic-gold">
-                                <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-mystic-gold"></div>
-                                <span data-i18n="iching.followup.loading">AI 正在思考中...</span>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -1075,7 +1066,7 @@
         </div>
     </footer>
 
-    <script src="main.js"></script>
+
     <script>
         // I-Ching specific functionality
         class IChingDivination {

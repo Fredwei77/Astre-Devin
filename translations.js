@@ -273,10 +273,14 @@ window.TRANSLATIONS = {
         'fengshui.shop.button': 'Purchase Feng Shui Items',
 
         // Buttons
-        'fengshui.analyze.button': '🔮 Analyze Feng Shui',
-        'fengshui.button.exportPDF': '📄 Save as PDF',
-        'fengshui.button.exportHTML': '💾 Save Webpage',
-        'fengshui.button.reset': '🔄 Re-analyze',
+        'fengshui.analyze.button': 'Analyze Feng Shui',
+        'fengshui.analyze.button_icon': '🔮',
+        'fengshui.button.exportPDF': 'Save as PDF',
+        'fengshui.button.exportPDF_icon': '📄',
+        'fengshui.button.exportHTML': 'Save Webpage',
+        'fengshui.button.exportHTML_icon': '💾',
+        'fengshui.button.reset': 'Re-analyze',
+        'fengshui.button.reset_icon': '🔄',
         'fengshui.confirm_reset': 'Are you sure you want to re-analyze? Current results will be cleared.',
 
         // Follow-up
@@ -352,14 +356,19 @@ window.TRANSLATIONS = {
         'iching.button.share': 'Share Reading',
         'iching.button.new': 'New Divination',
         'iching.button.exportPDF': 'Save as PDF',
+        'iching.button.exportPDF_icon': '📄',
         'iching.button.exportHTML': 'Save Webpage',
+        'iching.button.exportHTML_icon': '💾',
         'iching.button.reset': 'Re-cast',
+        'iching.button.reset_icon': '🔄',
         'iching.confirm_reset': 'Are you sure you want to re-cast? Current results will be cleared.',
         'iching.followup.title': 'Dig Deeper',
+        'iching.followup.icon': '🔮',
         'iching.followup.subtitle': 'Ask follow-up questions to uncover deeper truths',
         'iching.followup.placeholder': 'e.g., How to seize this opportunity? What risks should I watch for?',
         'iching.followup.suggested': 'Suggested questions:',
         'iching.followup.button': 'AI Answer',
+        'iching.followup.button_icon': '🤖',
         'iching.followup.answer': 'AI Answer:',
         'iching.followup.loading': 'AI is thinking...',
 
@@ -1271,10 +1280,14 @@ window.TRANSLATIONS = {
         'fengshui.shop.emptyCart': '购物车是空的',
 
         // 按钮
-        'fengshui.analyze.button': '🔮 分析风水',
-        'fengshui.button.exportPDF': '📄 保存为 PDF',
-        'fengshui.button.exportHTML': '💾 保存网页',
-        'fengshui.button.reset': '🔄 重新分析',
+        'fengshui.analyze.button': '分析风水',
+        'fengshui.analyze.button_icon': '🔮',
+        'fengshui.button.exportPDF': '保存为 PDF',
+        'fengshui.button.exportPDF_icon': '📄',
+        'fengshui.button.exportHTML': '保存网页',
+        'fengshui.button.exportHTML_icon': '💾',
+        'fengshui.button.reset': '重新分析',
+        'fengshui.button.reset_icon': '🔄',
         'fengshui.confirm_reset': '确定要重新分析吗？当前结果将被清除。',
 
         'fengshui.followup.title': '替代方案咨询',
@@ -1348,11 +1361,20 @@ window.TRANSLATIONS = {
         'iching.button.save': '保存解读',
         'iching.button.share': '分享结果',
         'iching.button.new': '新的占卜',
+        'iching.button.exportPDF': '保存为 PDF',
+        'iching.button.exportPDF_icon': '📄',
+        'iching.button.exportHTML': '保存网页',
+        'iching.button.exportHTML_icon': '💾',
+        'iching.button.reset': '重新排算',
+        'iching.button.reset_icon': '🔄',
+        'iching.confirm_reset': '确定要重新排盘吗？当前结果将被清除。',
         'iching.followup.title': '深挖真相',
+        'iching.followup.icon': '🔮',
         'iching.followup.subtitle': '如需深挖真相，请在下方填写问题',
         'iching.followup.placeholder': '例如：如何把握这个机会？需要注意什么风险？',
         'iching.followup.suggested': '建议追问：',
         'iching.followup.button': 'AI 解答',
+        'iching.followup.button_icon': '🤖',
         'iching.followup.answer': 'AI 解答：',
         'iching.followup.loading': 'AI 正在思考中...',
         'iching.footer': '© 2024 命运AI。保留所有权利。古老智慧，现代指引。',
@@ -1521,7 +1543,7 @@ window.TRANSLATIONS = {
         'payment.plan.perQuarter': '每三个月',
         'payment.nav.pricing': '方案定价',
         'payment.button.getStarted': '立即开始',
-        'payment.button.choosePremium': '选择专业版',
+        'payment.button.choosePremium': '选择高级版',
         'payment.button.contactSales': '联系销售',
         'payment.feature.basic': '基础命运解读',
         'payment.feature.daily': '每日星座运势',
@@ -1834,7 +1856,7 @@ window.TRANSLATIONS = {
         'payment.plan.forever': '永久免費',
         'payment.plan.mostPopular': '最受歡迎',
         'payment.button.getStarted': '立即開始',
-        'payment.button.choosePremium': '選擇專業版',
+        'payment.button.choosePremium': '選擇高級版',
         'payment.button.contactSales': '聯繫銷售',
         'payment.feature.mockData': '模擬數據體驗',
         'payment.feature.basicInterface': '基礎界面訪問',
@@ -2070,10 +2092,14 @@ window.TRANSLATIONS = {
         'fengshui.shop.emptyCart': '購物車是空的',
 
         // 按鈕
-        'fengshui.analyze.button': '🔮 分析風水',
-        'fengshui.button.exportPDF': '📄 保存為 PDF',
-        'fengshui.button.exportHTML': '💾 保存網頁',
-        'fengshui.button.reset': '🔄 重新分析',
+        'fengshui.analyze.button': '分析風水',
+        'fengshui.analyze.button_icon': '🔮',
+        'fengshui.button.exportPDF': '保存為 PDF',
+        'fengshui.button.exportPDF_icon': '📄',
+        'fengshui.button.exportHTML': '保存網頁',
+        'fengshui.button.exportHTML_icon': '💾',
+        'fengshui.button.reset': '重新分析',
+        'fengshui.button.reset_icon': '🔄',
         'fengshui.confirm_reset': '確定要重新分析嗎？當前結果將被清除。',
 
         'fengshui.followup.title': '替代方案諮詢',
@@ -2146,11 +2172,30 @@ window.TRANSLATIONS = {
         'iching.button.save': '儲存解讀',
         'iching.button.share': '分享解讀',
         'iching.button.new': '新的占卜',
+        'iching.button.exportPDF': '儲存為 PDF',
+        'iching.button.exportPDF_icon': '📄',
+        'iching.button.exportHTML': '儲存網頁',
+        'iching.button.exportHTML_icon': '💾',
+        'iching.button.reset': '重新排盤',
+        'iching.button.reset_icon': '🔄',
+        'iching.confirm_reset': '您確定要重新排盤嗎？當前結果將被清除。',
         'iching.followup.title': '深挖真相',
+        'iching.followup.icon': '🔮',
         'iching.followup.subtitle': '如需深挖真相，請在下方填寫問題',
         'iching.followup.placeholder': '例如：如何把握這個機會？需要注意什麼風險？',
         'iching.followup.suggested': '建議追問：',
-        'fengshui.analyze.button': '🔮 分析風水',
+        'iching.followup.button': 'AI 解答',
+        'iching.followup.button_icon': '🤖',
+        'iching.followup.answer': 'AI 解答：',
+        'iching.followup.loading': 'AI 正在思考中...',
+        'iching.footer': '© 2024 命運AI。保留所有權利。古老智慧，現代指引。',
+
+        // 易經默認內容
+        'iching.default.hexagram.title': '第一卦：乾卦（創造）',
+        'iching.default.hexagram.desc': '元亨利貞。創造之力帶來崇高成功，通過堅持不懈而進步。',
+        'iching.default.judgment': '創造的原則通過天的卦象顯現。此卦象徵萬物之始，將秩序帶入混沌的原始創造力。它表明現在是行動的時候，是主動出擊和自信領導的時候。',
+        'iching.default.image': '天行健，君子以自強不息。天的運動強大而恆定。君子效法天道，不斷增強自己，永不停止努力。正如天以持久的力量運行，你也應該以堅定不移的決心堅持你的目標。',
+        'iching.default.advice': '根據你的問題和這個卦象，易經建議你在當前情況下擔任領導角色。相信你的創造性直覺，不要猶豫果斷行動。您的天賦和能力足以應對前方的挑戰。',
         'fengshui.recommendations.loading': '正在生成建議...',
         'fengshui.recommendations.empty': '請完成上方分析以獲取個性化建議。',
         'fengshui.footer': '© 2024 命運AI。保留所有權利。古老智慧，現代指引。',
@@ -2892,10 +2937,14 @@ window.TRANSLATIONS = {
         'fengshui.shop.button': 'Comprar Objetos de Feng Shui',
 
         // Buttons
-        'fengshui.analyze.button': '🔮 Analizar Feng Shui',
-        'fengshui.button.exportPDF': '📄 Guardar como PDF',
-        'fengshui.button.exportHTML': '💾 Guardar Página Web',
-        'fengshui.button.reset': '🔄 Re-analizar',
+        'fengshui.analyze.button': 'Analizar Feng Shui',
+        'fengshui.analyze.button_icon': '🔮',
+        'fengshui.button.exportPDF': 'Guardar como PDF',
+        'fengshui.button.exportPDF_icon': '📄',
+        'fengshui.button.exportHTML': 'Guardar Página Web',
+        'fengshui.button.exportHTML_icon': '💾',
+        'fengshui.button.reset': 'Re-analizar',
+        'fengshui.button.reset_icon': '🔄',
         'fengshui.confirm_reset': '¿Está seguro de que desea volver a analizar? Los resultados actuales se borrarán.',
 
         // Follow-up
@@ -2974,7 +3023,6 @@ window.TRANSLATIONS = {
         'divination.timeLabel': '🕐 Formato 12 Horas',
         'divination.clickToSelect': 'Clic para seleccionar',
 
-        'fengshui.analyze.button': '🔮 Analizar Feng Shui',
         'fengshui.recommendations.loading': 'Generando recomendaciones...',
         'fengshui.recommendations.empty': 'Complete el análisis anterior para obtener recomendaciones personalizadas.',
         'fengshui.image.upload': 'Subir Foto de la Habitación',
@@ -3252,14 +3300,14 @@ window.TRANSLATIONS = {
 };
 
 // Load translations into i18n instance when available
-if (window.i18n) {
-    window.i18n.loadTranslations(TRANSLATIONS);
+if (window.i18n && window.TRANSLATIONS) {
+    window.i18n.loadTranslations(window.TRANSLATIONS);
     console.log('[Translations] Loaded into i18n system');
 } else {
     // If i18n not ready yet, wait for it
     document.addEventListener('DOMContentLoaded', () => {
-        if (window.i18n) {
-            window.i18n.loadTranslations(TRANSLATIONS);
+        if (window.i18n && window.TRANSLATIONS) {
+            window.i18n.loadTranslations(window.TRANSLATIONS);
             console.log('[Translations] Loaded into i18n system (delayed)');
         }
     });

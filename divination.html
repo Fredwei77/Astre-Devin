@@ -41,12 +41,10 @@
     <!-- Unified Translation System -->
     <script src="translations.js"></script>
     <script src="unified-i18n.js"></script>
+    <script src="api-config.js"></script>
 
     <!-- Configuration and AI Service -->
     <script src="config.js"></script>
-    <script src="subscription-manager.js"></script>
-    <script src="state-preserver.js"></script>
-    <script src="ai-service.js"></script>
     <script src="report-export.js"></script>
 
     <!-- Tailwind CSS -->
@@ -610,20 +608,17 @@
                     <div
                         class="flex flex-col sm:flex-row gap-4 justify-center mb-8 pt-6 border-t border-mystic-gold/20">
                         <button id="exportPDF"
-                            class="bg-gradient-to-r from-mystic-purple to-mystic-gold text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2"
-                            data-i18n="divination.button.exportPDF">
+                            class="bg-gradient-to-r from-mystic-purple to-mystic-gold text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2">
                             <span data-i18n="divination.button.exportPDF_icon">📄</span> <span
                                 data-i18n="divination.button.exportPDF">Save as PDF</span>
                         </button>
                         <button id="exportHTML"
-                            class="border-2 border-mystic-purple text-mystic-purple px-6 py-3 rounded-lg font-semibold hover:bg-mystic-purple hover:text-white transition-all flex items-center justify-center gap-2"
-                            data-i18n-title="divination.button.exportHTML">
+                            class="border-2 border-mystic-purple text-mystic-purple px-6 py-3 rounded-lg font-semibold hover:bg-mystic-purple hover:text-white transition-all flex items-center justify-center gap-2">
                             <span data-i18n="divination.button.exportHTML_icon">💾</span> <span
                                 data-i18n="divination.button.exportHTML">Save Webpage</span>
                         </button>
                         <button id="resetReading"
-                            class="border-2 border-moon-silver text-moon-silver px-6 py-3 rounded-lg font-semibold hover:bg-moon-silver hover:text-deep-navy transition-all flex items-center justify-center gap-2"
-                            data-i18n-title="divination.button.reset">
+                            class="border-2 border-moon-silver text-moon-silver px-6 py-3 rounded-lg font-semibold hover:bg-moon-silver hover:text-deep-navy transition-all flex items-center justify-center gap-2">
                             <span data-i18n="divination.button.reset_icon">🔄</span> <span
                                 data-i18n="divination.button.reset">Re-cast</span>
                         </button>
@@ -637,8 +632,9 @@
                                 <span class="text-2xl" data-i18n="divination.followup.icon">🔮</span>
                                 <span data-i18n="divination.followup.title">Dig Deeper</span>
                             </h3>
-                            <p class="text-sm text-moon-silver" data-i18n="divination.followup.subtitle">
-                                If you need to dig deeper into the truth, please fill in your question below
+                            <p class="text-sm text-moon-silver">
+                                <span data-i18n="divination.followup.subtitle">If you need to dig deeper into the truth,
+                                    please fill in your question below</span>
                             </p>
                         </div>
 

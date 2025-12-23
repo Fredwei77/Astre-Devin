@@ -876,6 +876,30 @@
                 this.checkPlanParam();
             }
 
+            setupPaymentForm() {
+                const form = document.getElementById('paymentForm');
+                if (form) {
+                    form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.processPayment();
+                    });
+                }
+            }
+
+            setupAnimations() {
+                if (typeof anime !== 'undefined') {
+                    // Animate pricing cards on load
+                    anime({
+                        targets: '.pricing-card',
+                        opacity: [0, 1],
+                        translateY: [30, 0],
+                        delay: anime.stagger(100),
+                        duration: 800,
+                        easing: 'easeOutQuart'
+                    });
+                }
+            }
+
             checkPlanParam() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const plan = urlParams.get('plan');
