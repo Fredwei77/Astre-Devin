@@ -1571,16 +1571,19 @@
                 if (chartElement) {
                     const chart = echarts.init(chartElement);
 
+                    // Get translated labels
+                    const t = (key) => window.i18n ? window.i18n.t(key) : key;
+
                     const option = {
                         backgroundColor: 'transparent',
                         radar: {
                             indicator: [
-                                { name: 'Leadership', max: 100 },
-                                { name: 'Creativity', max: 100 },
-                                { name: 'Intuition', max: 100 },
-                                { name: 'Diplomacy', max: 100 },
-                                { name: 'Wisdom', max: 100 },
-                                { name: 'Adaptability', max: 100 }
+                                { name: t('profile.traits.leadership'), max: 100 },
+                                { name: t('profile.traits.creativity'), max: 100 },
+                                { name: t('profile.traits.intuition'), max: 100 },
+                                { name: t('profile.traits.diplomacy'), max: 100 },
+                                { name: t('profile.traits.wisdom'), max: 100 },
+                                { name: t('profile.traits.adaptability'), max: 100 }
                             ],
                             axisName: {
                                 color: '#c0c0c0',
@@ -1601,7 +1604,7 @@
                             type: 'radar',
                             data: [{
                                 value: [85, 78, 92, 70, 88, 75],
-                                name: 'Your Traits',
+                                name: t('profile.personality'),
                                 itemStyle: {
                                     color: '#ffd700'
                                 },
@@ -1617,6 +1620,29 @@
                     };
 
                     chart.setOption(option);
+
+                    // Listen for language changes to update chart
+                    window.addEventListener('languageChanged', () => {
+                        const newOption = {
+                            radar: {
+                                indicator: [
+                                    { name: t('profile.traits.leadership'), max: 100 },
+                                    { name: t('profile.traits.creativity'), max: 100 },
+                                    { name: t('profile.traits.intuition'), max: 100 },
+                                    { name: t('profile.traits.diplomacy'), max: 100 },
+                                    { name: t('profile.traits.wisdom'), max: 100 },
+                                    { name: t('profile.traits.adaptability'), max: 100 }
+                                ]
+                            },
+                            series: [{
+                                data: [{
+                                    value: [85, 78, 92, 70, 88, 75],
+                                    name: t('profile.personality')
+                                }]
+                            }]
+                        };
+                        chart.setOption(newOption);
+                    });
                 }
             }
 

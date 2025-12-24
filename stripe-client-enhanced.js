@@ -10,13 +10,9 @@
     // ⚠️ 在 Netlify 中配置环境变量：VITE_STRIPE_PUBLISHABLE_KEY
     let STRIPE_PUBLISHABLE_KEY = 'pk_test_51SXG0rPyLPASs4oMIUPfLppXKefnEycFKqZ8abmH9c7DqcuOi1RpVxR1d2e3bnM3dDzuj3uvpNFYjeio68hOOMJV008ByjCRw8';
 
-    try {
-        // 尝试从 Vite 环境变量或共享配置加载
-        if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY) {
-            STRIPE_PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
-        }
-    } catch (e) {
-        // 非 ESM 环境忽略
+    // 尝试从全局配置加载
+    if (window.CONFIG && window.CONFIG.STRIPE_PUBLISHABLE_KEY) {
+        STRIPE_PUBLISHABLE_KEY = window.CONFIG.STRIPE_PUBLISHABLE_KEY;
     }
 
     // 初始化 Stripe

@@ -900,7 +900,7 @@
                         <button id="resetReading"
                             class="border-2 border-moon-silver text-moon-silver px-6 py-3 rounded-lg font-semibold hover:bg-moon-silver hover:text-deep-navy transition-all flex items-center justify-center gap-2">
                             <span data-i18n="iching.button.reset_icon">🔄</span> <span
-                                data-i18n="iching.button.reset">重新排盘</span>
+                                data-i18n="iching.button.reset">New Reading</span>
                         </button>
                     </div>
 
@@ -910,10 +910,10 @@
                         <div class="text-center mb-4">
                             <h3 class="text-xl font-serif font-bold text-mystic-gold mb-2">
                                 <span class="text-2xl" data-i18n="iching.followup.icon">🔮</span> <span
-                                    data-i18n="iching.followup.title">深挖真相</span>
+                                    data-i18n="iching.followup.title">Deep Dive</span>
                             </h3>
                             <p class="text-sm text-moon-silver" data-i18n="iching.followup.subtitle">
-                                如需深挖真相，请在下方填写问题
+                                Enter your question below for a deeper interpretation
                             </p>
                         </div>
 
@@ -1937,6 +1937,12 @@ ${followupQuestion}
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js"></script>
     <script src="supabase-init.js"></script>
+
+    <!-- 支付系统 -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="stripe-client-enhanced.js"></script>
+    <script src="subscription-manager.js"></script>
+    <script src="shop-service.js"></script>
 
     <!-- 认证系统 - 页面访问控制 -->
     <script src="auth-service.js"></script>

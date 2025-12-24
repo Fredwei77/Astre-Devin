@@ -7,14 +7,14 @@ class FengShuiAI {
         this.spaceData = null;
         this.analysisResult = null;
         this.animeAvailable = false;
-        
+
         // 检查 anime.js 是否可用
         this.checkAnimeAvailability();
-        
+
         // 监听语言切换事件
         this.setupLanguageListener();
     }
-    
+
     /**
      * 设置语言切换监听
      */
@@ -34,7 +34,7 @@ class FengShuiAI {
             }
         });
     }
-    
+
     /**
      * 检查 anime.js 是否可用
      */
@@ -47,7 +47,7 @@ class FengShuiAI {
             this.animeAvailable = false;
         }
     }
-    
+
     /**
      * 分析风水布局
      */
@@ -55,27 +55,31 @@ class FengShuiAI {
         try {
             const spaceData = {
                 direction: direction,
-                spaceType: '居住空间',
-                concerns: '整体运势'
+                spaceType: window.i18n?.t('fengshui.analysis.default_space') || 'Living Space',
+                concerns: window.i18n?.t('fengshui.analysis.default_concern') || 'General Fortune'
             };
-            
+
             this.spaceData = spaceData;
-            
+
             // 调用AI服务
-            const result = await aiService.analyzeFengShui(spaceData);
+            const aiServiceInstance = window.aiService || (window.destinyAI && window.destinyAI.aiService);
+            if (!aiServiceInstance) {
+                throw new Error('AI Service not initialized');
+            }
+            const result = await aiServiceInstance.analyzeFengShui(spaceData);
             this.analysisResult = result;
-            
+
             // 更新UI
             this.updateAnalysisDisplay(result);
-            
+
             return result;
-            
+
         } catch (error) {
             console.error('风水分析错误:', error);
             throw error;
         }
     }
-    
+
     /**
      * 更新分析结果显示
      */
@@ -85,20 +89,20 @@ class FengShuiAI {
         if (analysisResults) {
             analysisResults.classList.remove('hidden');
         }
-        
+
         // 更新整体评分
         this.updateScore('energyScore', 'energyPercent', result.overallScore || 75);
-        
+
         // 更新五行平衡
         if (result.elements) {
             this.updateElementsDisplay(result.elements);
         }
-        
+
         // 更新建议
         if (result.recommendations) {
             this.updateRecommendations(result.recommendations);
         }
-        
+
         // 更新方位分析文本
         if (result.directionAnalysis) {
             const directionText = document.getElementById('directionAnalysisText');
@@ -106,32 +110,30 @@ class FengShuiAI {
                 directionText.textContent = result.directionAnalysis;
             }
         }
-        
+
         // 更新幸运物品
         if (result.luckyItems) {
             this.updateLuckyItems(result.luckyItems);
         }
-        
+
         // 更新禁忌
         if (result.taboos) {
             this.updateTaboos(result.taboos);
         }
-        
-        // 初始化追问功能
-        if (window.FengshuiFollowup) {
-            window.FengshuiFollowup.init(result);
-        }
+
+        // 初始化追问建议 (Consolidated)
+        this.renderSuggestedQuestions(result);
     }
-    
+
     /**
      * 更新评分显示 - 支持无动画模式
      */
     updateScore(barId, percentId, value) {
         const bar = document.getElementById(barId);
         const percent = document.getElementById(percentId);
-        
+
         if (!bar || !percent) return;
-        
+
         if (this.animeAvailable && typeof anime !== 'undefined') {
             // 使用动画
             anime({
@@ -140,13 +142,13 @@ class FengShuiAI {
                 duration: 1000,
                 easing: 'easeOutQuart'
             });
-            
+
             anime({
                 targets: { value: 0 },
                 value: value,
                 duration: 1000,
                 easing: 'easeOutQuart',
-                update: function(anim) {
+                update: function (anim) {
                     percent.textContent = `${Math.round(anim.animatables[0].target.value)}%`;
                 }
             });
@@ -156,7 +158,7 @@ class FengShuiAI {
             percent.textContent = `${value}%`;
         }
     }
-    
+
     /**
      * 更新五行显示
      */
@@ -168,11 +170,11 @@ class FengShuiAI {
             metal: { selector: '.element-metal', color: 'gray-400' },
             water: { selector: '.element-water', color: 'blue-500' }
         };
-        
+
         Object.entries(elements).forEach(([key, value]) => {
             const config = elementMap[key];
             if (!config) return;
-            
+
             // 找到对应的进度条
             const bars = document.querySelectorAll(`${config.selector} + div .bg-${config.color}`);
             bars.forEach(bar => {
@@ -189,29 +191,25 @@ class FengShuiAI {
             });
         });
     }
-    
+
     /**
-     * 更新建议显示 - 支持多语言 - 增强翻译逻辑
+     * 更新建议显示 - 支持多语言
      */
     updateRecommendations(recommendations) {
         const container = document.getElementById('recommendationsContainer');
         if (!container) return;
-        
+
         // 清空现有建议
         container.innerHTML = '';
-        
-        // 获取当前语言
-        const lang = localStorage.getItem('preferredLanguage') || 'zh';
-        const isEnglish = lang === 'en';
-        
+
         // 添加新建议
         recommendations.forEach(rec => {
             const priorityEmoji = rec.priority === 'high' ? '🔥' : rec.priority === 'medium' ? '⭐' : '💡';
-            
+
             // 翻译标题和描述 - 使用智能翻译函数
-            const title = this.translateRecommendationTitle(rec.title, isEnglish);
-            const description = this.translateRecommendationDescription(rec.title, rec.description, isEnglish);
-            
+            const title = this.translateRecommendationTitle(rec.title);
+            const description = this.translateRecommendationDescription(rec.title, rec.description);
+
             const card = document.createElement('div');
             card.className = 'recommendation-card rounded-lg p-4';
             card.innerHTML = `
@@ -223,86 +221,55 @@ class FengShuiAI {
                     </div>
                 </div>
             `;
-            
+
             container.appendChild(card);
         });
     }
-    
+
     /**
      * 智能翻译建议标题
      */
-    translateRecommendationTitle(title, isEnglish) {
-        const titleMap = {
-            // 英文到中文
-            'Add Water Element': isEnglish ? 'Add Water Element' : '增加水元素',
-            'Increase Fire Energy': isEnglish ? 'Increase Fire Energy' : '提升火能量',
-            'Optimize Plant Placement': isEnglish ? 'Optimize Plant Placement' : '优化植物摆放',
-            'Strategic Mirror Placement': isEnglish ? 'Strategic Mirror Placement' : '镜子战略布局',
-            'Bedroom Optimization': isEnglish ? 'Bedroom Optimization' : '卧室优化',
-            // 中文到英文
-            '增加水元素': isEnglish ? 'Add Water Element' : '增加水元素',
-            '提升火能量': isEnglish ? 'Increase Fire Energy' : '提升火能量',
-            '优化植物摆放': isEnglish ? 'Optimize Plant Placement' : '优化植物摆放',
-            '镜子战略布局': isEnglish ? 'Strategic Mirror Placement' : '镜子战略布局',
-            '卧室优化': isEnglish ? 'Bedroom Optimization' : '卧室优化'
+    translateRecommendationTitle(title) {
+        if (!title) return '';
+
+        // Generate key from title (English version preferred as key)
+        const normalizedTitle = title.toLowerCase().replace(/\s+/g, '_');
+
+        // Brute force matching for known patterns if normalized title doesn't match directly
+        const keyMap = {
+            'add_water_element': 'fengshui.rec.water.title',
+            'increase_fire_energy': 'fengshui.rec.fire.title',
+            'optimize_plant_placement': 'fengshui.rec.plant.title',
+            'strategic_mirror_placement': 'fengshui.rec.mirror.title',
+            'bedroom_optimization': 'fengshui.rec.bedroom.title'
         };
-        
-        return titleMap[title] || title;
+
+        // Try map first, then try the normalized title as a key part
+        const key = keyMap[normalizedTitle] || `fengshui.rec.${normalizedTitle}.title`;
+        const translated = window.i18n?.t(key);
+
+        return (translated && translated !== key) ? translated : title;
     }
 
     /**
      * 智能翻译建议描述
      */
-    translateRecommendationDescription(title, description, isEnglish) {
-        const descMap = {
-            // 基于标题的描述映射
-            'Add Water Element': {
-                en: 'Place a small fountain or aquarium in the North area to enhance career and wealth flow.',
-                zh: '在北方位置放置小型喷泉或鱼缸，增强事业运和财运。'
-            },
-            '增加水元素': {
-                en: 'Place a small fountain or aquarium in the North area to enhance career and wealth flow.',
-                zh: '在北方位置放置小型喷泉或鱼缸，增强事业运和财运。'
-            },
-            'Increase Fire Energy': {
-                en: 'Add warm lighting, candles, or red/orange decorations in the South area to boost recognition and fame.',
-                zh: '在南方区域增加暖色调照明、蜡烛或红橙色装饰，提升名声和认可度。'
-            },
-            '提升火能量': {
-                en: 'Add warm lighting, candles, or red/orange decorations in the South area to boost recognition and fame.',
-                zh: '在南方区域增加暖色调照明、蜡烛或红橙色装饰，提升名声和认可度。'
-            },
-            'Optimize Plant Placement': {
-                en: 'Position healthy green plants in the East and Southeast areas to support family harmony and wealth growth.',
-                zh: '在东方和东南方放置健康绿植，支持家庭和谐和财富增长。'
-            },
-            '优化植物摆放': {
-                en: 'Position healthy green plants in the East and Southeast areas to support family harmony and wealth growth.',
-                zh: '在东方和东南方放置健康绿植，支持家庭和谐和财富增长。'
-            },
-            'Strategic Mirror Placement': {
-                en: 'Place mirrors to reflect beautiful views and expand space, but avoid reflecting clutter or sharp corners.',
-                zh: '放置镜子反射美景和扩大空间，但避免反射杂物或尖角。'
-            },
-            '镜子战略布局': {
-                en: 'Place mirrors to reflect beautiful views and expand space, but avoid reflecting clutter or sharp corners.',
-                zh: '放置镜子反射美景和扩大空间，但避免反射杂物或尖角。'
-            },
-            'Bedroom Optimization': {
-                en: 'Position your bed in the command position (diagonal from door, not directly in line) for better sleep and relationships.',
-                zh: '将床放在指挥位置（与门对角线，不直接对齐），以获得更好的睡眠和关系。'
-            },
-            '卧室优化': {
-                en: 'Position your bed in the command position (diagonal from door, not directly in line) for better sleep and relationships.',
-                zh: '将床放在指挥位置（与门对角线，不直接对齐），以获得更好的睡眠和关系。'
-            }
+    translateRecommendationDescription(title, description) {
+        if (!description) return '';
+
+        const normalizedTitle = title.toLowerCase().replace(/\s+/g, '_');
+        const keyMap = {
+            'add_water_element': 'fengshui.rec.water.desc',
+            'increase_fire_energy': 'fengshui.rec.fire.desc',
+            'optimize_plant_placement': 'fengshui.rec.plant.desc',
+            'strategic_mirror_placement': 'fengshui.rec.mirror.desc',
+            'bedroom_optimization': 'fengshui.rec.bedroom.desc'
         };
-        
-        if (descMap[title]) {
-            return descMap[title][isEnglish ? 'en' : 'zh'];
-        }
-        
-        return description;
+
+        const key = keyMap[normalizedTitle] || `fengshui.rec.${normalizedTitle}.desc`;
+        const translated = window.i18n?.t(key);
+
+        return (translated && translated !== key) ? translated : description;
     }
 
     /**
@@ -311,29 +278,28 @@ class FengShuiAI {
     updateLuckyItems(items) {
         const container = document.getElementById('luckyItemsContainer');
         if (!container) return;
-        
+
         container.innerHTML = '';
-        
-        // 获取当前语言
-        const lang = localStorage.getItem('preferredLanguage') || 'zh';
-        const isEnglish = lang === 'en';
-        
+
         items.forEach(item => {
-            // 如果是中文物品名，尝试翻译
-            let displayName = item;
-            const itemTranslations = {
-                '红灯笼': isEnglish ? 'Red Lantern' : '红灯笼',
-                '幸运竹': isEnglish ? 'Lucky Bamboo' : '幸运竹',
-                '龙雕像': isEnglish ? 'Dragon Statue' : '龙雕像',
-                '水晶球': isEnglish ? 'Crystal Sphere' : '水晶球',
-                '祈福手环': isEnglish ? 'Prayer Bracelet' : '祈福手环',
-                '罗盘': isEnglish ? 'Feng Shui Compass' : '罗盘',
-                '八卦镜': isEnglish ? 'Bagua Mirror' : '八卦镜',
-                '五帝钱币': isEnglish ? 'Five Emperor Coins' : '五帝钱币'
+            // Standardize item as a key
+            const itemKeyPart = item.toLowerCase().replace(/\s+/g, '_');
+            const keyMap = {
+                '红灯笼': 'lantern', '紅燈籠': 'lantern', 'red_lantern': 'lantern', 'linterna_roja': 'lantern',
+                '幸运竹': 'bamboo', '幸運竹': 'bamboo', 'lucky_bamboo': 'bamboo', 'bambú_de_la_suerte': 'bamboo',
+                '龙雕像': 'dragon', '龍雕像': 'dragon', 'dragon_statue': 'dragon', 'estatua_de_dragón': 'dragon',
+                '水晶球': 'crystal', 'crystal_sphere': 'crystal', 'esfera_de_cristal': 'crystal',
+                '祈福手环': 'bracelet', '祈福手環': 'bracelet', 'prayer_bracelet': 'bracelet', 'pulsera_de_oración': 'bracelet',
+                '罗盘': 'compass', '羅盤': 'compass', 'feng_shui_compass': 'compass', 'brújula_feng_shui': 'compass',
+                '八卦镜': 'mirror', '八卦鏡': 'mirror', 'bagua_mirror': 'mirror', 'espejo_bagua': 'mirror',
+                '五帝钱币': 'coins', '五帝錢幣': 'coins', 'five_emperor_coins': 'coins', 'monedas_de_los_cinco_emperadores': 'coins'
             };
-            
-            displayName = itemTranslations[item] || item;
-            
+
+            const keySuffix = keyMap[item] || keyMap[itemKeyPart] || itemKeyPart;
+            const key = `fengshui.shop.${keySuffix}`;
+            const translated = window.i18n?.t(key);
+            const displayName = (translated && translated !== key) ? translated : item;
+
             const div = document.createElement('div');
             div.className = 'bg-mystic-gold/10 rounded-lg p-3 text-center border border-mystic-gold/30';
             div.innerHTML = `
@@ -343,32 +309,30 @@ class FengShuiAI {
             container.appendChild(div);
         });
     }
-    
+
     /**
      * 更新禁忌 - 支持多语言
      */
     updateTaboos(taboos) {
         const container = document.getElementById('taboosContainer');
         if (!container) return;
-        
+
         container.innerHTML = '';
-        
-        // 获取当前语言
-        const lang = localStorage.getItem('preferredLanguage') || 'zh';
-        const isEnglish = lang === 'en';
-        
+
         taboos.forEach(taboo => {
-            // 如果是中文禁忌，尝试翻译
-            let displayTaboo = taboo;
-            const tabooTranslations = {
-                '避免床头对门': isEnglish ? 'Avoid bed facing door' : '避免床头对门',
-                '不要在财位堆放杂物': isEnglish ? 'Keep wealth corner clutter-free' : '不要在财位堆放杂物',
-                '避免尖角对人': isEnglish ? 'Avoid sharp corners pointing at people' : '避免尖角对人',
-                '保持空间整洁': isEnglish ? 'Keep space clean and tidy' : '保持空间整洁'
+            const tabooKeyPart = taboo.toLowerCase().replace(/\s+/g, '_');
+            const keyMap = {
+                '避免床头对门': 'bed_door', '避免床頭對門': 'bed_door', 'avoid_bed_facing_door': 'bed_door',
+                '不要在财位堆放杂物': 'wealth_clutter', '不要在財位堆放雜物': 'wealth_clutter', 'keep_wealth_corner_clutter-free': 'wealth_clutter',
+                '避免尖角对人': 'sharp_corners', '避免尖角對人': 'sharp_corners', 'avoid_sharp_corners_pointing_at_people': 'sharp_corners',
+                '保持空间整洁': 'clean_space', '保持空間整潔': 'clean_space', 'keep_space_clean_and_tidy': 'clean_space'
             };
-            
-            displayTaboo = tabooTranslations[taboo] || taboo;
-            
+
+            const keySuffix = keyMap[taboo] || keyMap[tabooKeyPart] || tabooKeyPart;
+            const key = `fengshui.taboo.${keySuffix}`;
+            const translated = window.i18n?.t(key);
+            const displayTaboo = (translated && translated !== key) ? translated : taboo;
+
             const div = document.createElement('div');
             div.className = 'flex items-start space-x-2 text-sm';
             div.innerHTML = `
@@ -378,96 +342,318 @@ class FengShuiAI {
             container.appendChild(div);
         });
     }
-    
+
     /**
      * 获取当前方位的建议 - 支持多语言
      */
     getDirectionAdvice(direction) {
-        // 获取当前语言
-        const lang = localStorage.getItem('preferredLanguage') || 'zh';
-        const isEnglish = lang === 'en';
-        
         const directions = {
-            0: { 
-                name: 'North', 
-                element: 'Water', 
-                advice: {
-                    zh: '北方属水，主事业运。适合放置水景、蓝色装饰。',
-                    en: 'North belongs to Water element, governing career luck. Suitable for water features and blue decorations.'
-                }
+            0: {
+                keyName: 'common.direction.north',
+                keyElement: 'fengshui.elements.water',
+                keyAdvice: 'fengshui.advice.north'
             },
-            45: { 
-                name: 'Northeast', 
-                element: 'Earth', 
-                advice: {
-                    zh: '东北方属土，主智慧。适合放置书籍、黄色装饰。',
-                    en: 'Northeast belongs to Earth element, governing wisdom. Suitable for books and yellow decorations.'
-                }
+            45: {
+                keyName: 'common.direction.northeast',
+                keyElement: 'fengshui.elements.earth',
+                keyAdvice: 'fengshui.advice.northeast'
             },
-            90: { 
-                name: 'East', 
-                element: 'Wood', 
-                advice: {
-                    zh: '东方属木，主健康。适合放置绿植、木制家具。',
-                    en: 'East belongs to Wood element, governing health. Suitable for green plants and wooden furniture.'
-                }
+            90: {
+                keyName: 'common.direction.east',
+                keyElement: 'fengshui.elements.wood',
+                keyAdvice: 'fengshui.advice.east'
             },
-            135: { 
-                name: 'Southeast', 
-                element: 'Wood', 
-                advice: {
-                    zh: '东南方属木，主财运。适合放置绿植、紫色装饰。',
-                    en: 'Southeast belongs to Wood element, governing wealth. Suitable for green plants and purple decorations.'
-                }
+            135: {
+                keyName: 'common.direction.southeast',
+                keyElement: 'fengshui.elements.wood',
+                keyAdvice: 'fengshui.advice.southeast'
             },
-            180: { 
-                name: 'South', 
-                element: 'Fire', 
-                advice: {
-                    zh: '南方属火，主名声。适合放置照明、红色装饰。',
-                    en: 'South belongs to Fire element, governing fame. Suitable for lighting and red decorations.'
-                }
+            180: {
+                keyName: 'common.direction.south',
+                keyElement: 'fengshui.elements.fire',
+                keyAdvice: 'fengshui.advice.south'
             },
-            225: { 
-                name: 'Southwest', 
-                element: 'Earth', 
-                advice: {
-                    zh: '西南方属土，主感情。适合放置成对物品、粉色装饰。',
-                    en: 'Southwest belongs to Earth element, governing relationships. Suitable for paired items and pink decorations.'
-                }
+            225: {
+                keyName: 'common.direction.southwest',
+                keyElement: 'fengshui.elements.earth',
+                keyAdvice: 'fengshui.advice.southwest'
             },
-            270: { 
-                name: 'West', 
-                element: 'Metal', 
-                advice: {
-                    zh: '西方属金，主子女。适合放置金属物品、白色装饰。',
-                    en: 'West belongs to Metal element, governing children. Suitable for metal items and white decorations.'
-                }
+            270: {
+                keyName: 'common.direction.west',
+                keyElement: 'fengshui.elements.metal',
+                keyAdvice: 'fengshui.advice.west'
             },
-            315: { 
-                name: 'Northwest', 
-                element: 'Metal', 
-                advice: {
-                    zh: '西北方属金，主贵人。适合放置金属物品、银色装饰。',
-                    en: 'Northwest belongs to Metal element, governing benefactors. Suitable for metal items and silver decorations.'
-                }
+            315: {
+                keyName: 'common.direction.northwest',
+                keyElement: 'fengshui.elements.metal',
+                keyAdvice: 'fengshui.advice.northwest'
             }
         };
-        
+
         // 找到最接近的方位
         const normalizedDir = ((direction % 360) + 360) % 360;
         const closestDir = Object.keys(directions).reduce((prev, curr) => {
             return Math.abs(curr - normalizedDir) < Math.abs(prev - normalizedDir) ? curr : prev;
         });
-        
-        const directionInfo = directions[closestDir];
-        
-        // 返回翻译后的建议
+
+        const info = directions[closestDir];
+
+        if (window.i18n) {
+            return {
+                name: window.i18n.t(info.keyName),
+                element: window.i18n.t(info.keyElement),
+                advice: window.i18n.t(info.keyAdvice)
+            };
+        }
+
+        // Fallback
         return {
-            name: directionInfo.name,
-            element: directionInfo.element,
-            advice: directionInfo.advice[isEnglish ? 'en' : 'zh']
+            name: 'North',
+            element: 'Water',
+            advice: 'North belongs to Water element.'
         };
+    }
+
+    /**
+     * 处理 AI 替代方案咨询（追问）
+     */
+    async handleFollowupQuestion() {
+        console.log('🤖 开始处理风水追问...');
+
+        // 检查是否有分析结果
+        if (!this.analysisResult) {
+            alert(window.i18n?.t('fengshui.followup.noResult') || '请先进行风水分析再提问');
+            return;
+        }
+
+        const followupInput = document.getElementById('followupInput');
+        const askButton = document.getElementById('askFollowup');
+        const loadingDiv = document.getElementById('followupLoading');
+        const answerDiv = document.getElementById('followupAnswer');
+        const answerText = document.getElementById('followupAnswerText');
+
+        if (!followupInput) {
+            console.error('❌ 未找到追问输入框');
+            return;
+        }
+
+        const question = followupInput.value.trim();
+        console.log('📝 用户追问:', question);
+
+        if (!question) {
+            alert(window.i18n?.t('fengshui.followup.empty') || '请输入您的追问');
+            return;
+        }
+
+        // 检查用户权限
+        if (window.subscriptionManager) {
+            const access = window.subscriptionManager.canUseService('fengshui');
+            const isMockDataOnly = window.subscriptionManager.isMockDataOnly();
+
+            if (!access.allowed || isMockDataOnly) {
+                console.log('权限受限，显示升级提示');
+                if (!access.allowed) {
+                    window.subscriptionManager.showUpgradePrompt('AI风水追问', 'fengshui');
+                    return;
+                }
+            }
+        }
+
+        const language = localStorage.getItem('preferredLanguage') || 'zh';
+
+        try {
+            // 显示加载状态
+            if (askButton) askButton.disabled = true;
+            if (loadingDiv) loadingDiv.classList.remove('hidden');
+            if (answerDiv) answerDiv.classList.add('hidden');
+
+            // 构建系统提示词
+            let systemPromptBase = '';
+            if (window.CONFIG && window.CONFIG.PROMPTS && window.CONFIG.PROMPTS.FENGSHUI && window.CONFIG.PROMPTS.FENGSHUI.FOLLOWUP_SYSTEM) {
+                systemPromptBase = window.CONFIG.PROMPTS.FENGSHUI.FOLLOWUP_SYSTEM(language);
+            } else {
+                systemPromptBase = `你是一位专业的风水大师。请基于用户的空间分析结果，针对其提出的具体布局困难或问题，提供深度解读和替代方案建议。`;
+            }
+
+            const labels = {
+                direction: window.i18n?.t('fengshui.compass.direction') || 'Direction',
+                score: window.i18n?.t('fengshui.analysis.results.energy') || 'Overall Score',
+                elements: window.i18n?.t('fengshui.elements.title') || 'Elements',
+                analysis: window.i18n?.t('fengshui.analysis.results.title') || 'Analysis'
+            };
+
+            const contextText = `
+${labels.analysis}:
+- ${labels.direction}: ${this.spaceData.direction}° (${this.getDirectionAdvice(this.spaceData.direction).name})
+- ${labels.score}: ${this.analysisResult.overallScore}%
+- ${labels.elements}: Wood ${this.analysisResult.elements.wood}%, Fire ${this.analysisResult.elements.fire}%, Earth ${this.analysisResult.elements.earth}%, Metal ${this.analysisResult.elements.metal}%, Water ${this.analysisResult.elements.water}%
+- ${labels.analysis}: ${this.analysisResult.directionAnalysis}
+`;
+
+            const systemPrompt = systemPromptBase + "\n\n" + contextText;
+            const userPrompt = `${window.i18n?.t('fengshui.followup.title') || 'Follow-up'}: ${question}`;
+
+            // 调用AI服务
+            const aiService = window.aiService || (window.AIService ? new window.AIService() : null);
+            if (!aiService) {
+                throw new Error('AI服务未初始化');
+            }
+
+            const response = await aiService.chatWithSystem(systemPrompt, userPrompt);
+
+            if (!response || typeof response !== 'string') {
+                throw new Error('AI响应格式错误');
+            }
+
+            // 显示回答
+            if (answerText) {
+                answerText.textContent = response;
+            }
+            if (answerDiv) {
+                answerDiv.classList.remove('hidden');
+                // 滚动到回答位置
+                answerDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            // 清空输入框
+            followupInput.value = '';
+
+            console.log('✅ 风水追问处理完成');
+
+        } catch (error) {
+            console.error('❌ 风水追问失败:', error);
+            alert(error.message || 'AI解答失败，请稍后重试');
+        } finally {
+            // 恢复按钮状态
+            if (askButton) askButton.disabled = false;
+            if (loadingDiv) loadingDiv.classList.add('hidden');
+        }
+    }
+
+    /**
+     * 生成建议追问问题
+     */
+    generateSuggestedQuestions(result) {
+        if (!window.i18n) return [];
+
+        let suggestions = [
+            window.i18n.t('fengshui.followup.suggested1'),
+            window.i18n.t('fengshui.followup.suggested2'),
+            window.i18n.t('fengshui.followup.suggested3'),
+            window.i18n.t('fengshui.followup.suggested4'),
+            window.i18n.t('fengshui.followup.suggested5'),
+            window.i18n.t('fengshui.followup.suggested6')
+        ];
+
+        // 结合分析结果动态调整
+        if (result && result.elements) {
+            const elements = result.elements;
+            if (elements.water < 50) suggestions.unshift(window.i18n.t('fengshui.followup.suggested_water'));
+            if (elements.fire < 50) suggestions.unshift(window.i18n.t('fengshui.followup.suggested_fire'));
+        }
+
+        return suggestions.filter(q => q && q !== 'undefined').slice(0, 6);
+    }
+
+    /**
+     * 渲染建议追问问题
+     */
+    renderSuggestedQuestions(result) {
+        const container = document.getElementById('followupSuggestions');
+        if (!container) return;
+
+        container.innerHTML = '';
+        const questions = this.generateSuggestedQuestions(result);
+
+        questions.forEach(question => {
+            const button = document.createElement('button');
+            button.className = 'text-xs bg-mystic-gold/10 hover:bg-mystic-gold/20 text-mystic-gold border border-mystic-gold/30 px-3 py-1.5 rounded-lg transition-all';
+            button.textContent = question;
+            button.onclick = () => {
+                const input = document.getElementById('followupInput');
+                if (input) {
+                    input.value = question;
+                    input.focus();
+                }
+            };
+            container.appendChild(button);
+        });
+    }
+
+    /**
+     * 开始当前风水分析（从 UI 按钮调用）
+     */
+    async analyzeCurrentSpace() {
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const resultsContainer = document.getElementById('analysisResults');
+
+        if (!analyzeBtn) return;
+
+        try {
+            // 获取当前方位
+            const direction = this.currentDirection || 0;
+
+            // 禁用按钮显示加载状态
+            analyzeBtn.disabled = true;
+            const originalText = analyzeBtn.innerHTML;
+            analyzeBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i>${window.i18n ? window.i18n.t('common.loading') : '分析中...'}`;
+
+            if (resultsContainer) {
+                // 如果已有图片，保持图片区域，但显示分析中状态
+                const uploadStatus = document.getElementById('uploadStatus');
+                if (uploadStatus) {
+                    uploadStatus.textContent = window.i18n ? window.i18n.t('fengshui.analysis.loading') : '正在进行AI风水分析...';
+                    uploadStatus.classList.remove('hidden');
+                }
+            }
+
+            // 执行分析
+            const result = await this.analyzeSpace(direction);
+
+            // 滚动到结果
+            const target = document.getElementById('analysisResults');
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            // 恢复按钮
+            analyzeBtn.disabled = false;
+            analyzeBtn.innerHTML = originalText;
+
+        } catch (error) {
+            console.error('风水分析失败:', error);
+            alert(window.i18n ? window.i18n.t('divination.followup.error') : '分析失败，请稍后重试');
+
+            analyzeBtn.disabled = false;
+            analyzeBtn.innerHTML = window.i18n ? window.i18n.t('fengshui.analyze.button') : '开始风水分析';
+        }
+    }
+
+    /**
+     * 绑定追问事件
+     */
+    bindFollowupEvents() {
+        const askButton = document.getElementById('askFollowup');
+        if (askButton) {
+            askButton.onclick = () => this.handleFollowupQuestion();
+            console.log('✅ 风水追问按钮事件已绑定');
+
+            // 支持回车键提交
+            const followupInput = document.getElementById('followupInput');
+            if (followupInput) {
+                followupInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                        this.handleFollowupQuestion();
+                    }
+                });
+            }
+        }
+
+        // 绑定分析按钮事件 (Consolidated from fengshui-analysis.js)
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        if (analyzeBtn) {
+            analyzeBtn.onclick = () => this.analyzeCurrentSpace();
+        }
     }
 }
 
@@ -476,6 +662,11 @@ if (typeof window !== 'undefined') {
     window.FengShuiAI = FengShuiAI;
     // 创建全局实例
     window.fengShuiAI = new FengShuiAI();
+
+    // 初始化追问事件
+    document.addEventListener('DOMContentLoaded', () => {
+        window.fengShuiAI.bindFollowupEvents();
+    });
 }
 
 // Node.js 环境：使用 module.exports

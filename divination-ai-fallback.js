@@ -141,8 +141,8 @@
                         ⚡
                     </div>
                     <div>
-                        <div class="font-semibold">体验模式</div>
-                        <div class="text-sm opacity-90">当前使用演示数据，体验完整功能</div>
+                        <div class="font-semibold" data-i18n="divination.fallback.title">${window.i18n ? window.i18n.t('divination.fallback.title') : 'Experience Mode'}</div>
+                        <div class="text-sm opacity-90" data-i18n="divination.fallback.desc">${window.i18n ? window.i18n.t('divination.fallback.desc') : 'Currently using demo data'}</div>
                     </div>
                 </div>
             `;
@@ -202,7 +202,7 @@
                 }
 
                 if (!window.aiService) {
-                    throw new Error('AI服务未初始化');
+                    throw new Error(window.i18n ? window.i18n.t('divination.followup.initError') : 'AI service not initialized');
                 }
 
                 console.log('🤖 使用真实AI服务进行分析');

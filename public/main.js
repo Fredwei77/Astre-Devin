@@ -281,18 +281,27 @@ class DestinyAI {
         const gender = document.getElementById('gender').value;
 
         if (!birthDate || !birthTime || !birthPlace || !gender) {
-            alert('Please fill in all required fields.');
+            alert(window.i18n ? window.i18n.t('divination.followup.emptyError') : 'Please fill in all required fields.');
             return;
         }
 
         if (this.selectedCategories.length === 0) {
-            alert('Please select at least one category for analysis.');
+            alert(window.i18n ? window.i18n.t('divination.category.title') : 'Please select at least one category for analysis.');
             return;
         }
 
         // Show progress section
         document.getElementById('inputSection').classList.add('hidden');
         document.getElementById('progressSection').classList.remove('hidden');
+
+        // 权限检查：检查是否允许使用 AI
+        const subManager = window.subscriptionManager;
+        if (subManager && subManager.isMockDataOnly()) {
+            console.log('[Main] Free plan detected, using mock data...');
+            // 如果是模拟数据模式，直接调用模拟分析
+            await this.simulateAnalysis(true); // 传入 true 表示是因为权限限制触发的模拟
+            return;
+        }
 
         // 使用真实AI分析
         await this.performAIAnalysis({
@@ -307,7 +316,7 @@ class DestinyAI {
     async performAIAnalysis(userData) {
         try {
             // 显示进度
-            this.updateProgress(0, 'Connecting to AI...');
+            this.updateProgress(0, window.i18n ? window.i18n.t('common.loading') : 'Connecting to AI...');
 
             // 检查并初始化 aiService
             if (!window.aiService) {
@@ -612,21 +621,21 @@ class DestinyAI {
     generateResultSummary() {
         // 生成占卜结果的简要摘要，用于追问功能
         if (!this.analysisResults) return '';
-        
+
         const parts = [];
-        
+
         if (this.analysisResults.personality && this.analysisResults.personality.length > 0) {
             parts.push(`性格特点：${this.analysisResults.personality[0]}`);
         }
-        
+
         if (this.analysisResults.zodiacAnalysis) {
             parts.push(`生肖分析：${this.analysisResults.zodiacAnalysis.substring(0, 100)}...`);
         }
-        
+
         if (this.analysisResults.yearForecast) {
             parts.push(`年度运势：${this.analysisResults.yearForecast.substring(0, 100)}...`);
         }
-        
+
         return parts.join('\n');
     }
 
@@ -858,12 +867,12 @@ class DestinyAI {
                 if (result.success) {
                     console.log('✅ 占卜记录已保存到数据库');
                     this.showNotification('占卜记录已保存！', 'success');
-                    
+
                     // 同时保存到localStorage作为备份
                     const savedReadings = JSON.parse(localStorage.getItem('destinyReadings') || '[]');
                     savedReadings.push(reading);
                     localStorage.setItem('destinyReadings', JSON.stringify(savedReadings));
-                    
+
                     return;
                 }
             }
@@ -968,14 +977,15 @@ class DestinyAI {
 
     updateCompassDisplay() {
         const normalizedRotation = ((this.compassRotation % 360) + 360) % 360;
-        const directions = ['North', 'Northeast', 'East', 'Southeast', 'South', 'Southwest', 'West', 'Northwest'];
+        const directions = ['north', 'northeast', 'east', 'southeast', 'south', 'southwest', 'west', 'northwest'];
         const directionIndex = Math.round(normalizedRotation / 45) % 8;
+        const directionKey = `common.direction.${directions[directionIndex]}`;
 
         const currentDirection = document.getElementById('currentDirection');
         const currentDegrees = document.getElementById('currentDegrees');
 
         if (currentDirection) {
-            currentDirection.textContent = directions[directionIndex];
+            currentDirection.textContent = window.i18n ? window.i18n.t(directionKey) : directions[directionIndex].toUpperCase();
         }
 
         if (currentDegrees) {
@@ -1005,13 +1015,13 @@ class DestinyAI {
 
                 // 验证文件类型
                 if (!file.type.startsWith('image/')) {
-                    this.showNotification('请选择图片文件', 'error');
+                    this.showNotification(window.i18n ? window.i18n.t('fengshui.error.image_type') : 'Please select an image file', 'error');
                     return;
                 }
 
                 // 验证文件大小（最大 5MB）
                 if (file.size > 5 * 1024 * 1024) {
-                    this.showNotification('图片大小不能超过 5MB', 'error');
+                    this.showNotification(window.i18n ? window.i18n.t('fengshui.error.image_size') : 'Image size cannot exceed 5MB', 'error');
                     return;
                 }
 
@@ -1038,12 +1048,12 @@ class DestinyAI {
                 console.log('拖拽了文件:', file.name, file.type);
 
                 if (!file.type.startsWith('image/')) {
-                    this.showNotification('请选择图片文件', 'error');
+                    this.showNotification(window.i18n ? window.i18n.t('fengshui.error.image_type') : 'Please select an image file', 'error');
                     return;
                 }
 
                 if (file.size > 5 * 1024 * 1024) {
-                    this.showNotification('图片大小不能超过 5MB', 'error');
+                    this.showNotification(window.i18n ? window.i18n.t('fengshui.error.image_size') : 'Image size cannot exceed 5MB', 'error');
                     return;
                 }
 
@@ -1058,7 +1068,7 @@ class DestinyAI {
         console.log('处理文件上传:', file.name);
 
         // 显示上传提示
-        this.showNotification('正在分析图片...', 'info');
+        this.showNotification(window.i18n ? window.i18n.t('fengshui.analysis.loading') : 'Analyzing image...', 'info');
 
         // 读取并显示图片预览
         const reader = new FileReader();
@@ -1069,10 +1079,11 @@ class DestinyAI {
             // 可以在这里显示图片预览
             const uploadArea = document.getElementById('uploadArea');
             if (uploadArea) {
+                const loadingText = window.i18n ? window.i18n.t('fengshui.analysis.uploaded') : 'Image uploaded, analyzing...';
                 uploadArea.innerHTML = `
                     <div class="text-center">
                         <img src="${base64Image}" alt="上传的图片" class="max-w-full max-h-64 mx-auto rounded-lg mb-4">
-                        <p class="text-mystic-gold">图片已上传，正在进行AI风水分析...</p>
+                        <p class="text-mystic-gold">${loadingText}</p>
                     </div>
                 `;
             }
@@ -1092,7 +1103,7 @@ class DestinyAI {
                 window.aiService.analyzeFengShui(spaceData, base64Image)
                     .then(result => {
                         console.log('Feng Shui Analysis Result:', result);
-                        this.showNotification('分析完成！', 'success');
+                        this.showNotification(window.i18n ? window.i18n.t('common.complete') : 'Analysis complete!', 'success');
 
                         const analysisResults = document.getElementById('analysisResults');
                         if (analysisResults) {
@@ -1201,7 +1212,7 @@ class DestinyAI {
                     });
             } else {
                 console.error('AI Service not initialized');
-                this.showNotification('AI服务未启动', 'error');
+                this.showNotification(window.i18n ? window.i18n.t('divination.followup.initError') : 'AI Service not initialized', 'error');
             }
         };
         reader.readAsDataURL(file);
@@ -1214,7 +1225,7 @@ class DestinyAI {
         const volumeSlider = document.getElementById('volumeSlider');
         const volumeRange = document.getElementById('volumeRange');
         const volumeDisplay = document.getElementById('volumeDisplay');
-        
+
         if (!audio || !musicToggle || !musicIcon) {
             console.warn('Background music elements not found');
             return;
@@ -1228,14 +1239,14 @@ class DestinyAI {
         audio.volume = parseInt(savedVolume) / 100;
         if (volumeRange) volumeRange.value = savedVolume;
         if (volumeDisplay) volumeDisplay.textContent = `${savedVolume}%`;
-        
+
         // Check saved preference
         const musicEnabled = localStorage.getItem('backgroundMusicEnabled') !== 'false';
-        
+
         // Music control functionality
         let isPlaying = false;
         let volumeSliderVisible = false;
-        
+
         const toggleMusic = async () => {
             try {
                 if (isPlaying) {
@@ -1263,16 +1274,16 @@ class DestinyAI {
                 audio.volume = volume / 100;
                 volumeDisplay.textContent = `${volume}%`;
                 localStorage.setItem('musicVolume', volume.toString());
-                
+
                 // Show feedback (keep volume feedback for user clarity)
-                this.showMobileToast(`🔊 音量: ${volume}%`);
+                this.showMobileToast(`${window.i18n?.t('common.volume') || 'Volume'}: ${volume}%`);
             });
         }
 
         // Toggle volume slider visibility (mobile)
         const toggleVolumeSlider = () => {
             if (!volumeSlider) return;
-            
+
             volumeSliderVisible = !volumeSliderVisible;
             if (volumeSliderVisible) {
                 volumeSlider.classList.remove('hidden');
@@ -1290,19 +1301,19 @@ class DestinyAI {
         // Long press for volume control on mobile
         if (isMobile && volumeSlider) {
             let longPressTimer;
-            
+
             musicToggle.addEventListener('touchstart', (e) => {
                 longPressTimer = setTimeout(() => {
                     navigator.vibrate && navigator.vibrate(50); // Haptic feedback
                     toggleVolumeSlider();
-                    this.showMobileToast('🔊 长按调节音量');
+                    this.showMobileToast(window.i18n?.t('common.long_press_volume') || 'Long press to adjust volume');
                 }, 500);
             });
-            
+
             musicToggle.addEventListener('touchend', () => {
                 clearTimeout(longPressTimer);
             });
-            
+
             musicToggle.addEventListener('touchmove', () => {
                 clearTimeout(longPressTimer);
             });
@@ -1315,7 +1326,7 @@ class DestinyAI {
                 }
             });
         }
-        
+
         // Auto-start music if enabled (with user interaction requirement)
         const startMusicWhenReady = () => {
             if (musicEnabled && !isPlaying) {
@@ -1331,7 +1342,7 @@ class DestinyAI {
                         }
                     }
                 };
-                
+
                 document.addEventListener('click', playOnInteraction, { once: true });
                 document.addEventListener('touchstart', playOnInteraction, { once: true });
             }
@@ -1341,17 +1352,17 @@ class DestinyAI {
         audio.addEventListener('canplaythrough', () => {
             startMusicWhenReady();
         });
-        
+
         audio.addEventListener('ended', () => {
             isPlaying = false;
             musicIcon.textContent = '🔇';
         });
-        
+
         audio.addEventListener('pause', () => {
             isPlaying = false;
             musicIcon.textContent = '🔇';
         });
-        
+
         audio.addEventListener('play', () => {
             isPlaying = true;
             musicIcon.textContent = '🎵';
@@ -1364,13 +1375,13 @@ class DestinyAI {
                 const delta = e.deltaY > 0 ? -10 : 10;
                 const newVolume = Math.max(0, Math.min(100, Math.round(audio.volume * 100) + delta));
                 audio.volume = newVolume / 100;
-                
+
                 // Update slider if available
                 if (volumeRange) volumeRange.value = newVolume;
                 if (volumeDisplay) volumeDisplay.textContent = `${newVolume}%`;
                 localStorage.setItem('musicVolume', newVolume.toString());
-                
-                this.showNotification(`音量: ${newVolume}%`, 'info');
+
+                this.showNotification(`${window.i18n?.t('common.volume') || 'Volume'}: ${newVolume}%`, 'info');
             });
         }
 
@@ -1416,7 +1427,7 @@ class DestinyAI {
     showNotification(message, type = 'info') {
         // Check if mobile device for appropriate notification style
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
-        
+
         if (isMobile) {
             this.showMobileToast(message);
             return;

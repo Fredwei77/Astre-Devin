@@ -21,6 +21,14 @@
             this.clickTimeout = null;
 
             this.init();
+            this.setupLanguageListener();
+        }
+
+        // 监听语言切换
+        setupLanguageListener() {
+            window.addEventListener('languageChanged', () => {
+                this.updateUI();
+            });
         }
 
         // 初始化
@@ -211,14 +219,11 @@
             }
 
             if (menuUserStatus) {
-                const currentLang = localStorage.getItem('preferredLanguage') || 'zh';
-                const isEnglish = currentLang === 'en';
-
                 if (user.isPremium || user.level === 'premium') {
-                    menuUserStatus.textContent = isEnglish ? 'VIP Member' : 'VIP会员';
+                    menuUserStatus.textContent = window.i18n ? window.i18n.t('nav.premium') : 'VIP Member';
                     menuUserStatus.style.color = '#ffd700';
                 } else {
-                    menuUserStatus.textContent = isEnglish ? 'Free Plan' : '免费会员';
+                    menuUserStatus.textContent = window.i18n ? window.i18n.t('menuUserStatus.free') : 'Free Member';
                     menuUserStatus.style.color = '#c0c0c0';
                 }
             }
@@ -235,7 +240,7 @@
                 return username.length > 10 ? username.substring(0, 10) + '...' : username;
             }
 
-            return 'User';
+            return window.i18n ? window.i18n.t('common.user') : 'User';
         }
 
         // 切换菜单
@@ -300,7 +305,8 @@
         handleLogout() {
             console.log('[User Menu Final] Logout button clicked');
 
-            if (confirm('确定要退出登录吗？')) {
+            const confirmMsg = window.i18n ? window.i18n.t('common.confirm_logout') : 'Are you sure you want to logout?';
+            if (confirm(confirmMsg)) {
                 this.closeMenu();
 
                 setTimeout(() => {

@@ -31,8 +31,11 @@
             return generalStr.split(',').map(q => q.trim());
         }
 
-        // Hard fallback for safety
-        return lang === 'en' ?
+        // final fallback based on language
+        if (lang === 'zh-TW') {
+            return ["如何提升我的整體運勢？", "未來一年需要注意什麼？"];
+        }
+        return isEnglish ?
             ["How can I improve my overall fortune?", "What should I pay attention to in the coming year?"] :
             ["如何提升我的整体运势？", "未来一年需要注意什么？"];
     }

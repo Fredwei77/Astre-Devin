@@ -141,8 +141,8 @@
                         ⚡
                     </div>
                     <div>
-                        <div class="font-semibold">体验模式</div>
-                        <div class="text-sm opacity-90">当前使用演示数据，体验完整功能</div>
+                        <div class="font-semibold" data-i18n="divination.fallback.title">${window.i18n ? window.i18n.t('divination.fallback.title') : 'Experience Mode'}</div>
+                        <div class="text-sm opacity-90" data-i18n="divination.fallback.desc">${window.i18n ? window.i18n.t('divination.fallback.desc') : 'Currently using demo data'}</div>
                     </div>
                 </div>
             `;
@@ -202,7 +202,7 @@
                 }
 
                 if (!window.aiService) {
-                    throw new Error('AI服务未初始化');
+                    throw new Error(window.i18n ? window.i18n.t('divination.followup.initError') : 'AI service not initialized');
                 }
 
                 console.log('🤖 使用真实AI服务进行分析');
@@ -263,77 +263,24 @@
          * 根据用户数据生成个性化模拟数据
          */
         generatePersonalizedMockData(userData, isEnglish) {
+            // Helper to get translated array
+            const getSimulatedArray = (category) => {
+                if (window.i18n) {
+                    return [1, 2, 3, 4, 5].map(i => window.i18n.t(`analysis.simulation.${category}.${i}`));
+                }
+                // Fallback for initialization
+                return isEnglish ?
+                    [`Mock ${category} 1`, `Mock ${category} 2`, `Mock ${category} 3`, `Mock ${category} 4`, `Mock ${category} 5`] :
+                    [`模拟${category} 1`, `模拟${category} 2`, `模拟${category} 3`, `模拟${category} 4`, `模拟${category} 5`];
+            };
+
             // 基础模拟数据
             const baseData = {
-                personality: isEnglish ? [
-                    'Creative and intuitive thinker',
-                    'Natural leadership potential',
-                    'Strong sense of responsibility',
-                    'Excellent adaptability',
-                    'Good at interpersonal relationships'
-                ] : [
-                    '富有创造力和直觉思维',
-                    '天生的领导潜能',
-                    '强烈的责任感',
-                    '适应能力出众',
-                    '善于人际交往'
-                ],
-
-                career: isEnglish ? [
-                    'Promising opportunities in creative fields',
-                    'Leadership positions suit you well',
-                    `${new Date().getFullYear()} brings financial growth`,
-                    'Consider entrepreneurial ventures',
-                    'International opportunities await'
-                ] : [
-                    '创意领域前景光明',
-                    '领导职位很适合您',
-                    `${new Date().getFullYear()}年财运提升`,
-                    '可考虑创业发展',
-                    '国际机遇在前方'
-                ],
-
-                wealth: isEnglish ? [
-                    'Steady income growth expected',
-                    'Be selective with investments',
-                    'Benefactors will bring opportunities',
-                    'Second half of year looks better',
-                    'Avoid high-risk investments'
-                ] : [
-                    '收入稳步增长可期',
-                    '投资需要精挑细选',
-                    '贵人将带来机遇',
-                    '下半年运势更佳',
-                    '避免高风险投资'
-                ],
-
-                love: isEnglish ? [
-                    'Loyal and committed relationships',
-                    'Strong family bonds',
-                    'Natural peacemaker',
-                    'Attract supportive partners',
-                    'Marriage prospects are positive'
-                ] : [
-                    '专一且深情的关系',
-                    '家庭纽带紧密',
-                    '天生的调解者',
-                    '吸引支持型伴侣',
-                    '婚姻前景积极'
-                ],
-
-                health: isEnglish ? [
-                    'Overall health outlook is good',
-                    'Manage work stress effectively',
-                    'Regular exercise benefits you',
-                    'Pay attention to digestive health',
-                    'Maintain good sleep habits'
-                ] : [
-                    '整体健康前景良好',
-                    '有效管理工作压力',
-                    '定期运动对您有益',
-                    '注意消化系统健康',
-                    '保持良好睡眠习惯'
-                ],
+                personality: getSimulatedArray('personality'),
+                career: getSimulatedArray('career'),
+                wealth: getSimulatedArray('wealth'),
+                love: getSimulatedArray('love'),
+                health: getSimulatedArray('health'),
 
                 elements: {
                     wood: 70 + Math.floor(Math.random() * 20) - 10,
@@ -343,19 +290,19 @@
                     water: 35 + Math.floor(Math.random() * 20) - 10
                 },
 
-                luckyColors: isEnglish ?
-                    ['Golden', 'Silver', 'Purple', 'Emerald', 'Amber'] :
-                    ['金色', '银色', '紫色', '翡翠绿', '琥珀色'],
+                luckyColors: window.i18n ?
+                    ['gold', 'silver', 'purple', 'green', 'orange'].map(color => window.i18n.t(`analysis.simulation.luckyColors.${color}`)) :
+                    (isEnglish ? ['Golden', 'Silver', 'Purple', 'Green', 'Orange'] : ['金色', '银色', '紫色', '绿色', '橙色']),
 
                 luckyNumbers: [3, 7, 9, 21, 36].map(n => n + Math.floor(Math.random() * 5)),
 
-                zodiacAnalysis: isEnglish ?
-                    'Your zodiac traits reveal exceptional adaptability and wisdom. You excel in social interactions and have a natural ability to identify and seize opportunities.' :
-                    '您的生肖特质显现出非凡的适应力和智慧。在社交互动中表现卓越，天生具备识别和把握机遇的能力。',
+                zodiacAnalysis: window.i18n ?
+                    window.i18n.t('analysis.simulation.zodiacAnalysis') :
+                    (isEnglish ? 'Your zodiac traits show... [fallback]' : '您的生肖特质显示... [回退]'),
 
-                yearForecast: isEnglish ?
-                    `${new Date().getFullYear()} shows overall rising fortune, particularly in career and financial sectors. The first half requires steady foundation-building, while the second half promises breakthrough progress.` :
-                    `${new Date().getFullYear()}年整体运势呈上升趋势，特别是在事业和财务领域。上半年需稳固根基，下半年将有突破性进展。`
+                yearForecast: window.i18n ?
+                    window.i18n.t('analysis.simulation.yearForecast').replace('{year}', new Date().getFullYear()) :
+                    (isEnglish ? `${new Date().getFullYear()} shows... [fallback]` : `${new Date().getFullYear()}年显示... [回退]`)
             };
 
             // 根据用户生日或姓名调整某些数值（如果有的话）

@@ -13,25 +13,16 @@
      * 根据风水分析结果生成建议追问问题 - 支持多语言
      */
     function generateSuggestedQuestions(result) {
-        // 获取当前语言
-        const lang = localStorage.getItem('preferredLanguage') || 'zh';
-        const isEnglish = lang === 'en';
+        const t = (key) => window.i18n?.t(key);
 
-        const suggestions = isEnglish ? [
-            "How can I improve my wealth corner layout?",
-            "How should I arrange my bedroom for better sleep?",
-            "What's the best direction for my desk?",
-            "How to resolve negative energy at home?",
-            "What colors are best for my living room?",
-            "How to use plants to improve feng shui?"
-        ] : [
-            "如何改善我的财位布局？",
-            "卧室应该如何摆放才能提升睡眠质量？",
-            "办公桌的最佳朝向是什么？",
-            "如何化解家中的煞气？",
-            "什么颜色最适合我的客厅？",
-            "如何利用植物提升家居风水？"
-        ];
+        const suggestions = [
+            t('fengshui.followup.suggested1'),
+            t('fengshui.followup.suggested2'),
+            t('fengshui.followup.suggested3'),
+            t('fengshui.followup.suggested4'),
+            t('fengshui.followup.suggested5'),
+            t('fengshui.followup.suggested6')
+        ].filter(Boolean);
 
         // 根据五行平衡情况添加特定建议
         if (result && result.elements) {
@@ -39,27 +30,18 @@
 
             // 如果水元素低
             if (elements.water && elements.water < 50) {
-                suggestions.unshift(isEnglish
-                    ? "How to enhance water element for wealth?"
-                    : "如何增强水元素来提升财运？");
+                const waterSug = t('fengshui.followup.suggested_water');
+                if (waterSug) suggestions.unshift(waterSug);
             }
 
             // 如果火元素低
             if (elements.fire && elements.fire < 50) {
-                suggestions.unshift(isEnglish
-                    ? "How to increase fire element for fame?"
-                    : "如何增加火元素来提升名气？");
-            }
-
-            // 如果木元素低
-            if (elements.wood && elements.wood < 50) {
-                suggestions.unshift(isEnglish
-                    ? "How to add wood element for health?"
-                    : "如何补充木元素来促进健康？");
+                const fireSug = t('fengshui.followup.suggested_fire');
+                if (fireSug) suggestions.unshift(fireSug);
             }
         }
 
-        return suggestions.slice(0, 6); // 返回最多6个建议
+        return [...new Set(suggestions)].slice(0, 6); // 返回最多6个唯一建议
     }
 
     /**
@@ -162,90 +144,40 @@
      * 构建系统提示词 - 使用优化的深度分析提示词
      */
     function buildSystemPrompt() {
-        // 获取当前语言
-        const lang = localStorage.getItem('preferredLanguage') || 'zh';
+        const lang = localStorage.getItem('preferredLanguage') || 'en';
 
-        // 使用CONFIG中的优化系统提示词
         if (window.CONFIG?.PROMPTS?.FENGSHUI?.FOLLOWUP_SYSTEM) {
             return window.CONFIG.PROMPTS.FENGSHUI.FOLLOWUP_SYSTEM(lang);
         }
 
-        // 降级到简化版本
+        const t = (key) => window.i18n?.t(key) || '';
         const isEnglish = lang === 'en';
 
-        if (isEnglish) {
-            return `You are an experienced Feng Shui master, proficient in traditional Feng Shui and modern residential environment design.
-Your answers should:
-1. Be professional yet easy to understand
-2. Combine traditional wisdom with modern practicality
-3. Provide specific and actionable advice
-4. Focus on practical implementation
-5. Avoid overly superstitious statements
-
-Please answer the user's Feng Shui questions in clear and concise language.
-
-**IMPORTANT: Please respond in ENGLISH. All text must be in English.**`;
-        }
-
-        return `你是一位经验丰富的风水大师，精通传统风水学和现代居住环境设计。
-你的回答应该：
-1. 专业且易懂
-2. 结合传统智慧和现代实用性
-3. 提供具体可行的建议
-4. 注重实际操作性
-5. 避免过于迷信的说法
-
-请用简洁明了的语言回答用户的风水问题。
-
-**重要：请用中文回复。所有文本必须是中文。**`;
+        // Use i18n for base prompt components if possible, or fall back to structured templates
+        return `${t('fengshui.followup.system_base') || 'You are a Feng Shui master.'}
+${t('fengshui.followup.system_rules') || '1. Professional 2. Actionable 3. Accurate.'}
+${t('fengshui.followup.system_language_rule') || `Important: Please respond in ${isEnglish ? 'ENGLISH' : 'CHINESE'}.`}`;
     }
 
     /**
      * 构建用户提示词 - 支持多语言 - 使用优化的深度分析框架
      */
     function buildUserPrompt(result, question) {
-        // 获取当前语言
-        const lang = localStorage.getItem('preferredLanguage') || 'zh';
-        const isEnglish = lang === 'en';
+        const lang = localStorage.getItem('preferredLanguage') || 'en';
+        const t = (key) => window.i18n?.t(key) || '';
 
-        const direction = result.direction || (isEnglish ? 'Unknown' : '未知');
+        const direction = result.direction || t('common.unknown');
         const elements = result.elements || {};
-
-        // 关键修复：从结果中剔除大体积图片数据，防止追问时因请求过大导致400/500错误
         const elementsStr = `Wood: ${elements.wood || 0}%, Fire: ${elements.fire || 0}%, Earth: ${elements.earth || 0}%, Metal: ${elements.metal || 0}%, Water: ${elements.water || 0}%`;
-        const elementsStrZh = `木: ${elements.wood || 0}%, 火: ${elements.fire || 0}%, 土: ${elements.earth || 0}%, 金: ${elements.metal || 0}%, 水: ${elements.water || 0}%`;
 
-        if (isEnglish) {
-            return `Answer the user's Feng Shui follow-up question based on the analysis below.
+        return `${t('fengshui.followup.context_header') || 'Analysis Context:'}
+- ${t('fengshui.compass.direction')}: ${direction}
+- ${t('fengshui.elements.title')}: ${elementsStr}
+- ${t('fengshui.analysis.results.title')}: ${result.directionAnalysis || 'N/A'}
 
-Space Context:
-- Direction: ${direction}
-- Elements Balance: ${elementsStr}
-- Previous Analysis Summary: ${result.directionAnalysis || 'None'}
+${t('fengshui.followup.user_question_label') || 'User Question'}: ${question}
 
-User's Question: ${question}
-
-Requirements:
-1. Provide specific, actionable alternative solutions.
-2. Be professional and concise (about 300 words).
-3. Focus on practicality.
-**Response in ENGLISH.**`;
-        }
-
-        return `根据下方的风水分析背景回答用户的咨询问题，并提供替代方案。
-
-空间背景：
-- 方位：${direction}
-- 五行分布：${elementsStrZh}
-- 原有分析详情：${result.directionAnalysis || '无'}
-
-用户咨询的问题：${question}
-
-要求：
-1. 提供具体、低成本且可落地的替代方案。
-2. 语气专业，解答详略得当（300-500字）。
-3. 重点回答用户的疑问。
-**用中文回复。**`;
+${t('fengshui.followup.response_requirements') || 'Provide actionable advice in the requested language.'}`;
     }
 
     /**
@@ -259,20 +191,9 @@ Requirements:
         // 将换行符转换为HTML
         let formatted = answer.replace(/\n/g, '<br>');
 
-        // 高亮关键词
-        const keywords = isEnglish ? [
-            'Recommend', 'Suggestion', 'Advice', 'Note', 'Suitable', 'Avoid', 'Enhance', 'Improve',
-            'Layout', 'Direction', 'Color', 'Plant', 'Crystal', 'Mirror',
-            'Wealth', 'Career', 'Health', 'Romance',
-            'East', 'South', 'West', 'North', 'Southeast', 'Southwest', 'Northeast', 'Northwest',
-            'Wood', 'Fire', 'Earth', 'Metal', 'Water',
-            'Important', 'Key', 'Essential', 'Critical', 'Beneficial'
-        ] : [
-            '建议', '注意', '适合', '避免', '提升', '改善', '布局', '方位',
-            '颜色', '植物', '水晶', '镜子', '财位', '文昌位', '桃花位',
-            '东', '南', '西', '北', '东南', '西南', '东北', '西北',
-            '木', '火', '土', '金', '水', '重要', '关键', '必须', '有利'
-        ];
+        // 高亮关键词 - 使用 translations.js 中的关键词列表
+        const keywordsStr = window.i18n?.t('divination.followup.keywords') || '';
+        const keywords = keywordsStr.split(',').filter(Boolean);
 
         keywords.forEach(keyword => {
             const regex = new RegExp(`\\b(${keyword})\\b`, 'gi');

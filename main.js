@@ -281,12 +281,12 @@ class DestinyAI {
         const gender = document.getElementById('gender').value;
 
         if (!birthDate || !birthTime || !birthPlace || !gender) {
-            alert('Please fill in all required fields.');
+            alert(window.i18n ? window.i18n.t('divination.followup.emptyError') : 'Please fill in all required fields.');
             return;
         }
 
         if (this.selectedCategories.length === 0) {
-            alert('Please select at least one category for analysis.');
+            alert(window.i18n ? window.i18n.t('divination.category.title') : 'Please select at least one category for analysis.');
             return;
         }
 
@@ -316,7 +316,7 @@ class DestinyAI {
     async performAIAnalysis(userData) {
         try {
             // 显示进度
-            this.updateProgress(0, 'Connecting to AI...');
+            this.updateProgress(0, window.i18n ? window.i18n.t('common.loading') : 'Connecting to AI...');
 
             // 检查并初始化 aiService
             if (!window.aiService) {
@@ -1015,13 +1015,13 @@ class DestinyAI {
 
                 // 验证文件类型
                 if (!file.type.startsWith('image/')) {
-                    this.showNotification(window.i18n ? window.i18n.t('fengshui.error.image_type') : '请选择图片文件', 'error');
+                    this.showNotification(window.i18n ? window.i18n.t('fengshui.error.image_type') : 'Please select an image file', 'error');
                     return;
                 }
 
                 // 验证文件大小（最大 5MB）
                 if (file.size > 5 * 1024 * 1024) {
-                    this.showNotification(window.i18n ? window.i18n.t('fengshui.error.image_size') : '图片大小不能超过 5MB', 'error');
+                    this.showNotification(window.i18n ? window.i18n.t('fengshui.error.image_size') : 'Image size cannot exceed 5MB', 'error');
                     return;
                 }
 
@@ -1048,12 +1048,12 @@ class DestinyAI {
                 console.log('拖拽了文件:', file.name, file.type);
 
                 if (!file.type.startsWith('image/')) {
-                    this.showNotification(window.i18n ? window.i18n.t('fengshui.error.image_type') : '请选择图片文件', 'error');
+                    this.showNotification(window.i18n ? window.i18n.t('fengshui.error.image_type') : 'Please select an image file', 'error');
                     return;
                 }
 
                 if (file.size > 5 * 1024 * 1024) {
-                    this.showNotification(window.i18n ? window.i18n.t('fengshui.error.image_size') : '图片大小不能超过 5MB', 'error');
+                    this.showNotification(window.i18n ? window.i18n.t('fengshui.error.image_size') : 'Image size cannot exceed 5MB', 'error');
                     return;
                 }
 
@@ -1068,7 +1068,7 @@ class DestinyAI {
         console.log('处理文件上传:', file.name);
 
         // 显示上传提示
-        this.showNotification(window.i18n ? window.i18n.t('fengshui.analysis.loading') : '正在分析图片...', 'info');
+        this.showNotification(window.i18n ? window.i18n.t('fengshui.analysis.loading') : 'Analyzing image...', 'info');
 
         // 读取并显示图片预览
         const reader = new FileReader();
@@ -1079,7 +1079,7 @@ class DestinyAI {
             // 可以在这里显示图片预览
             const uploadArea = document.getElementById('uploadArea');
             if (uploadArea) {
-                const loadingText = window.i18n ? window.i18n.t('fengshui.analysis.loading') : '图片已上传，正在进行AI风水分析...';
+                const loadingText = window.i18n ? window.i18n.t('fengshui.analysis.uploaded') : 'Image uploaded, analyzing...';
                 uploadArea.innerHTML = `
                     <div class="text-center">
                         <img src="${base64Image}" alt="上传的图片" class="max-w-full max-h-64 mx-auto rounded-lg mb-4">
@@ -1103,7 +1103,7 @@ class DestinyAI {
                 window.aiService.analyzeFengShui(spaceData, base64Image)
                     .then(result => {
                         console.log('Feng Shui Analysis Result:', result);
-                        this.showNotification(window.i18n ? window.i18n.t('common.complete') : '分析完成！', 'success');
+                        this.showNotification(window.i18n ? window.i18n.t('common.complete') : 'Analysis complete!', 'success');
 
                         const analysisResults = document.getElementById('analysisResults');
                         if (analysisResults) {
@@ -1212,7 +1212,7 @@ class DestinyAI {
                     });
             } else {
                 console.error('AI Service not initialized');
-                this.showNotification(window.i18n ? window.i18n.t('divination.followup.initError') : 'AI服务未启动', 'error');
+                this.showNotification(window.i18n ? window.i18n.t('divination.followup.initError') : 'AI Service not initialized', 'error');
             }
         };
         reader.readAsDataURL(file);
@@ -1276,7 +1276,7 @@ class DestinyAI {
                 localStorage.setItem('musicVolume', volume.toString());
 
                 // Show feedback (keep volume feedback for user clarity)
-                this.showMobileToast(`🔊 音量: ${volume}%`);
+                this.showMobileToast(`${window.i18n?.t('common.volume') || 'Volume'}: ${volume}%`);
             });
         }
 
@@ -1306,7 +1306,7 @@ class DestinyAI {
                 longPressTimer = setTimeout(() => {
                     navigator.vibrate && navigator.vibrate(50); // Haptic feedback
                     toggleVolumeSlider();
-                    this.showMobileToast('🔊 长按调节音量');
+                    this.showMobileToast(window.i18n?.t('common.long_press_volume') || 'Long press to adjust volume');
                 }, 500);
             });
 
@@ -1381,7 +1381,7 @@ class DestinyAI {
                 if (volumeDisplay) volumeDisplay.textContent = `${newVolume}%`;
                 localStorage.setItem('musicVolume', newVolume.toString());
 
-                this.showNotification(`音量: ${newVolume}%`, 'info');
+                this.showNotification(`${window.i18n?.t('common.volume') || 'Volume'}: ${newVolume}%`, 'info');
             });
         }
 

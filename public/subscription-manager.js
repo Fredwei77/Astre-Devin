@@ -16,7 +16,7 @@ class SubscriptionManager {
             },
             premium: {
                 name: 'Premium',
-                price: 19.99,
+                price: 29.99,
                 features: {
                     mockDataOnly: false,
                     aiEnabled: true,
@@ -27,7 +27,7 @@ class SubscriptionManager {
             },
             professional: {
                 name: 'Professional',
-                price: 49.99,
+                price: 299.99,
                 features: {
                     mockDataOnly: false,
                     aiEnabled: true,
@@ -87,15 +87,18 @@ class SubscriptionManager {
      * 检查用户是否有权限使用AI功能 - 修正：默认允许使用，由后端处理额度
      */
     canUseAI() {
-        // 解除限制，让所有用户都能尝试调用 AI
-        return true;
+        // 只有 premium 和 professional 计划允许直接使用 AI
+        const plan = this.getCurrentPlan();
+        return plan === 'premium' || plan === 'professional';
     }
 
     /**
      * 检查用户是否只能使用模拟数据 - 修正：不再强制降级
      */
     isMockDataOnly() {
-        return false;
+        const plan = this.getCurrentPlan();
+        // 只有 free 计划用户强制使用模拟数据
+        return plan === 'free';
     }
 
     /**
@@ -192,7 +195,7 @@ class SubscriptionManager {
                     <div class="bg-white/5 rounded-lg p-4 border border-mystic-gold/30">
                         <div class="flex justify-between items-center mb-2">
                             <span class="font-semibold text-mystic-gold">${isEnglish ? 'Premium' : '高级版'}</span>
-                            <span class="text-2xl font-bold text-mystic-gold">$19.99/${isEnglish ? 'mo' : '月'}</span>
+                            <span class="text-2xl font-bold text-mystic-gold">$29.99/${isEnglish ? 'mo' : '月'}</span>
                         </div>
                         <ul class="text-sm text-moon-silver space-y-1">
                             <li>✓ ${isEnglish ? 'Full AI Analysis' : '完整AI分析功能'}</li>
@@ -204,7 +207,7 @@ class SubscriptionManager {
                     <div class="bg-white/5 rounded-lg p-4 border border-mystic-gold/30">
                         <div class="flex justify-between items-center mb-2">
                             <span class="font-semibold text-mystic-gold">${isEnglish ? 'Professional' : '专业版'}</span>
-                            <span class="text-2xl font-bold text-mystic-gold">$49.99/${isEnglish ? 'mo' : '月'}</span>
+                            <span class="text-2xl font-bold text-mystic-gold">$299.99/${isEnglish ? '3 mos' : '三个月'}</span>
                         </div>
                         <ul class="text-sm text-moon-silver space-y-1">
                             <li>✓ ${isEnglish ? 'All Premium Features' : '所有高级版功能'}</li>
@@ -251,25 +254,58 @@ class SubscriptionManager {
             return;
         }
 
-        // 关闭当前模态框
-        const modal = document.querySelector('.fixed.inset-0');
+        // 保存当前页面状态，以便支付后恢复
+        if (window.statePreserver) {
+            window.statePreserver.saveCurrentPage();
+        }
+
+        // 关闭当前选择模态框
+        const modal = document.querySelector('.fixed.inset-0:not(.payment-processing-modal)');
         if (modal) modal.remove();
 
-        // 显示支付处理提示
-        this.showPaymentProcessing(payInfo, isEnglish);
+        try {
+            // 显示支付处理提示
+            this.showPaymentProcessing(payInfo, isEnglish);
 
-        // 模拟支付处理（实际应该调用支付API）
-        setTimeout(() => {
-            // 支付成功，授予一次使用权限
-            this.grantSingleUse(serviceType);
+            // 1. 调用支付服务创建支付意图
+            const paymentService = window.EnhancedStripePaymentService || window.StripePaymentService;
+            if (!paymentService) throw new Error('Payment service not found');
 
-            // 关闭支付处理提示
+            // 检查商品 ID 是否需要映射
+            const productId = `product_${serviceType}`;
+
+            // 2. 调用商品购买逻辑 (Stripe Client 处理弹窗和确认)
+            // 注意：因为 purchaseProduct 内部可能已经处理了确认逻辑，我们在这里直接调用
+            const result = await paymentService.purchaseProduct(productId, 1, {
+                serviceType: serviceType,
+                name: 'User', // 理想情况下从 auth 获取
+                email: 'user@example.com'
+            });
+
+            // 关闭正在处理模态框
             const processingModal = document.querySelector('.payment-processing-modal');
             if (processingModal) processingModal.remove();
 
-            // 显示支付成功提示
-            this.showPaymentSuccess(payInfo, isEnglish);
-        }, 2000);
+            if (result.success) {
+                // 3. 授予一次使用权限
+                this.grantSingleUse(serviceType);
+
+                // 4. 显示支付成功提示
+                this.showPaymentSuccess(payInfo, isEnglish);
+            } else {
+                throw new Error(result.error || 'Payment failed');
+            }
+        } catch (error) {
+            console.error('Payment error:', error);
+            const processingModal = document.querySelector('.payment-processing-modal');
+            if (processingModal) processingModal.remove();
+
+            if (window.showErrorMessage) {
+                window.showErrorMessage(isEnglish ? 'Payment Failed' : '支付失败', error.message);
+            } else {
+                alert(error.message);
+            }
+        }
     }
 
     /**
@@ -304,13 +340,37 @@ class SubscriptionManager {
                 <p class="text-moon-silver mb-4">
                     ${isEnglish ? `You can now use ${payInfo.nameEn}` : `您现在可以使用${payInfo.name}`}
                 </p>
-                <button onclick="this.closest('.fixed').remove(); window.location.href = '${payInfo.url}';" 
+                <button onclick="window.subscriptionManager.handleContinueAfterPay('${payInfo.url}')" 
                         class="bg-mystic-gold text-deep-navy px-8 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors">
                     ${isEnglish ? 'Continue' : '继续'}
                 </button>
             </div>
         `;
         document.body.appendChild(modal);
+    }
+
+    /**
+     * 支付成功后的继续逻辑：尝试恢复状态并跳转
+     */
+    handleContinueAfterPay(targetUrl) {
+        // 关闭当前页面的模态框
+        const modal = document.querySelector('.fixed.inset-0');
+        if (modal) modal.remove();
+
+        const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+
+        if (currentPath === targetUrl) {
+            // 如果已经在目标页面，尝试恢复状态
+            if (window.statePreserver) {
+                window.statePreserver.restoreCurrentPage();
+            } else {
+                window.location.reload();
+            }
+        } else {
+            // 如果在不同页面（如从 payment.html 过来），跳转到对应页面
+            // statePreserver 已经在跳转前保存了（如果是从 showUpgradePrompt 跳转的话）
+            window.location.href = targetUrl;
+        }
     }
 
     /**

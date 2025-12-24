@@ -410,7 +410,7 @@
                                 <div class="relative">
                                     <button id="userMenuBtn"
                                         class="text-moon-silver hover:text-mystic-gold transition-all duration-300 p-2 hover:bg-mystic-gold/10 rounded-full"
-                                        style="color: #c0c0c0;">
+                                        style="color: #c0c0c0;" title="User Menu">
                                         <i class="fas fa-chevron-down text-sm"></i>
                                     </button>
 
@@ -428,7 +428,10 @@
                                                     <div id="menuUserName"
                                                         class="text-warm-white font-semibold text-sm"></div>
                                                     <div id="menuUserEmail" class="user-email"></div>
-                                                    <div id="menuUserStatus" class="user-status">免费会员</div>
+                                                    <div id="menuUserStatus" class="user-status"
+                                                        data-i18n="menuUserStatus.free">Free Plan</div>
+                                                    <div id="menuUserUsage" class="text-[10px] text-moon-silver/60 mt-1"
+                                                        data-i18n="menuUserStatus.usage">Daily Usage: 0/3</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -437,23 +440,23 @@
                                         <div class="py-2">
                                             <a href="profile.html"
                                                 class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
-                                                style="color: #c0c0c0;">
+                                                style="color: #c0c0c0;" data-i18n="nav.profile" title="Profile">
                                                 <i class="fas fa-user-circle w-5"></i>
-                                                <span class="ml-3" data-i18n="nav.profile">个人信息</span>
+                                                <span class="ml-3" data-i18n="nav.userInfo">Profile</span>
                                             </a>
 
                                             <a href="profile.html#readings"
                                                 class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
-                                                style="color: #c0c0c0;">
+                                                style="color: #c0c0c0;" data-i18n="nav.myReadings" title="My Readings">
                                                 <i class="fas fa-history w-5"></i>
-                                                <span class="ml-3" data-i18n="nav.myReadings">我的占卜</span>
+                                                <span class="ml-3" data-i18n="nav.myReadings">My Readings</span>
                                             </a>
 
                                             <a href="payment.html"
                                                 class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
-                                                style="color: #c0c0c0;">
+                                                style="color: #c0c0c0;" data-i18n="nav.upgrade" title="Upgrade">
                                                 <i class="fas fa-crown w-5"></i>
-                                                <span class="ml-3" data-i18n="nav.upgrade">会员升级</span>
+                                                <span class="ml-3" data-i18n="nav.upgrade">Upgrade</span>
                                                 <span
                                                     class="ml-auto text-xs bg-mystic-gold text-deep-navy px-2 py-1 rounded-full font-bold"
                                                     style="background: #ffd700; color: #1a237e;">HOT</span>
@@ -461,9 +464,9 @@
 
                                             <a href="profile.html#settings"
                                                 class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
-                                                style="color: #c0c0c0;">
+                                                style="color: #c0c0c0;" data-i18n="nav.settings" title="Settings">
                                                 <i class="fas fa-cog w-5"></i>
-                                                <span class="ml-3" data-i18n="nav.settings">设置</span>
+                                                <span class="ml-3" data-i18n="nav.settings">Settings</span>
                                             </a>
                                         </div>
 
@@ -473,9 +476,9 @@
                                         <div class="py-2">
                                             <button id="logoutBtn"
                                                 class="w-full flex items-center px-4 py-3 text-moon-silver hover:text-red-400 hover:bg-red-400/10 transition-all"
-                                                style="color: #c0c0c0;">
+                                                style="color: #c0c0c0;" data-i18n="nav.logout" title="Logout">
                                                 <i class="fas fa-sign-out-alt w-5"></i>
-                                                <span class="ml-3" data-i18n="nav.logout">退出登录</span>
+                                                <span class="ml-3" data-i18n="nav.logout">Logout</span>
                                             </button>
                                         </div>
                                     </div>
@@ -514,7 +517,7 @@
                             <div id="compassFace" class="compass-face">
                                 <div class="compass-directions">N</div>
                                 <div class="compass-needle" id="compassNeedle"></div>
-                                <div class="compass-center" data-i18n="fengshui.compass.center">Center</div>
+                                <div class="compass-center" data-i18n="fengshui.compass.center">中心</div>
                             </div>
                         </div>
 
@@ -535,7 +538,8 @@
 
                             <div class="text-moon-silver">
                                 <p><span data-i18n="fengshui.compass.direction">Current Direction</span>: <span
-                                        id="currentDirection" class="text-mystic-gold font-semibold">North</span></p>
+                                        id="currentDirection" class="text-mystic-gold font-semibold"
+                                        data-i18n="common.direction.north">North</span></p>
                                 <p><span data-i18n="fengshui.compass.degrees">Degrees</span>: <span id="currentDegrees"
                                         class="text-mystic-gold font-semibold">0°</span></p>
                             </div>
@@ -543,8 +547,9 @@
 
                         <!-- Analyze Button -->
                         <div class="text-center mt-8">
-                            <button id="analyzeBtn"
-                                class="bg-mystic-gold text-deep-navy px-8 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-all transform hover:scale-105 glow-button flex items-center justify-center gap-2 mx-auto">
+                            <button id="analyzeBtn" onclick="submitFengshuiAnalysis()"
+                                class="bg-mystic-gold text-deep-navy px-8 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-all transform hover:scale-105 glow-button flex items-center justify-center gap-2 mx-auto"
+                                title="Analyze Feng Shui">
                                 <span data-i18n="fengshui.analyze.button_icon">🔮</span>
                                 <span data-i18n="fengshui.analyze.button">Analyze Feng Shui</span>
                             </button>
@@ -626,9 +631,9 @@
                                     <div class="text-2xl">✨</div>
                                     <div>
                                         <h4 class="font-semibold mb-1" data-i18n="fengshui.recommendations.loading">
-                                            正在生成建议...</h4>
+                                            Generating recommendations...</h4>
                                         <p class="text-sm text-moon-silver" data-i18n="fengshui.recommendations.empty">
-                                            请完成上方分析以获取个性化建议。</p>
+                                            Please complete the analysis above to get personalized recommendations.</p>
                                     </div>
                                 </div>
                             </div>
@@ -765,8 +770,8 @@
                             <h4 class="font-semibold mb-2 text-mystic-gold" data-i18n="fengshui.elements.balance.title">
                                 Balance Analysis</h4>
                             <p class="text-sm text-moon-silver" data-i18n="fengshui.elements.balance.desc">
-                                Your space has strong Earth and Wood elements but lacks Water and Fire energy.
-                                Consider adding water features and warm lighting to achieve better balance.
+                                Your space has strong Earth and Wood elements, but lacks Water and Fire energy. Consider
+                                adding water features and warm lighting for better balance.
                             </p>
                         </div>
                     </div>
@@ -788,21 +793,26 @@
                         </div>
                     </div>
 
+
+
                     <!-- Export Buttons -->
                     <div class="tool-card rounded-xl p-8 mt-8">
                         <div class="flex flex-col sm:flex-row gap-4 justify-center">
                             <button id="exportPDF"
-                                class="bg-gradient-to-r from-mystic-purple to-mystic-gold text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2">
+                                class="bg-gradient-to-r from-mystic-purple to-mystic-gold text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2"
+                                title="Export as PDF">
                                 <span data-i18n="fengshui.button.exportPDF_icon">📄</span> <span
                                     data-i18n="fengshui.button.exportPDF">Save as PDF</span>
                             </button>
                             <button id="exportHTML"
-                                class="border-2 border-mystic-purple text-mystic-purple px-6 py-3 rounded-lg font-semibold hover:bg-mystic-purple hover:text-white transition-all flex items-center justify-center gap-2">
+                                class="border-2 border-mystic-purple text-mystic-purple px-6 py-3 rounded-lg font-semibold hover:bg-mystic-purple hover:text-white transition-all flex items-center justify-center gap-2"
+                                title="Export as Web Page">
                                 <span data-i18n="fengshui.button.exportHTML_icon">💾</span> <span
                                     data-i18n="fengshui.button.exportHTML">Save Webpage</span>
                             </button>
                             <button id="resetAnalysis"
-                                class="border-2 border-moon-silver text-moon-silver px-6 py-3 rounded-lg font-semibold hover:bg-moon-silver hover:text-deep-navy transition-all flex items-center justify-center gap-2">
+                                class="border-2 border-moon-silver text-moon-silver px-6 py-3 rounded-lg font-semibold hover:bg-moon-silver hover:text-deep-navy transition-all flex items-center justify-center gap-2"
+                                title="Reset Analysis">
                                 <span data-i18n="fengshui.button.reset_icon">🔄</span> <span
                                     data-i18n="fengshui.button.reset">Re-analyze</span>
                             </button>
@@ -969,7 +979,12 @@
     <script src="auth-service.js"></script>
     <script src="auth-guard-enhanced.js"></script>
 
-    <!-- 主程序 -->
+    <!-- AI Service -->
+    <script src="api-config.js"></script>
+    <script src="config.js"></script>
+    <script src="ai-service.js"></script>
+
+    <!-- Main Program -->
     <script src="main.js"></script>
 
     <!-- 导出依赖 -->

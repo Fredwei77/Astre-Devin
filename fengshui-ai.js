@@ -55,8 +55,8 @@ class FengShuiAI {
         try {
             const spaceData = {
                 direction: direction,
-                spaceType: '居住空间',
-                concerns: '整体运势'
+                spaceType: window.i18n?.t('fengshui.analysis.default_space') || 'Living Space',
+                concerns: window.i18n?.t('fengshui.analysis.default_concern') || 'General Fortune'
             };
 
             this.spaceData = spaceData;
@@ -232,28 +232,23 @@ class FengShuiAI {
     translateRecommendationTitle(title) {
         if (!title) return '';
 
-        const titleKeyMap = {
-            'Add Water Element': 'fengshui.rec.water.title',
-            '增加水元素': 'fengshui.rec.water.title',
-            '增加水元素': 'fengshui.rec.water.title',
-            'Agregar Elemento Agua': 'fengshui.rec.water.title',
-            'Increase Fire Energy': 'fengshui.rec.fire.title',
-            '提升火能量': 'fengshui.rec.fire.title',
-            '提升火能量': 'fengshui.rec.fire.title',
-            'Aumentar Energía de Fuego': 'fengshui.rec.fire.title',
-            'Optimize Plant Placement': 'fengshui.rec.plant.title',
-            '优化植物摆放': 'fengshui.rec.plant.title',
-            '優化植物擺放': 'fengshui.rec.plant.title',
-            'Optimizar Colocación de Plantas': 'fengshui.rec.plant.title',
-            'Strategic Mirror Placement': 'fengshui.rec.mirror.title',
-            '镜子战略布局': 'fengshui.rec.mirror.title',
-            '鏡子戰略布局': 'fengshui.rec.mirror.title',
-            'Colocación Estratégica de Espejos': 'fengshui.rec.mirror.title',
-            'Bedroom Optimization': 'fengshui.rec.bedroom.title'
+        // Generate key from title (English version preferred as key)
+        const normalizedTitle = title.toLowerCase().replace(/\s+/g, '_');
+
+        // Brute force matching for known patterns if normalized title doesn't match directly
+        const keyMap = {
+            'add_water_element': 'fengshui.rec.water.title',
+            'increase_fire_energy': 'fengshui.rec.fire.title',
+            'optimize_plant_placement': 'fengshui.rec.plant.title',
+            'strategic_mirror_placement': 'fengshui.rec.mirror.title',
+            'bedroom_optimization': 'fengshui.rec.bedroom.title'
         };
 
-        const key = titleKeyMap[title];
-        return (key && window.i18n) ? window.i18n.t(key) : title;
+        // Try map first, then try the normalized title as a key part
+        const key = keyMap[normalizedTitle] || `fengshui.rec.${normalizedTitle}.title`;
+        const translated = window.i18n?.t(key);
+
+        return (translated && translated !== key) ? translated : title;
     }
 
     /**
@@ -262,28 +257,19 @@ class FengShuiAI {
     translateRecommendationDescription(title, description) {
         if (!description) return '';
 
-        const descKeyMap = {
-            'Add Water Element': 'fengshui.rec.water.desc',
-            '增加水元素': 'fengshui.rec.water.desc',
-            '增加水元素': 'fengshui.rec.water.desc',
-            'Agregar Elemento Agua': 'fengshui.rec.water.desc',
-            'Increase Fire Energy': 'fengshui.rec.fire.desc',
-            '提升火能量': 'fengshui.rec.fire.desc',
-            '提升火能量': 'fengshui.rec.fire.desc',
-            'Aumentar Energía de Fuego': 'fengshui.rec.fire.desc',
-            'Optimize Plant Placement': 'fengshui.rec.plant.desc',
-            '优化植物摆放': 'fengshui.rec.plant.desc',
-            '優化植物擺放': 'fengshui.rec.plant.desc',
-            'Optimizar Colocación de Plantas': 'fengshui.rec.plant.desc',
-            'Strategic Mirror Placement': 'fengshui.rec.mirror.desc',
-            '镜子战略布局': 'fengshui.rec.mirror.desc',
-            '鏡子戰略布局': 'fengshui.rec.mirror.desc',
-            'Colocación Estratégica de Espejos': 'fengshui.rec.mirror.desc',
-            'Bedroom Optimization': 'fengshui.rec.bedroom.desc'
+        const normalizedTitle = title.toLowerCase().replace(/\s+/g, '_');
+        const keyMap = {
+            'add_water_element': 'fengshui.rec.water.desc',
+            'increase_fire_energy': 'fengshui.rec.fire.desc',
+            'optimize_plant_placement': 'fengshui.rec.plant.desc',
+            'strategic_mirror_placement': 'fengshui.rec.mirror.desc',
+            'bedroom_optimization': 'fengshui.rec.bedroom.desc'
         };
 
-        const key = descKeyMap[title];
-        return (key && window.i18n) ? window.i18n.t(key) : description;
+        const key = keyMap[normalizedTitle] || `fengshui.rec.${normalizedTitle}.desc`;
+        const translated = window.i18n?.t(key);
+
+        return (translated && translated !== key) ? translated : description;
     }
 
     /**
@@ -296,42 +282,23 @@ class FengShuiAI {
         container.innerHTML = '';
 
         items.forEach(item => {
-            const itemKeyMap = {
-                '红灯笼': 'fengshui.shop.lantern',
-                '紅燈籠': 'fengshui.shop.lantern',
-                'Red Lantern': 'fengshui.shop.lantern',
-                'Linterna Roja': 'fengshui.shop.lantern',
-                '幸运竹': 'fengshui.shop.bamboo',
-                '幸運竹': 'fengshui.shop.bamboo',
-                'Lucky Bamboo': 'fengshui.shop.bamboo',
-                'Bambú de la Suerte': 'fengshui.shop.bamboo',
-                '龙雕像': 'fengshui.shop.dragon',
-                '龍雕像': 'fengshui.shop.dragon',
-                'Dragon Statue': 'fengshui.shop.dragon',
-                'Estatua de Dragón': 'fengshui.shop.dragon',
-                '水晶球': 'fengshui.shop.crystal',
-                'Crystal Sphere': 'fengshui.shop.crystal',
-                'Esfera de Cristal': 'fengshui.shop.crystal',
-                '祈福手环': 'fengshui.shop.bracelet',
-                '祈福手環': 'fengshui.shop.bracelet',
-                'Prayer Bracelet': 'fengshui.shop.bracelet',
-                'Pulsera de Oración': 'fengshui.shop.bracelet',
-                '罗盘': 'fengshui.shop.compass',
-                '羅盤': 'fengshui.shop.compass',
-                'Feng Shui Compass': 'fengshui.shop.compass',
-                'Brújula Feng Shui': 'fengshui.shop.compass',
-                '八卦镜': 'fengshui.shop.mirror',
-                '八卦鏡': 'fengshui.shop.mirror',
-                'Bagua Mirror': 'fengshui.shop.mirror',
-                'Espejo Bagua': 'fengshui.shop.mirror',
-                '五帝钱币': 'fengshui.shop.coins',
-                '五帝錢幣': 'fengshui.shop.coins',
-                'Five Emperor Coins': 'fengshui.shop.coins',
-                'Monedas de los Cinco Emperadores': 'fengshui.shop.coins'
+            // Standardize item as a key
+            const itemKeyPart = item.toLowerCase().replace(/\s+/g, '_');
+            const keyMap = {
+                '红灯笼': 'lantern', '紅燈籠': 'lantern', 'red_lantern': 'lantern', 'linterna_roja': 'lantern',
+                '幸运竹': 'bamboo', '幸運竹': 'bamboo', 'lucky_bamboo': 'bamboo', 'bambú_de_la_suerte': 'bamboo',
+                '龙雕像': 'dragon', '龍雕像': 'dragon', 'dragon_statue': 'dragon', 'estatua_de_dragón': 'dragon',
+                '水晶球': 'crystal', 'crystal_sphere': 'crystal', 'esfera_de_cristal': 'crystal',
+                '祈福手环': 'bracelet', '祈福手環': 'bracelet', 'prayer_bracelet': 'bracelet', 'pulsera_de_oración': 'bracelet',
+                '罗盘': 'compass', '羅盤': 'compass', 'feng_shui_compass': 'compass', 'brújula_feng_shui': 'compass',
+                '八卦镜': 'mirror', '八卦鏡': 'mirror', 'bagua_mirror': 'mirror', 'espejo_bagua': 'mirror',
+                '五帝钱币': 'coins', '五帝錢幣': 'coins', 'five_emperor_coins': 'coins', 'monedas_de_los_cinco_emperadores': 'coins'
             };
 
-            const key = itemKeyMap[item];
-            const displayName = (key && window.i18n) ? window.i18n.t(key) : item;
+            const keySuffix = keyMap[item] || keyMap[itemKeyPart] || itemKeyPart;
+            const key = `fengshui.shop.${keySuffix}`;
+            const translated = window.i18n?.t(key);
+            const displayName = (translated && translated !== key) ? translated : item;
 
             const div = document.createElement('div');
             div.className = 'bg-mystic-gold/10 rounded-lg p-3 text-center border border-mystic-gold/30';
@@ -353,27 +320,18 @@ class FengShuiAI {
         container.innerHTML = '';
 
         taboos.forEach(taboo => {
-            const tabooKeyMap = {
-                '避免床头对门': 'fengshui.taboo.bed_door',
-                '避免床頭對門': 'fengshui.taboo.bed_door',
-                'Avoid bed facing door': 'fengshui.taboo.bed_door',
-                'Evitar que la cama mire hacia la puerta': 'fengshui.taboo.bed_door',
-                '不要在财位堆放杂物': 'fengshui.taboo.wealth_clutter',
-                '不要在財位堆放雜物': 'fengshui.taboo.wealth_clutter',
-                'Keep wealth corner clutter-free': 'fengshui.taboo.wealth_clutter',
-                'Mantener el rincón de la riqueza libre de desorden': 'fengshui.taboo.wealth_clutter',
-                '避免尖角对人': 'fengshui.taboo.sharp_corners',
-                '避免尖角對人': 'fengshui.taboo.sharp_corners',
-                'Avoid sharp corners pointing at people': 'fengshui.taboo.sharp_corners',
-                'Evitar esquinas afiladas apuntando a personas': 'fengshui.taboo.sharp_corners',
-                '保持空间整洁': 'fengshui.taboo.clean_space',
-                '保持空間整潔': 'fengshui.taboo.clean_space',
-                'Keep space clean and tidy': 'fengshui.taboo.clean_space',
-                'Mantener el espacio limpio y ordenado': 'fengshui.taboo.clean_space'
+            const tabooKeyPart = taboo.toLowerCase().replace(/\s+/g, '_');
+            const keyMap = {
+                '避免床头对门': 'bed_door', '避免床頭對門': 'bed_door', 'avoid_bed_facing_door': 'bed_door',
+                '不要在财位堆放杂物': 'wealth_clutter', '不要在財位堆放雜物': 'wealth_clutter', 'keep_wealth_corner_clutter-free': 'wealth_clutter',
+                '避免尖角对人': 'sharp_corners', '避免尖角對人': 'sharp_corners', 'avoid_sharp_corners_pointing_at_people': 'sharp_corners',
+                '保持空间整洁': 'clean_space', '保持空間整潔': 'clean_space', 'keep_space_clean_and_tidy': 'clean_space'
             };
 
-            const key = tabooKeyMap[taboo];
-            const displayTaboo = (key && window.i18n) ? window.i18n.t(key) : taboo;
+            const keySuffix = keyMap[taboo] || keyMap[tabooKeyPart] || tabooKeyPart;
+            const key = `fengshui.taboo.${keySuffix}`;
+            const translated = window.i18n?.t(key);
+            const displayTaboo = (translated && translated !== key) ? translated : taboo;
 
             const div = document.createElement('div');
             div.className = 'flex items-start space-x-2 text-sm';
@@ -517,37 +475,23 @@ class FengShuiAI {
                 systemPromptBase = `你是一位专业的风水大师。请基于用户的空间分析结果，针对其提出的具体布局困难或问题，提供深度解读和替代方案建议。`;
             }
 
-            const contextText = language === 'en' ? `
-Space Analysis Context:
-- Direction: ${this.spaceData.direction}° (${this.getDirectionAdvice(this.spaceData.direction).name})
-- Overall Score: ${this.analysisResult.overallScore}%
-- Elements: Wood ${this.analysisResult.elements.wood}%, Fire ${this.analysisResult.elements.fire}%, Earth ${this.analysisResult.elements.earth}%, Metal ${this.analysisResult.elements.metal}%, Water ${this.analysisResult.elements.water}%
-- Analysis: ${this.analysisResult.directionAnalysis}
-` : language === 'es' ? `
-Contexto de análisis del espacio:
-- Dirección: ${this.spaceData.direction}° (${this.getDirectionAdvice(this.spaceData.direction).name})
-- Puntuación general: ${this.analysisResult.overallScore}%
-- Elementos: Madera ${this.analysisResult.elements.wood}%, Fuego ${this.analysisResult.elements.fire}%, Tierra ${this.analysisResult.elements.earth}%, Metal ${this.analysisResult.elements.metal}%, Agua ${this.analysisResult.elements.water}%
-- Análisis: ${this.analysisResult.directionAnalysis}
-` : language === 'zh-TW' ? `
-空間分析參考：
-- 坐向：${this.spaceData.direction}° (${this.getDirectionAdvice(this.spaceData.direction).name})
-- 核心評分：${this.analysisResult.overallScore}%
-- 五行狀態：木${this.analysisResult.elements.wood}%, 火${this.analysisResult.elements.fire}%, 土${this.analysisResult.elements.earth}%, 金${this.analysisResult.elements.metal}%, 水${this.analysisResult.elements.water}%
-- 方位分析：${this.analysisResult.directionAnalysis}
-` : `
-空间分析参考：
-- 坐向：${this.spaceData.direction}° (${this.getDirectionAdvice(this.spaceData.direction).name})
-- 核心评分：${this.analysisResult.overallScore}%
-- 五行状态：木${this.analysisResult.elements.wood}%, 火${this.analysisResult.elements.fire}%, 土${this.analysisResult.elements.earth}%, 金${this.analysisResult.elements.metal}%, 水${this.analysisResult.elements.water}%
-- 当前方位分析：${this.analysisResult.directionAnalysis}
+            const labels = {
+                direction: window.i18n?.t('fengshui.compass.direction') || 'Direction',
+                score: window.i18n?.t('fengshui.analysis.results.energy') || 'Overall Score',
+                elements: window.i18n?.t('fengshui.elements.title') || 'Elements',
+                analysis: window.i18n?.t('fengshui.analysis.results.title') || 'Analysis'
+            };
+
+            const contextText = `
+${labels.analysis}:
+- ${labels.direction}: ${this.spaceData.direction}° (${this.getDirectionAdvice(this.spaceData.direction).name})
+- ${labels.score}: ${this.analysisResult.overallScore}%
+- ${labels.elements}: Wood ${this.analysisResult.elements.wood}%, Fire ${this.analysisResult.elements.fire}%, Earth ${this.analysisResult.elements.earth}%, Metal ${this.analysisResult.elements.metal}%, Water ${this.analysisResult.elements.water}%
+- ${labels.analysis}: ${this.analysisResult.directionAnalysis}
 `;
 
             const systemPrompt = systemPromptBase + "\n\n" + contextText;
-            const userPrompt = language === 'en' ? `Follow-up Question: ${question}`
-                : language === 'es' ? `Pregunta de seguimiento: ${question}`
-                    : language === 'zh-TW' ? `追問問題：${question}`
-                        : `追问问题：${question}`;
+            const userPrompt = `${window.i18n?.t('fengshui.followup.title') || 'Follow-up'}: ${question}`;
 
             // 调用AI服务
             const aiService = window.aiService || (window.AIService ? new window.AIService() : null);

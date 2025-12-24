@@ -34,11 +34,27 @@
             console.log('✅ Supabase客户端初始化成功');
 
             // 检查当前会话
-            const { data: { session }, error } = await window.supabaseClient.auth.getSession();
+            let session = null;
+            let user = null;
 
-            if (error) {
-                console.error('获取会话失败:', error);
-            } else if (session) {
+            try {
+                const { data, error } = await window.supabaseClient.auth.getSession();
+                if (error) throw error;
+                session = data.session;
+                user = session ? session.user : null;
+            } catch (authError) {
+                // 特殊处理本地文件环境的 AuthSessionMissingError
+                if (authError.message && authError.message.includes('AuthSessionMissingError') &&
+                    (window.location.protocol === 'file:' || window.location.origin === 'null')) {
+                    console.warn('Environment: Local file detected. Providing mock guest session.');
+                    // 模拟访客会话，防止报错
+                    session = null;
+                } else {
+                    console.error('获取会话失败:', authError);
+                }
+            }
+
+            if (session) {
                 console.log('✅ 用户已登录:', session.user.email);
                 // 触发登录状态更新
                 window.dispatchEvent(new CustomEvent('supabase:auth:signin', {

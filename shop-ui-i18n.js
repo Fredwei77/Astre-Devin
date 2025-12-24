@@ -3,7 +3,7 @@
  * Feng Shui Shop UI - i18n Support
  */
 
-(function() {
+(function () {
     'use strict';
 
     class ShopUI {
@@ -18,7 +18,7 @@
             await this.loadProducts();
             await this.loadCart();
             this.setupEventListeners();
-            
+
             // 监听语言切换事件
             window.addEventListener('languageChanged', () => {
                 this.loadProducts();
@@ -53,7 +53,7 @@
                 }
 
                 const result = await ShopService.products.getAll();
-                
+
                 if (result.success && result.data && result.data.length > 0) {
                     this.renderProducts(result.data);
                 } else {
@@ -71,12 +71,12 @@
          */
         renderDefaultProducts() {
             const defaultProducts = [
-                { id: 'dragon', name: '龙雕像', name_en: 'Dragon Statue', description: '力量与保护象征', description_en: 'Power & protection symbol', price: 49.99, icon: '🐉', stock: 50 },
-                { id: 'crystal', name: '水晶球', name_en: 'Crystal Sphere', description: '清晰与能量放大器', description_en: 'Clarity & energy amplifier', price: 39.99, icon: '💎', stock: 30 },
-                { id: 'bracelet', name: '祈福手环', name_en: 'Prayer Bracelet', description: '祝福与灵性保护', description_en: 'Blessing & spiritual protection', price: 29.99, icon: '📿', stock: 100 },
-                { id: 'compass', name: '罗盘', name_en: 'Feng Shui Compass', description: '专业罗盘工具', description_en: 'Professional Luopan tool', price: 89.99, icon: '🧭', stock: 20 },
-                { id: 'mirror', name: '八卦镜', name_en: 'Bagua Mirror', description: '化解负能量', description_en: 'Deflect negative energy', price: 34.99, icon: '🪞', stock: 40 },
-                { id: 'coins', name: '五帝钱币', name_en: 'Five Emperor Coins', description: '财富与繁荣符咒', description_en: 'Wealth & prosperity charm', price: 24.99, icon: '🪙', stock: 60 }
+                { id: 'dragon', nameKey: 'fengshui.shop.item.dragon.name', descKey: 'fengshui.shop.item.dragon.desc', price: 49.99, icon: '🐉', stock: 50 },
+                { id: 'crystal', nameKey: 'fengshui.shop.item.crystal.name', descKey: 'fengshui.shop.item.crystal.desc', price: 39.99, icon: '💎', stock: 30 },
+                { id: 'bracelet', nameKey: 'fengshui.shop.item.bracelet.name', descKey: 'fengshui.shop.item.bracelet.desc', price: 29.99, icon: '📿', stock: 100 },
+                { id: 'compass', nameKey: 'fengshui.shop.item.compass.name', descKey: 'fengshui.shop.item.compass.desc', price: 89.99, icon: '🧭', stock: 20 },
+                { id: 'mirror', nameKey: 'fengshui.shop.item.mirror.name', descKey: 'fengshui.shop.item.mirror.desc', price: 34.99, icon: '🪞', stock: 40 },
+                { id: 'coins', nameKey: 'fengshui.shop.item.coins.name', descKey: 'fengshui.shop.item.coins.desc', price: 24.99, icon: '🪙', stock: 60 }
             ];
             this.renderProducts(defaultProducts);
         }
@@ -88,17 +88,17 @@
             const container = document.getElementById('productsGrid');
             if (!container) return;
 
-            const isEnglish = this.getCurrentLanguage() === 'en';
+            const t = (key, def) => window.i18n ? window.i18n.t(key) : def;
 
             container.innerHTML = products.map(product => {
-                // 根据语言选择名称和描述
-                const name = isEnglish ? (product.name_en || product.name) : product.name;
-                const description = isEnglish ? (product.description_en || product.description) : product.description;
-                const stockText = isEnglish ? 'Stock' : '库存';
-                const addToCartText = isEnglish ? 'Add to Cart' : '加入购物车';
-                const buyNowText = isEnglish ? 'Buy Now' : '立即购买';
-                const outOfStockText = isEnglish ? 'Out of Stock' : '暂时缺货';
-                
+                const name = product.nameKey ? t(product.nameKey, product.name || 'Item') : product.name;
+                const description = product.descKey ? t(product.descKey, product.description || '') : product.description;
+
+                const stockText = t('common.stock', 'Stock');
+                const addToCartText = t('fengshui.shop.addToCart', 'Add to Cart');
+                const buyNowText = t('fengshui.shop.buyNow', 'Buy Now');
+                const outOfStockText = t('common.outOfStock', 'Out of Stock');
+
                 return `
                 <div class="bg-white/5 rounded-lg p-4 text-center hover:bg-white/10 transition-all product-card" 
                      data-product-id="${product.id}">

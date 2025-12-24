@@ -43,14 +43,37 @@
          */
         t(key, lang = null) {
             const targetLang = lang || this.currentLang;
-            const translation = this.translations[targetLang]?.[key];
+            const langTranslations = this.translations[targetLang];
 
-            if (!translation) {
-                console.warn(`[UnifiedI18n] Missing translation for key: ${key} in language: ${targetLang}`);
+            if (!langTranslations) {
+                console.warn(`[UnifiedI18n] Missing language: ${targetLang}`);
                 return key;
             }
 
-            return translation;
+            // 1. Try direct lookup (for flat keys like 'nav.home')
+            if (langTranslations[key]) {
+                return langTranslations[key];
+            }
+
+            // 2. Try nested lookup (for paths like 'fengshui.rec.water.title')
+            const parts = key.split('.');
+            let current = langTranslations;
+
+            for (const part of parts) {
+                if (current && typeof current === 'object' && part in current) {
+                    current = current[part];
+                } else {
+                    current = null;
+                    break;
+                }
+            }
+
+            if (current !== null && typeof current === 'string') {
+                return current;
+            }
+
+            console.warn(`[UnifiedI18n] Missing translation for key: ${key} in language: ${targetLang}`);
+            return key;
         }
 
         /**

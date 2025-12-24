@@ -41,9 +41,15 @@
     <!-- <script src="language-switcher-final.js"></script> -->
 
     <!-- Configuration and AI Service -->
+    <script src="api-config.js"></script>
     <script src="config.js"></script>
     <script src="subscription-manager.js"></script>
     <script src="ai-service.js"></script>
+
+    <!-- Stripe Payment Integration -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="stripe-client-enhanced.js"></script>
+    <script src="state-preserver.js"></script>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -110,6 +116,7 @@
         }
 
         .feature-card {
+            -webkit-backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             background: rgba(255, 255, 255, 0.1);
@@ -705,7 +712,7 @@
                         最受欢迎
                     </div>
                     <h3 class="text-2xl font-serif font-bold mb-4" data-i18n="payment.plan.premium">高级版</h3>
-                    <div class="text-4xl font-bold text-mystic-gold mb-6">$19.99<span class="text-lg text-moon-silver"
+                    <div class="text-4xl font-bold text-mystic-gold mb-6">$29.99<span class="text-lg text-moon-silver"
                             data-i18n="payment.plan.perMonth">/月</span></div>
                     <ul class="text-moon-silver space-y-3 mb-8 text-left">
                         <li data-i18n="payment.feature.allFree">✓ 包含所有免费功能</li>
@@ -726,8 +733,8 @@
                 <div class="feature-card rounded-xl p-8 text-center scroll-reveal">
                     <h3 class="text-2xl font-serif font-bold mb-4" data-i18n="payment.plan.professional">专业版
                     </h3>
-                    <div class="text-4xl font-bold text-mystic-gold mb-6">$49.99<span class="text-lg text-moon-silver"
-                            data-i18n="payment.plan.perMonth">/月</span></div>
+                    <div class="text-4xl font-bold text-mystic-gold mb-6">$299.99<span class="text-lg text-moon-silver"
+                            data-i18n="payment.plan.perQuarter">/三个月</span></div>
                     <ul class="text-moon-silver space-y-3 mb-8 text-left">
                         <li data-i18n="payment.feature.allPremium">✓ 包含所有高级功能</li>
                         <li data-i18n="payment.feature.fullAI">✓ 完整AI分析功能</li>
@@ -1111,6 +1118,13 @@
     <script src="supabase-init.js"></script>
 
     <script src="api-config.js"></script>
+
+    <!-- 支付系统 -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="stripe-client-enhanced.js"></script>
+    <script src="subscription-manager.js"></script>
+    <script src="shop-service.js"></script>
+
     <script src="main.js"></script>
     <script src="header-auth.js"></script>
 

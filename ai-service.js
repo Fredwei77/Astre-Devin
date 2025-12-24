@@ -74,8 +74,16 @@ class AIService {
             console.log('AI Service: 发送请求，绕过使用限制检查');
         }
 
+        // Detect local file environment (CORS restriction)
+        const isLocalFile = window.location.protocol === 'file:' || window.location.origin === 'null';
+
+        if (isLocalFile) {
+            console.log('Environment: Local file detected (CORS restricted). Using Mock Mode.');
+            this.mockMode = true;
+        }
+
         // 如果是模拟模式，返回模拟数据
-        if (this.mockMode) {
+        if (this.mockMode || isLocalFile) {
             console.log('使用模拟模式，类型:', options.type);
             const mockData = await this.getMockResponse(options.type);
             console.log('模拟数据:', mockData);
