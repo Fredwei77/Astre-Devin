@@ -96,16 +96,17 @@
                     return { success: true, data };
                 } catch (error) {
                     console.error('获取商品详情失败:', error);
-                    // Final fallback attempt
+                    // Final fallback attempt with more robust data
                     const mockProducts = {
-                        'product_divination': { id: 'product_divination', price: 0.99, name: 'AI Divination' },
-                        'product_fengshui': { id: 'product_fengshui', price: 1.99, name: 'Feng Shui Analysis' },
-                        'product_iching': { id: 'product_iching', price: 2.99, name: 'I-Ching Wisdom' }
+                        'product_divination': { id: 'product_divination', price: 0.99, name: 'AI占卜', name_en: 'AI Divination' },
+                        'product_fengshui': { id: 'product_fengshui', price: 1.99, name: '风水分析', name_en: 'Feng Shui Analysis' },
+                        'product_iching': { id: 'product_iching', price: 2.99, name: '易经智慧', name_en: 'I-Ching Wisdom' }
                     };
                     if (mockProducts[productId]) {
+                        console.log('Using recovery mock data for:', productId);
                         return { success: true, data: mockProducts[productId] };
                     }
-                    return { success: false, error: error.message };
+                    return { success: false, error: error.message || 'Product not found' };
                 }
             }
         },
