@@ -43,12 +43,12 @@
     <!-- Configuration and AI Service -->
     <script src="api-config.js"></script>
     <script src="config.js"></script>
-    <script src="subscription-manager.js"></script>
-    <script src="ai-service.js"></script>
-
     <!-- Stripe Payment Integration -->
     <script src="https://js.stripe.com/v3/"></script>
     <script src="stripe-client-enhanced.js"></script>
+
+    <script src="subscription-manager.js"></script>
+    <script src="ai-service.js"></script>
     <script src="state-preserver.js"></script>
 
     <!-- Tailwind CSS -->
@@ -723,7 +723,7 @@
                         <li data-i18n="payment.feature.tracking">✓ 个人成长追踪</li>
                         <li data-i18n="payment.feature.consultations">✓ 专家咨询 (2次/月)</li>
                     </ul>
-                    <a href="payment.html?plan=premium"
+                    <a href="#" onclick="window.location.href='payment.html?plan=premium'; return false;"
                         class="block w-full bg-mystic-gold text-deep-navy py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors"
                         data-i18n="payment.button.choosePremium">
                         选择高级版

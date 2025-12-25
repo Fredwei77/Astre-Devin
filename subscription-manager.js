@@ -269,7 +269,11 @@ class SubscriptionManager {
 
             // 1. 调用支付服务创建支付意图
             const paymentService = window.EnhancedStripePaymentService || window.StripePaymentService;
-            if (!paymentService) throw new Error('Payment service not found');
+
+            if (!paymentService) {
+                console.error('[SubscriptionManager] Payment service object missing completely.');
+                throw new Error(isEnglish ? 'Payment system unavailable (Code: INIT_FAIL). Please refresh.' : '支付系统未初始化 (代码: INIT_FAIL)。请刷新页面重试。');
+            }
 
             // 检查商品 ID 是否需要映射
             const productId = `product_${serviceType}`;
@@ -293,17 +297,23 @@ class SubscriptionManager {
                 // 4. 显示支付成功提示
                 this.showPaymentSuccess(payInfo, isEnglish);
             } else {
-                throw new Error(result.error || 'Payment failed');
+                console.warn('[SubscriptionManager] Payment failed:', result.error);
+                throw new Error(result.error || (isEnglish ? 'Payment failed. Please try again.' : '支付失败，请重试。'));
             }
         } catch (error) {
-            console.error('Payment error:', error);
+            console.error('[SubscriptionManager] Payment error details:', error);
             const processingModal = document.querySelector('.payment-processing-modal');
             if (processingModal) processingModal.remove();
 
             if (window.showErrorMessage) {
-                window.showErrorMessage(isEnglish ? 'Payment Failed' : '支付失败', error.message);
+                window.showErrorMessage(isEnglish ? 'Payment Not Completed' : '支付未完成', error.message);
             } else {
-                alert(error.message);
+                // 如果没有自定义错误弹窗，使用原生alert，但样式美化一点（如果有Toast）
+                if (window.showToastMessage) {
+                    window.showToastMessage(error.message, 'error', 5000);
+                } else {
+                    alert(`${isEnglish ? 'Payment Error' : '支付错误'}: ${error.message}`);
+                }
             }
         }
     }

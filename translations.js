@@ -327,7 +327,8 @@ window.TRANSLATIONS = {
         'fengshui.button.exportPDF_icon': '📄',
         'fengshui.button.exportHTML': 'Save Webpage',
         'fengshui.button.exportHTML_icon': '💾',
-        'fengshui.button.reset': 'Re-analyze',
+        'fengshui.button.reanalyze': 'Re-analyze',
+        'fengshui.button.reset': 'Re-analyze', // Backward compatibility
         'fengshui.button.reset_icon': '🔄',
         'fengshui.confirm_reset': 'Are you sure you want to re-analyze? Current results will be cleared.',
 
@@ -646,6 +647,7 @@ window.TRANSLATIONS = {
         'payment.price.subtotal': 'Subtotal',
         'payment.price.tax': 'Sales Tax (7%)',
         'payment.price.total': 'Total',
+        'fengshui.button.reanalyze': 'Re-analyze',
         'fengshui.button.reset': 'Reset Analysis',
         'fengshui.button.reset_icon': '🔄',
 
@@ -1388,6 +1390,7 @@ window.TRANSLATIONS = {
         'fengshui.button.exportPDF_icon': '📄',
         'fengshui.button.exportHTML': '保存网页',
         'fengshui.button.exportHTML_icon': '💾',
+        'fengshui.button.reanalyze': '重新分析',
         'fengshui.button.reset': '重新排盘',
         'fengshui.button.reset_icon': '🔄',
         'fengshui.confirm_reset': '确定要重新分析吗？当前结果将被清除。',

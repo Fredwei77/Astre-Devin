@@ -8,6 +8,9 @@ const CONFIG = {
     ? (window.API_BASE_URL ? `${window.API_BASE_URL}/ai/chat` : 'http://localhost:3000/api/ai/chat')
     : '/api/v1/ai/chat', // 通过后端代理
 
+  // Stripe 可发布密钥 - 通过环境变量注入
+  STRIPE_PUBLISHABLE_KEY: (typeof window !== 'undefined' && window.ENV && window.ENV.STRIPE_PUBLISHABLE_KEY) || '',
+
   // 模型选择 - 使用 DeepSeek 和 Gemini
   AI_MODEL: 'deepseek/deepseek-chat', // 主模型：DeepSeek（高性价比，强推理能力）
 
