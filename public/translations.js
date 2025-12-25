@@ -327,7 +327,8 @@ window.TRANSLATIONS = {
         'fengshui.button.exportPDF_icon': '📄',
         'fengshui.button.exportHTML': 'Save Webpage',
         'fengshui.button.exportHTML_icon': '💾',
-        'fengshui.button.reset': 'Re-analyze',
+        'fengshui.button.reanalyze': 'Re-analyze',
+        'fengshui.button.reset': 'Re-analyze', // Backward compatibility
         'fengshui.button.reset_icon': '🔄',
         'fengshui.confirm_reset': 'Are you sure you want to re-analyze? Current results will be cleared.',
 
@@ -621,6 +622,12 @@ window.TRANSLATIONS = {
         'payment.faq.a4': 'Absolutely. We use bank-level security to protect your data and never share your personal information with third parties. Your privacy is our priority.',
         'payment.faq.q5': 'Can I upgrade or downgrade my plan?',
         'payment.faq.a5': 'Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately, and we\'ll prorate any billing differences.',
+        'payment.feature.mockData': 'Mock Data Access',
+        'payment.feature.basicInterface': 'Basic Interface',
+        'payment.feature.limitedReadings': 'Limited Daily Readings',
+        'payment.feature.noAI': 'No AI Analysis',
+        'payment.feature.fullAI': 'Full AI Analysis',
+        'payment.feature.communityAccess': 'Community Access',
 
         // Payment - Modal
         'payment.modal.title': 'Complete Your Subscription',
@@ -640,6 +647,9 @@ window.TRANSLATIONS = {
         'payment.price.subtotal': 'Subtotal',
         'payment.price.tax': 'Sales Tax (7%)',
         'payment.price.total': 'Total',
+        'fengshui.button.reanalyze': 'Re-analyze',
+        'fengshui.button.reset': 'Reset Analysis',
+        'fengshui.button.reset_icon': '🔄',
 
         // Analysis Simulation
         'analysis.simulation.personality.1': 'Creative and intuitive thinker',
@@ -1103,6 +1113,12 @@ window.TRANSLATIONS = {
         'home.pricing.subtitle': '从免费测算开始，或通过高级功能解锁古老智慧的全部力量。',
         'payment.plan.perMonth': '/月',
         'payment.plan.perQuarter': '/三个月',
+        'payment.feature.mockData': '模拟数据访问',
+        'payment.feature.basicInterface': '基础界面',
+        'payment.feature.limitedReadings': '每日有限咨询',
+        'payment.feature.noAI': '无 AI 深度分析',
+        'payment.feature.fullAI': 'AI 深度全方位分析',
+        'payment.feature.communityAccess': '社区访问权限',
 
         // 首页 - 免责声明
         'home.disclaimer.title': '⚠️ 重要免责声明',
@@ -1374,6 +1390,8 @@ window.TRANSLATIONS = {
         'fengshui.button.exportPDF_icon': '📄',
         'fengshui.button.exportHTML': '保存网页',
         'fengshui.button.exportHTML_icon': '💾',
+        'fengshui.button.reanalyze': '重新分析',
+        'fengshui.button.reset': '重新排盘',
         'fengshui.button.reset_icon': '🔄',
         'fengshui.confirm_reset': '确定要重新分析吗？当前结果将被清除。',
 
@@ -2438,6 +2456,7 @@ window.TRANSLATIONS = {
         'fengshui.button.exportPDF_icon': '📄',
         'fengshui.button.exportHTML': '保存網頁',
         'fengshui.button.exportHTML_icon': '💾',
+        'fengshui.button.reset': 'Reset Analysis',
         'fengshui.button.reset_icon': '🔄',
         'fengshui.confirm_reset': '確定要重新分析嗎？當前結果將被清除。',
 
@@ -2466,6 +2485,14 @@ window.TRANSLATIONS = {
         'fengshui.followup.loading': 'AI 正在思考中...',
 
         'fengshui.footer': '© 2024 命運AI。保留所有權利。和諧空間，提升生活。',
+
+        // 支付功能
+        'payment.feature.mockData': '模擬數據訪問',
+        'payment.feature.basicInterface': '基礎界面',
+        'payment.feature.limitedReadings': '每日有限諮詢',
+        'payment.feature.noAI': '無 AI 深度分析',
+        'payment.feature.fullAI': 'AI 深度全方位分析',
+        'payment.feature.communityAccess': '社區訪問權限',
 
         // 易經頁面
         'iching.title': '易經解卦',
@@ -3488,6 +3515,8 @@ window.TRANSLATIONS = {
         'fengshui.shop.loading': 'Cargando productos...',
         'fengshui.shop.addToCart': 'Añadir al carrito',
         'fengshui.shop.buyNow': 'Comprar ahora',
+        'fengshui.button.reset': 'Reiniciar Análisis',
+        'fengshui.button.reset_icon': '🔄',
         'common.stock': 'Stock',
         'common.outOfStock': 'Agotado',
         'nav.google_user': 'Usuario de Google',

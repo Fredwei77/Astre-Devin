@@ -1,4 +1,4 @@
-const CACHE_NAME = 'destiny-ai-v1';
+const CACHE_NAME = 'destiny-ai-v2';
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html',
@@ -13,7 +13,10 @@ const ASSETS_TO_CACHE = [
     '/translations.js',
     '/unified-i18n.js',
     '/config.js',
-    '/main.js'
+    '/main.js',
+    '/stripe-client-enhanced.js',
+    '/subscription-manager.js',
+    '/api-config.js'
 ];
 
 // 安装时预缓存

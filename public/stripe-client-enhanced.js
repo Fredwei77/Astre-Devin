@@ -6,17 +6,37 @@
 (function () {
     'use strict';
 
+    // 立即定义全局对象，确保其他模块可以找到它
+    const EnhancedStripePaymentService = {
+        getStripe: () => stripe,
+        getCardElement: () => cardElement,
+        isTestMode: () => isTestMode(),
+        setTestMode: (enabled) => {
+            localStorage.setItem('payment_test_mode', enabled ? 'true' : 'false');
+            console.log(`🧪 测试模式已${enabled ? '启用' : '禁用'}`);
+        },
+        createPaymentIntent: async (amount, currency, metadata) => ({ success: false, error: 'Payment service not fully initialized' }),
+        confirmPayment: async () => ({ success: false, error: 'Payment service not fully initialized' }),
+        createSubscription: async () => ({ success: false, error: 'Payment service not fully initialized' }),
+        cancelSubscription: async () => ({ success: false, error: 'Payment service not fully initialized' }),
+        purchaseProduct: async () => ({ success: false, error: 'Payment service not fully initialized' }),
+        purchaseSubscription: async () => ({ success: false, error: 'Payment service not fully initialized' })
+    };
+
+    window.EnhancedStripePaymentService = EnhancedStripePaymentService;
+    window.StripePaymentService = EnhancedStripePaymentService; // 兼容旧代码
+
     // Stripe 可发布密钥 - 从环境变量加载
     // ⚠️ 在 Netlify 中配置环境变量：VITE_STRIPE_PUBLISHABLE_KEY
-    let STRIPE_PUBLISHABLE_KEY = 'pk_test_51SXG0rPyLPASs4oMIUPfLppXKefnEycFKqZ8abmH9c7DqcuOi1RpVxR1d2e3bnM3dDzuj3uvpNFYjeio68hOOMJV008ByjCRw8';
+    // Stripe 可发布密钥 - 从环境变量加载
+    // ⚠️ 在 Netlify 中配置环境变量：VITE_STRIPE_PUBLISHABLE_KEY
+    let STRIPE_PUBLISHABLE_KEY = '';
 
-    try {
-        // 尝试从 Vite 环境变量或共享配置加载
-        if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY) {
-            STRIPE_PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
-        }
-    } catch (e) {
-        // 非 ESM 环境忽略
+    // 尝试从全局配置加载
+    if (window.CONFIG && window.CONFIG.STRIPE_PUBLISHABLE_KEY) {
+        STRIPE_PUBLISHABLE_KEY = window.CONFIG.STRIPE_PUBLISHABLE_KEY;
+    } else if (window.ENV && window.ENV.STRIPE_PUBLISHABLE_KEY) {
+        STRIPE_PUBLISHABLE_KEY = window.ENV.STRIPE_PUBLISHABLE_KEY;
     }
 
     // 初始化 Stripe
@@ -105,39 +125,8 @@
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    /**
-     * Stripe 支付服务 - 增强版
-     */
-    const EnhancedStripePaymentService = {
-        /**
-         * 获取 Stripe 实例
-         */
-        getStripe() {
-            return stripe;
-        },
-
-        /**
-         * 获取卡片元素
-         */
-        getCardElement() {
-            return cardElement;
-        },
-
-        /**
-         * 检查是否为测试模式
-         */
-        isTestMode() {
-            return isTestMode();
-        },
-
-        /**
-         * 设置测试模式
-         */
-        setTestMode(enabled) {
-            localStorage.setItem('payment_test_mode', enabled ? 'true' : 'false');
-            console.log(`🧪 测试模式已${enabled ? '启用' : '禁用'}`);
-        },
-
+    // 实现具体方法
+    Object.assign(EnhancedStripePaymentService, {
         /**
          * 创建支付意图（商品购买）
          */
@@ -208,7 +197,7 @@
          */
         async confirmPayment(clientSecret, billingDetails = {}) {
             // 测试模式
-            if (this.isTestMode() || clientSecret.includes('mock')) {
+            if (this.isTestMode() || (clientSecret && clientSecret.includes('mock'))) {
                 console.log('🧪 测试模式：模拟确认支付');
                 await mockDelay();
                 return {
@@ -352,7 +341,7 @@
         async cancelSubscription(subscriptionId) {
             try {
                 // 测试模式
-                if (this.isTestMode() || subscriptionId.includes('mock')) {
+                if (this.isTestMode() || (subscriptionId && subscriptionId.includes('mock'))) {
                     console.log('🧪 测试模式：模拟取消订阅');
                     await mockDelay(500);
                     return {
@@ -430,12 +419,23 @@
                     }
 
                     const product = productResult.data;
-                    const amount = Math.round(product.price * quantity * 100);
+                    // 安全检查：如果product不是对象或者price不是数字
+                    if (!product || typeof product.price !== 'number') {
+                        console.warn('Invalid product data:', product);
+                        // Fallback price if needed or error
+                        if (this.isTestMode()) {
+                            // in test mode we can continue
+                        } else {
+                            throw new Error('无效的商品数据');
+                        }
+                    }
+
+                    const amount = Math.round((product.price || 9.99) * quantity * 100);
 
                     // 创建支付意图
                     const paymentIntentResult = await this.createPaymentIntent(amount, 'usd', {
                         productId,
-                        productName: product.name_en || product.name,
+                        productName: product.name_en || product.name || 'Product',
                         quantity
                     });
 
@@ -458,9 +458,28 @@
                         order: {
                             id: 'order_' + Date.now(),
                             status: 'paid',
-                            total_amount: product.price * quantity
+                            total_amount: (product.price || 9.99) * quantity
                         },
                         paymentIntent: confirmResult.paymentIntent
+                    };
+                }
+
+                // 如果 ShopService 不存在但我们在测试模式
+                if (this.isTestMode()) {
+                    console.log('🧪 ShopService 未找到，使用模拟购买');
+                    await mockDelay();
+                    return {
+                        success: true,
+                        order: {
+                            id: 'order_mock_' + Date.now(),
+                            status: 'paid',
+                            total_amount: 9.99 * quantity
+                        },
+                        paymentIntent: {
+                            id: 'pi_mock_' + Date.now(),
+                            status: 'succeeded'
+                        },
+                        mock: true
                     };
                 }
 
@@ -537,7 +556,7 @@
                 };
             }
         }
-    };
+    });
 
     // 页面加载时初始化
     if (document.readyState === 'loading') {
@@ -554,12 +573,9 @@
         }
     }
 
-    // 导出到全局
-    window.EnhancedStripePaymentService = EnhancedStripePaymentService;
-    window.StripePaymentService = EnhancedStripePaymentService; // 兼容旧代码
     window.createPaymentElements = createPaymentElements;
     window.initializeStripe = initializeStripe;
 
-    console.log('✅ Enhanced Stripe Client 已加载');
+    console.log('✅ Enhanced Stripe Client 已加载 (Robust Mode)');
 
 })();
