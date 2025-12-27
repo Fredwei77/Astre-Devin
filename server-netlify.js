@@ -88,9 +88,11 @@ const authenticateToken = async (req, res, next) => {
 // ============================================
 // API 路由
 // ============================================
+// Note: Netlify redirects /api/* to /.netlify/functions/api/*
+// So we define routes WITHOUT /api prefix here
 
 // 用户注册
-app.post('/api/auth/register', async (req, res) => {
+app.post('/auth/register', async (req, res) => {
     try {
         const { email, password, username } = req.body;
 
@@ -161,7 +163,7 @@ app.post('/api/auth/register', async (req, res) => {
 });
 
 // 用户登录
-app.post('/api/auth/login', async (req, res) => {
+app.post('/auth/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -224,7 +226,7 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // AI 占卜接口
-app.post('/api/divination', authenticateToken, async (req, res) => {
+app.post('/divination', authenticateToken, async (req, res) => {
     try {
         const { question, type = 'general' } = req.body;
 
@@ -292,8 +294,8 @@ app.post('/api/divination', authenticateToken, async (req, res) => {
 });
 
 // 支付相关接口
-// Note: Netlify redirects /api/* to this function. We must match the full path /api/stripe/...
-app.post('/api/stripe/create-payment-intent', authenticateToken, async (req, res) => {
+// Note: Netlify redirects /api/* to this function, so routes are defined without /api prefix
+app.post('/stripe/create-payment-intent', authenticateToken, async (req, res) => {
     try {
         const { amount, currency = 'usd' } = req.body;
 
@@ -321,7 +323,7 @@ app.post('/api/stripe/create-payment-intent', authenticateToken, async (req, res
 });
 
 // 创建订阅
-app.post('/api/stripe/create-subscription', authenticateToken, async (req, res) => {
+app.post('/stripe/create-subscription', authenticateToken, async (req, res) => {
     try {
         const { priceId, billingDetails = {} } = req.body;
 
@@ -377,7 +379,7 @@ app.post('/api/stripe/create-subscription', authenticateToken, async (req, res) 
 });
 
 // 取消订阅
-app.post('/api/stripe/cancel-subscription', authenticateToken, async (req, res) => {
+app.post('/stripe/cancel-subscription', authenticateToken, async (req, res) => {
     try {
         const { subscriptionId } = req.body;
         if (!subscriptionId) return res.status(400).json({ error: 'Subscription ID required' });
@@ -397,7 +399,7 @@ app.post('/api/stripe/cancel-subscription', authenticateToken, async (req, res) 
 // AI API PROXY
 // ============================================
 
-app.post('/api/ai/chat', async (req, res) => {
+app.post('/ai/chat', async (req, res) => {
     console.log('--- AI Request Start (Netlify) ---');
     console.log('Method:', req.method);
 
