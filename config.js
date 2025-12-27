@@ -9,7 +9,9 @@ const CONFIG = {
     : '/api/ai/chat', // 通过后端代理
 
   // Stripe 可发布密钥 - 通过环境变量注入
-  STRIPE_PUBLISHABLE_KEY: (typeof window !== 'undefined' && window.ENV && window.ENV.STRIPE_PUBLISHABLE_KEY) || '',
+  // 使用测试密钥作为fallback（仅用于开发和测试）
+  STRIPE_PUBLISHABLE_KEY: (typeof window !== 'undefined' && window.ENV && window.ENV.STRIPE_PUBLISHABLE_KEY) ||
+    'pk_test_51QYBqbP3r4cXOLlBKCrJxqVGZqkMHGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqY',
 
   // 模型选择 - 使用 DeepSeek 和 Gemini
   AI_MODEL: 'deepseek/deepseek-chat', // 主模型：DeepSeek（高性价比，强推理能力）
