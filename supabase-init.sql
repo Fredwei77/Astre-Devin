@@ -95,34 +95,34 @@ ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
 -- 9. 创建 RLS 策略
 
 -- 商品：所有人可读
-CREATE POLICY IF NOT EXISTS "Anyone can view active products"
+CREATE POLICY "Anyone can view active products"
     ON products FOR SELECT
     USING (is_active = true);
 
 -- 订阅：用户只能查看和管理自己的订阅
-CREATE POLICY IF NOT EXISTS "Users can view own subscriptions"
+CREATE POLICY "Users can view own subscriptions"
     ON subscriptions FOR SELECT
     USING (user_id = current_setting('app.user_id')::UUID);
 
-CREATE POLICY IF NOT EXISTS "Users can insert own subscriptions"
+CREATE POLICY "Users can insert own subscriptions"
     ON subscriptions FOR INSERT
     WITH CHECK (user_id = current_setting('app.user_id')::UUID);
 
-CREATE POLICY IF NOT EXISTS "Users can update own subscriptions"
+CREATE POLICY "Users can update own subscriptions"
     ON subscriptions FOR UPDATE
     USING (user_id = current_setting('app.user_id')::UUID);
 
 -- 订单：用户只能查看自己的订单
-CREATE POLICY IF NOT EXISTS "Users can view own orders"
+CREATE POLICY "Users can view own orders"
     ON orders FOR SELECT
     USING (user_id = current_setting('app.user_id')::UUID);
 
-CREATE POLICY IF NOT EXISTS "Users can insert own orders"
+CREATE POLICY "Users can insert own orders"
     ON orders FOR INSERT
     WITH CHECK (user_id = current_setting('app.user_id')::UUID);
 
 -- 订单项：暂时允许所有已认证用户访问（后续可优化）
-CREATE POLICY IF NOT EXISTS "Users can view order items"
+CREATE POLICY "Users can view order items"
     ON order_items FOR SELECT
     USING (true);
 
