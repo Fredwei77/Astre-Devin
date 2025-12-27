@@ -88,11 +88,10 @@ const authenticateToken = async (req, res, next) => {
 // ============================================
 // API 路由
 // ============================================
-// Note: Netlify redirects /api/* to /.netlify/functions/api/*
-// So we define routes WITHOUT /api prefix here
+// Note: Express receives full path including /api prefix from Netlify
 
 // 用户注册
-app.post('/auth/register', async (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
     try {
         const { email, password, username } = req.body;
 
@@ -163,7 +162,7 @@ app.post('/auth/register', async (req, res) => {
 });
 
 // 用户登录
-app.post('/auth/login', async (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -226,7 +225,7 @@ app.post('/auth/login', async (req, res) => {
 });
 
 // AI 占卜接口
-app.post('/divination', authenticateToken, async (req, res) => {
+app.post('/api/divination', authenticateToken, async (req, res) => {
     try {
         const { question, type = 'general' } = req.body;
 
@@ -294,8 +293,7 @@ app.post('/divination', authenticateToken, async (req, res) => {
 });
 
 // 支付相关接口
-// Note: Netlify redirects /api/* to this function, so routes are defined without /api prefix
-app.post('/stripe/create-payment-intent', async (req, res) => {
+app.post('/api/stripe/create-payment-intent', async (req, res) => {
     console.log('=== Payment Intent Request ===');
     console.log('Path:', req.path);
     console.log('Method:', req.method);
@@ -350,7 +348,7 @@ app.post('/stripe/create-payment-intent', async (req, res) => {
 });
 
 // 创建订阅
-app.post('/stripe/create-subscription', async (req, res) => {
+app.post('/api/stripe/create-subscription', async (req, res) => {
     console.log('=== Create Subscription Request ===');
     console.log('Body:', JSON.stringify(req.body));
     try {
@@ -408,7 +406,7 @@ app.post('/stripe/create-subscription', async (req, res) => {
 });
 
 // 取消订阅
-app.post('/stripe/cancel-subscription', async (req, res) => {
+app.post('/api/stripe/cancel-subscription', async (req, res) => {
     console.log('=== Cancel Subscription Request ===');
     console.log('Body:', JSON.stringify(req.body));
     try {
@@ -430,7 +428,7 @@ app.post('/stripe/cancel-subscription', async (req, res) => {
 // AI API PROXY
 // ============================================
 
-app.post('/ai/chat', async (req, res) => {
+app.post('/api/ai/chat', async (req, res) => {
     console.log('--- AI Request Start (Netlify) ---');
     console.log('Method:', req.method);
 
