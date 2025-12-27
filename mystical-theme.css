@@ -575,5 +575,69 @@ button[type="submit"], .social-btn {
         transform: none;
     }
 }
+
+/* ============================================
+    AI Response & Markdown Styles
+    ============================================ */
+.ai-response-container {
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+.ai-response-container h1, 
+.ai-response-container h2, 
+.ai-response-container h3 {
+    font-family: 'Noto Serif SC', serif;
+    color: var(--mystic-gold) !important;
+    letter-spacing: 0.05em;
+    position: relative;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.ai-response-container h2::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 30px;
+    height: 2px;
+    background: var(--mystic-gold);
+}
+
+.ai-response-container strong {
+    color: var(--mystic-gold-light);
+    font-weight: 600;
+}
+
+.ai-response-container blockquote {
+    background: rgba(212, 175, 55, 0.05);
+    border-left: 4px solid var(--mystic-gold);
+    padding: 0.75rem 1rem;
+    margin: 1.5rem 0;
+    border-radius: 0 4px 4px 0;
+    font-size: 0.95em;
+    color: var(--text-primary);
+}
+
+.ai-response-container ul, 
+.ai-response-container ol {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+    list-style-type: disc;
+}
+
+.ai-response-container li {
+    position: relative;
+    margin-bottom: 0.5rem;
+}
+
+.ai-response-container hr {
+    opacity: 0.3;
+    margin: 2rem 0;
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--mystic-gold), transparent);
+}
  
  

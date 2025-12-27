@@ -16,6 +16,17 @@ class FengShuiAI {
     }
 
     /**
+     * 同步分析数据（由外部调用）
+     * @param {Object} result AI分析结果
+     * @param {Object} spaceData 原始空间数据
+     */
+    setAnalysisData(result, spaceData) {
+        console.log('🔄 同步风水分析数据:', { result, spaceData });
+        this.analysisResult = result;
+        this.spaceData = spaceData;
+    }
+
+    /**
      * 设置语言切换监听
      */
     setupLanguageListener() {
@@ -391,7 +402,15 @@ class FengShuiAI {
         };
 
         // 找到最接近的方位
-        const normalizedDir = ((direction % 360) + 360) % 360;
+        let normalizedDir = 0;
+        if (typeof direction === 'string') {
+            // 处理 "45°" 或 "45 (North)" 这种格式
+            normalizedDir = parseFloat(direction.replace(/[^\d.]/g, '')) || 0;
+        } else {
+            normalizedDir = (direction || 0);
+        }
+        normalizedDir = ((normalizedDir % 360) + 360) % 360;
+
         const closestDir = Object.keys(directions).reduce((prev, curr) => {
             return Math.abs(curr - normalizedDir) < Math.abs(prev - normalizedDir) ? curr : prev;
         });
@@ -421,7 +440,8 @@ class FengShuiAI {
         console.log('🤖 开始处理风水追问...');
 
         // 检查是否有分析结果
-        if (!this.analysisResult) {
+        if (!this.analysisResult || !this.spaceData) {
+            console.error('❌ 追问失败: 缺少分析结果或空间数据', { result: this.analysisResult, data: this.spaceData });
             alert(window.i18n?.t('fengshui.followup.noResult') || '请先进行风水分析再提问');
             return;
         }
@@ -494,23 +514,45 @@ ${labels.analysis}:
             const userPrompt = `${window.i18n?.t('fengshui.followup.title') || 'Follow-up'}: ${question}`;
 
             // 调用AI服务
-            const aiService = window.aiService || (window.AIService ? new window.AIService() : null);
+            const aiService = window.aiService || (window.destinyAI && window.destinyAI.aiService);
             if (!aiService) {
                 throw new Error('AI服务未初始化');
             }
 
-            const response = await aiService.chatWithSystem(systemPrompt, userPrompt);
+            const response = await aiService.chatWithSystem(systemPrompt, userPrompt, {
+                type: 'fengshui-followup'
+            });
 
-            if (!response || typeof response !== 'string') {
-                throw new Error('AI响应格式错误');
+            if (!response) {
+                throw new Error('AI响应为空');
             }
 
-            // 显示回答
+            // 处理可能被错误包裹在 JSON 中的响应
+            let cleanResponse = response;
+            if (typeof response === 'string' && response.trim().startsWith('{')) {
+                try {
+                    const parsed = JSON.parse(response);
+                    cleanResponse = parsed.content || parsed.answer || parsed.text || response;
+                } catch (e) {
+                    console.warn('尝试解析疑似 JSON 的响应失败:', e);
+                }
+            }
+
+            // 隐藏加载状态并显示回答区域
+            if (loadingDiv) loadingDiv.classList.add('hidden');
+            if (answerDiv) answerDiv.classList.remove('hidden');
+
+            // 显示回答并应用打字机效果
             if (answerText) {
-                answerText.textContent = response;
-            }
-            if (answerDiv) {
-                answerDiv.classList.remove('hidden');
+                const formattedHtml = window.MarkdownFormatter ? window.MarkdownFormatter.parse(cleanResponse) : cleanResponse.replace(/\n/g, '<br>');
+
+                // 执行打字机展示
+                if (window.TypingEffect) {
+                    await window.TypingEffect.type(answerText, formattedHtml, 30);
+                } else {
+                    answerText.innerHTML = formattedHtml;
+                }
+
                 // 滚动到回答位置
                 answerDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }

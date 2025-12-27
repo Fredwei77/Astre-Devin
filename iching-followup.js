@@ -3,7 +3,7 @@
  * Fix for I-Ching Deep Truth Exploration Feature
  */
 
-(function() {
+(function () {
     'use strict';
 
     // 存储当前易经结果
@@ -16,11 +16,11 @@
         // 获取当前语言
         const lang = localStorage.getItem('preferredLanguage') || 'zh';
         const isEnglish = lang === 'en';
-        
+
         if (isEnglish) {
             return [
                 "How can I better seize this opportunity?",
-                "What risks should I be aware of?", 
+                "What risks should I be aware of?",
                 "What is the best timing for action?",
                 "How should I adjust my mindset?",
                 "What resources do I need to prepare?",
@@ -46,7 +46,7 @@
         if (!container) return;
 
         container.innerHTML = '';
-        
+
         questions.forEach(question => {
             const button = document.createElement('button');
             button.className = 'text-xs bg-mystic-gold/20 hover:bg-mystic-gold/30 text-mystic-gold border border-mystic-gold/40 px-3 py-2 rounded-lg transition-all';
@@ -63,7 +63,7 @@
      */
     async function handleIChingFollowupQuestion() {
         console.log('🔮 开始处理易经追问请求...');
-        
+
         const input = document.getElementById('followupInput');
         const button = document.getElementById('askFollowup');
         const loading = document.getElementById('followupLoading');
@@ -72,7 +72,7 @@
 
         const question = input.value.trim();
         console.log('📝 用户问题:', question);
-        
+
         if (!question) {
             console.warn('⚠️ 用户未输入问题');
             const lang = localStorage.getItem('preferredLanguage') || 'zh';
@@ -88,7 +88,7 @@
             alert(message);
             return;
         }
-        
+
         console.log('✅ 验证通过，开始AI分析...');
 
         // 显示加载状态
@@ -99,20 +99,20 @@
         try {
             // 获取当前语言
             const lang = localStorage.getItem('preferredLanguage') || 'zh';
-            
+
             // 构建易经追问的系统提示词
             const systemPrompt = buildIChingSystemPrompt(lang);
-            
+
             // 构建用户提示词
             const userPrompt = buildIChingFollowupContext(currentIChingResult, question, lang);
-            
+
             // 调用AI服务
             const aiService = window.aiService || (window.AIService ? new window.AIService() : null);
             if (!aiService) {
                 throw new Error('AI服务未初始化');
             }
             const response = await aiService.chatWithSystem(systemPrompt, userPrompt);
-            
+
             // 显示答案
             if (answerText) {
                 answerText.innerHTML = formatIChingAnswer(response, lang);
@@ -125,14 +125,14 @@
 
         } catch (error) {
             console.error('易经追问失败:', error);
-            
+
             const lang = localStorage.getItem('preferredLanguage') || 'zh';
             let errorMessage = lang === 'en' ? 'AI analysis failed, please try again later' : 'AI解答失败，请稍后重试';
-            
+
             if (error.message.includes('AI服务未初始化')) {
                 errorMessage = lang === 'en' ? 'AI service initialization failed, please refresh the page' : 'AI服务初始化失败，请刷新页面重试';
             }
-            
+
             alert(errorMessage);
         } finally {
             button.disabled = false;
@@ -222,10 +222,10 @@ ${question}
      * 格式化易经答案
      */
     function formatIChingAnswer(answer, lang) {
-        // 将换行符转换为HTML
-        let formatted = answer.replace(/\n/g, '<br>');
-        
-        // 高亮关键词
+        // 使用 MarkdownFormatter 进行解析
+        let formatted = window.MarkdownFormatter ? window.MarkdownFormatter.parse(answer) : answer.replace(/\n/g, '<br>');
+
+        // 高亮关键词（在 HTML 生成后处理）
         const keywords = lang === 'en' ? [
             'Guidance', 'Wisdom', 'Timing', 'Action', 'Wait', 'Caution', 'Opportunity',
             'Hexagram', 'Changing', 'Transform', 'Balance', 'Harmony', 'Flow', 'Energy'
@@ -233,12 +233,12 @@ ${question}
             '指导', '智慧', '时机', '行动', '等待', '谨慎', '机会',
             '卦象', '变化', '转化', '平衡', '和谐', '顺势', '能量'
         ];
-        
+
         keywords.forEach(keyword => {
             const regex = new RegExp(`\\b(${keyword})\\b`, 'gi');
             formatted = formatted.replace(regex, '<span class="text-mystic-gold font-semibold">$1</span>');
         });
-        
+
         return formatted;
     }
 
@@ -247,19 +247,19 @@ ${question}
      */
     function initIChingFollowup(ichingResult) {
         console.log('🔮 初始化易经追问功能...');
-        
+
         if (!ichingResult) {
             console.warn('⚠️ 易经结果为空，无法初始化追问功能');
             return;
         }
-        
+
         currentIChingResult = ichingResult;
         console.log('✅ 易经结果已保存:', ichingResult);
-        
+
         // 生成并渲染建议问题
         const questions = generateIChingSuggestedQuestions(ichingResult);
         renderIChingSuggestedQuestions(questions);
-        
+
         // 绑定追问按钮事件
         const askButton = document.getElementById('askFollowup');
         if (askButton) {
@@ -281,7 +281,7 @@ ${question}
         } else {
             console.warn('⚠️ 未找到易经追问输入框元素');
         }
-        
+
         console.log('🔮 易经追问功能初始化完成');
     }
 
@@ -290,11 +290,11 @@ ${question}
      */
     function resetIChingFollowup() {
         currentIChingResult = null;
-        
+
         const input = document.getElementById('followupInput');
         const answerSection = document.getElementById('followupAnswer');
         const suggestionsContainer = document.getElementById('followupSuggestions');
-        
+
         if (input) input.value = '';
         if (answerSection) answerSection.classList.add('hidden');
         if (suggestionsContainer) suggestionsContainer.innerHTML = '';

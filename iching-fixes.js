@@ -82,7 +82,7 @@ console.log('🔧 加载易经页面修复...');
             // 检查是否有占卜结果 - 增强兼容性
             const result = window.currentIChing || window.ichingResult;
             if (!result || !result.hexagramNumber) {
-                alert('请先进行易经占卜再提问');
+                alert(window.i18n?.t('iching.error.noReading') || '请先进行易经占卜再提问');
                 return;
             }
 
@@ -104,7 +104,7 @@ console.log('🔧 加载易经页面修复...');
             console.log('📝 用户追问:', question);
 
             if (!question) {
-                alert('请输入您的追问');
+                alert(window.i18n?.t('iching.followup.required') || '请输入您的追问');
                 return;
             }
 
@@ -156,18 +156,24 @@ console.log('🔧 加载易经页面修复...');
                     throw new Error('AI服务未初始化');
                 }
 
-                const response = await aiService.chatWithSystem(systemPrompt, userPrompt);
+                const response = await aiService.chatWithSystem(systemPrompt, userPrompt, { type: 'iching-followup' });
 
                 if (!response || typeof response !== 'string') {
                     throw new Error('AI响应格式错误');
                 }
 
-                // 显示回答
-                if (answerText) {
-                    answerText.textContent = response;
-                }
-                if (answerDiv) {
-                    answerDiv.classList.remove('hidden');
+                // 清空之前的内容
+                if (answerText) answerText.innerHTML = '';
+                if (answerDiv) answerDiv.classList.remove('hidden');
+
+                // 使用打字机效果显示回答 (支持 Markdown)
+                if (window.TypingEffect && answerText) {
+                    const formatter = window.MarkdownFormatter || { parse: (t) => t };
+                    const formattedResponse = formatter.parse(response);
+                    await window.TypingEffect.type(answerText, formattedResponse, 30);
+                } else if (answerText) {
+                    const formatter = window.MarkdownFormatter || { parse: (t) => t };
+                    answerText.innerHTML = formatter.parse(response);
                 }
 
                 // 清空输入框
@@ -178,11 +184,11 @@ console.log('🔧 加载易经页面修复...');
             } catch (error) {
                 console.error('❌ 易经追问失败:', error);
 
-                let errorMessage = 'AI解答失败，请稍后重试';
+                let errorMessage = window.i18n?.t('iching.error.followupFailed') || 'AI解答失败，请稍后重试';
                 if (error.message.includes('AI服务未初始化')) {
-                    errorMessage = 'AI服务初始化失败，请刷新页面重试';
+                    errorMessage = window.i18n?.t('common.error.aiNotInit') || 'AI服务初始化失败，请刷新页面重试';
                 } else if (error.message.includes('请先进行易经占卜')) {
-                    errorMessage = '请先进行易经占卜后再提问';
+                    errorMessage = window.i18n?.t('iching.error.noReading') || '请先进行易经占卜后再提问';
                 }
 
                 alert(errorMessage);

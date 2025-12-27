@@ -183,8 +183,9 @@ class IChingAI {
         const hexagramTitle = document.getElementById('hexagramTitle');
         const hexagramDescription = document.getElementById('hexagramDescription');
 
+        const label = window.i18n ? window.i18n.t('iching.hexagram.label') : 'Hexagram';
         if (hexagramTitle) {
-            hexagramTitle.textContent = `卦象 ${reading.hexagramNumber}: ${reading.hexagramName}`;
+            hexagramTitle.textContent = `${label} ${reading.hexagramNumber}: ${reading.hexagramName}`;
         }
 
         if (hexagramDescription) {
@@ -197,23 +198,24 @@ class IChingAI {
     }
 
     /**
-     * 更新解读内容
+     * 更新解讀內容
      */
     updateInterpretation(reading) {
+        const formatter = window.MarkdownFormatter || { parse: (t) => t };
         const judgmentText = document.getElementById('judgmentText');
         const imageText = document.getElementById('imageText');
         const adviceText = document.getElementById('adviceText');
 
         if (judgmentText) {
-            judgmentText.textContent = reading.judgment || '';
+            judgmentText.innerHTML = formatter.parse(reading.judgment || '');
         }
 
         if (imageText) {
-            imageText.textContent = reading.image || '';
+            imageText.innerHTML = formatter.parse(reading.image || '');
         }
 
         if (adviceText) {
-            adviceText.textContent = reading.advice || '';
+            adviceText.innerHTML = formatter.parse(reading.advice || '');
         }
 
         // Update Changing Lines Interpretation
@@ -222,7 +224,7 @@ class IChingAI {
 
         if (changingLinesText && changingLinesCard) {
             if (reading.changingLinesInterpretation) {
-                changingLinesText.textContent = reading.changingLinesInterpretation;
+                changingLinesText.innerHTML = formatter.parse(reading.changingLinesInterpretation);
                 changingLinesCard.classList.remove('hidden');
             } else {
                 changingLinesCard.classList.add('hidden');
@@ -235,7 +237,7 @@ class IChingAI {
 
         if (futureHexagramText && futureHexagramCard) {
             if (reading.futureHexagram) {
-                futureHexagramText.textContent = reading.futureHexagram;
+                futureHexagramText.innerHTML = formatter.parse(reading.futureHexagram);
                 futureHexagramCard.classList.remove('hidden');
             } else {
                 futureHexagramCard.classList.add('hidden');

@@ -181,17 +181,15 @@ ${t('fengshui.followup.response_requirements') || 'Provide actionable advice in 
     }
 
     /**
-     * 格式化AI答案 - 支持多语言关键词高亮
+     * 格式化AI答案 - 支持 Markdown 渲染和关键词高亮
      */
     function formatAnswer(answer) {
-        // 获取当前语言
-        const lang = localStorage.getItem('preferredLanguage') || 'zh';
-        const isEnglish = lang === 'en';
+        if (window.MarkdownFormatter) {
+            return window.MarkdownFormatter.parse(answer);
+        }
 
-        // 将换行符转换为HTML
+        // 降级处理
         let formatted = answer.replace(/\n/g, '<br>');
-
-        // 高亮关键词 - 使用 translations.js 中的关键词列表
         const keywordsStr = window.i18n?.t('divination.followup.keywords') || '';
         const keywords = keywordsStr.split(',').filter(Boolean);
 
@@ -200,7 +198,6 @@ ${t('fengshui.followup.response_requirements') || 'Provide actionable advice in 
             formatted = formatted.replace(regex, '<span class="text-mystic-gold font-semibold">$1</span>');
         });
 
-        // 处理列表
         formatted = formatted.replace(/(\d+)\.\s/g, '<br><strong class="text-mystic-gold">$1.</strong> ');
 
         return formatted;

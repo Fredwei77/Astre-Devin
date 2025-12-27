@@ -93,6 +93,7 @@
         button.disabled = true;
         loading.classList.remove('hidden');
         answerSection.classList.add('hidden');
+        answerText.innerHTML = ''; // 清空之前的内容
 
         try {
             // 获取当前语言
@@ -113,14 +114,29 @@
             if (!aiService) {
                 throw new Error('AI服务未初始化');
             }
-            const response = await aiService.chatWithSystem(systemPrompt, userPrompt);
+            const response = await aiService.chatWithSystem(systemPrompt, userPrompt, {
+                type: 'divination-followup'
+            });
 
-            // 显示答案
-            answerText.innerHTML = formatAnswer(response);
+            // 隐藏加载状态并显示回答区域
+            loading.classList.add('hidden');
             answerSection.classList.remove('hidden');
+
+            // 格式化解析 Markdown
+            const formattedHtml = formatAnswer(response);
+
+            // 执行打字机效果
+            if (window.TypingEffect) {
+                await window.TypingEffect.type(answerText, formattedHtml, 30);
+            } else {
+                answerText.innerHTML = formattedHtml;
+            }
 
             // 滚动到答案位置
             answerSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            // 清空输入框
+            input.value = '';
 
         } catch (error) {
             console.error('追问失败:', error);
@@ -295,10 +311,10 @@ ${question}
      * 格式化AI答案 - 支持多语言关键词高亮
      */
     function formatAnswer(answer) {
-        // 将换行符转换为HTML
-        let formatted = answer.replace(/\n/g, '<br>');
+        // 使用 MarkdownFormatter 进行解析
+        let formatted = window.MarkdownFormatter ? window.MarkdownFormatter.parse(answer) : answer.replace(/\n/g, '<br>');
 
-        // 从 i18n 系统获取关键词
+        // 从 i18n 系统获取关键词并进行高亮（在 HTML 生成后处理）
         const keywordsKey = 'divination.followup.keywords';
         const keywordsStr = window.i18n?.t(keywordsKey);
 
