@@ -119,6 +119,22 @@
     }
 
     /**
+     * 获取认证请求头
+     */
+    function getAuthHeaders() {
+        const token = localStorage.getItem('destinyai_token');
+        const headers = { 'Content-Type': 'application/json' };
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        } else {
+            console.warn('⚠️ 未找到认证令牌，支付请求可能失败');
+        }
+
+        return headers;
+    }
+
+    /**
      * 模拟网络延迟
      */
     function mockDelay(ms = 1500) {
@@ -149,9 +165,7 @@
 
                 const response = await fetch(endpoint, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: getAuthHeaders(),
                     body: JSON.stringify({
                         amount,
                         currency,
@@ -162,6 +176,11 @@
                 const data = await response.json();
 
                 if (!response.ok) {
+                    // 特殊处理认证错误
+                    if (response.status === 401 || response.status === 403) {
+                        console.error('❌ 认证失败：请先登录');
+                        throw new Error('请先登录后再进行支付');
+                    }
                     throw new Error(data.error || '创建支付意图失败');
                 }
 
@@ -270,9 +289,7 @@
 
                 const response = await fetch(endpoint, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: getAuthHeaders(),
                     body: JSON.stringify({
                         priceId,
                         billingDetails
@@ -360,9 +377,7 @@
 
                 const response = await fetch(endpoint, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: getAuthHeaders(),
                     body: JSON.stringify({
                         subscriptionId
                     })
