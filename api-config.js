@@ -5,10 +5,11 @@
 // API Configuration
 const API_CONFIG = {
     // 后端API基础URL - 请修改为您的实际后端地址
-    BASE_URL: 'https://api.jiushiai.com', // 替换为您的后端API地址
+    // 后端API基础URL - 空字符串表示使用当前域名（适配 Netlify Functions）
+    BASE_URL: '',
 
-    // API版本
-    VERSION: 'v1',
+    // API版本 - 移除版本号以匹配 server-netlify.js 的 /api/ai/chat 路由
+    VERSION: '',
 
     // API端点
     ENDPOINTS: {
@@ -74,7 +75,8 @@ const API_CONFIG = {
 };
 
 // 设置全局API基础URL
-window.API_BASE_URL = `${API_CONFIG.BASE_URL}/api/${API_CONFIG.VERSION}`;
+// 设置全局API基础URL - 移除多余的斜杠
+window.API_BASE_URL = `${API_CONFIG.BASE_URL}/api${API_CONFIG.VERSION ? '/' + API_CONFIG.VERSION : ''}`;
 
 // API请求工具类
 class APIClient {
