@@ -292,7 +292,8 @@ app.post('/api/divination', authenticateToken, async (req, res) => {
 });
 
 // 支付相关接口
-app.post('/api/create-payment-intent', authenticateToken, async (req, res) => {
+// 支付相关接口
+app.post('/api/stripe/create-payment-intent', authenticateToken, async (req, res) => {
     try {
         const { amount, currency = 'usd' } = req.body;
 
@@ -316,6 +317,79 @@ app.post('/api/create-payment-intent', authenticateToken, async (req, res) => {
             message: '支付初始化失败',
             error: error.message
         });
+    }
+});
+
+// 创建订阅
+app.post('/api/stripe/create-subscription', authenticateToken, async (req, res) => {
+    try {
+        const { priceId, billingDetails = {} } = req.body;
+
+        if (!priceId) {
+            return res.status(400).json({ error: '价格 ID 不能为空' });
+        }
+
+        // 获取或创建客户
+        let customer;
+        const { email, name } = billingDetails;
+
+        // 尝试从用户表中获取 stripe_customer_id
+        const { data: user } = await supabase
+            .from('users')
+            .select('stripe_customer_id, email')
+            .eq('id', req.user.userId)
+            .single();
+
+        if (user && user.stripe_customer_id) {
+            customer = { id: user.stripe_customer_id };
+        } else {
+            // 创建新客户
+            customer = await stripe.customers.create({
+                email: email || user?.email || req.user.email,
+                name: name || req.user.username,
+                metadata: { userId: req.user.userId }
+            });
+
+            // 更新用户表
+            await supabase
+                .from('users')
+                .update({ stripe_customer_id: customer.id })
+                .eq('id', req.user.userId);
+        }
+
+        const subscription = await stripe.subscriptions.create({
+            customer: customer.id,
+            items: [{ price: priceId }],
+            payment_behavior: 'default_incomplete',
+            payment_settings: { save_default_payment_method: 'on_subscription' },
+            expand: ['latest_invoice.payment_intent'],
+            metadata: { userId: req.user.userId }
+        });
+
+        res.json({
+            subscriptionId: subscription.id,
+            clientSecret: subscription.latest_invoice.payment_intent.client_secret
+        });
+    } catch (error) {
+        console.error('Create subscription error:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// 取消订阅
+app.post('/api/stripe/cancel-subscription', authenticateToken, async (req, res) => {
+    try {
+        const { subscriptionId } = req.body;
+        if (!subscriptionId) return res.status(400).json({ error: 'Subscription ID required' });
+
+        const subscription = await stripe.subscriptions.update(subscriptionId, {
+            cancel_at_period_end: true
+        });
+
+        res.json({ subscription });
+    } catch (error) {
+        console.error('Cancel subscription error:', error);
+        res.status(500).json({ error: error.message });
     }
 });
 
