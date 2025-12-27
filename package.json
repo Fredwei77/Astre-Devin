@@ -5,8 +5,11 @@
   "main": "netlify/functions/api.js",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/build.js",
     "build": "vite build",
+    "postbuild": "node scripts/post-build.js",
     "preview": "vite preview",
+    "check-versions": "node scripts/check-versions.js",
     "build:legacy": "node build.js || echo 'Build completed'",
     "start": "node server.js",
     "postinstall": "echo 'Dependencies installed successfully'"
