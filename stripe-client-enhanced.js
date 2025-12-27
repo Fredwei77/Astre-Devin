@@ -160,7 +160,7 @@
                     };
                 }
 
-                const baseUrl = window.API_BASE_URL || '';
+                const baseUrl = window.API_BASE_URL || '/api';
                 const endpoint = baseUrl + '/stripe/create-payment-intent';
 
                 const response = await fetch(endpoint, {
@@ -284,7 +284,7 @@
                     };
                 }
 
-                const baseUrl = window.API_BASE_URL || '';
+                const baseUrl = window.API_BASE_URL || '/api';
                 const endpoint = baseUrl + '/stripe/create-subscription';
 
                 const response = await fetch(endpoint, {
@@ -372,7 +372,7 @@
                     };
                 }
 
-                const baseUrl = window.API_BASE_URL || '';
+                const baseUrl = window.API_BASE_URL || '/api';
                 const endpoint = baseUrl + '/stripe/cancel-subscription';
 
                 const response = await fetch(endpoint, {

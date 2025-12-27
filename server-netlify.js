@@ -90,7 +90,7 @@ const authenticateToken = async (req, res, next) => {
 // ============================================
 
 // 用户注册
-app.post('/api/register', async (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
     try {
         const { email, password, username } = req.body;
 
@@ -161,7 +161,7 @@ app.post('/api/register', async (req, res) => {
 });
 
 // 用户登录
-app.post('/api/login', async (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -292,9 +292,8 @@ app.post('/api/divination', authenticateToken, async (req, res) => {
 });
 
 // 支付相关接口
-// 注意：netlify.toml 已将 /api/* 重定向到 /.netlify/functions/api/*
-// 所以这里的路由不需要 /api 前缀
-app.post('/stripe/create-payment-intent', authenticateToken, async (req, res) => {
+// Note: Netlify redirects /api/* to this function. We must match the full path /api/stripe/...
+app.post('/api/stripe/create-payment-intent', authenticateToken, async (req, res) => {
     try {
         const { amount, currency = 'usd' } = req.body;
 
@@ -322,7 +321,7 @@ app.post('/stripe/create-payment-intent', authenticateToken, async (req, res) =>
 });
 
 // 创建订阅
-app.post('/stripe/create-subscription', authenticateToken, async (req, res) => {
+app.post('/api/stripe/create-subscription', authenticateToken, async (req, res) => {
     try {
         const { priceId, billingDetails = {} } = req.body;
 
@@ -378,7 +377,7 @@ app.post('/stripe/create-subscription', authenticateToken, async (req, res) => {
 });
 
 // 取消订阅
-app.post('/stripe/cancel-subscription', authenticateToken, async (req, res) => {
+app.post('/api/stripe/cancel-subscription', authenticateToken, async (req, res) => {
     try {
         const { subscriptionId } = req.body;
         if (!subscriptionId) return res.status(400).json({ error: 'Subscription ID required' });
