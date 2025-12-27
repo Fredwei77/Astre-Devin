@@ -295,35 +295,64 @@ app.post('/divination', authenticateToken, async (req, res) => {
 
 // 支付相关接口
 // Note: Netlify redirects /api/* to this function, so routes are defined without /api prefix
-app.post('/stripe/create-payment-intent', authenticateToken, async (req, res) => {
+app.post('/stripe/create-payment-intent', async (req, res) => {
+    console.log('=== Payment Intent Request ===');
+    console.log('Path:', req.path);
+    console.log('Method:', req.method);
+    console.log('Headers:', JSON.stringify(req.headers));
+    console.log('Body:', JSON.stringify(req.body));
+
     try {
         const { amount, currency = 'usd' } = req.body;
 
+        if (!amount) {
+            console.error('Missing amount in request');
+            return res.status(400).json({
+                success: false,
+                error: 'Amount is required'
+            });
+        }
+
+        console.log('Creating payment intent for amount:', amount);
+
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: amount * 100, // 转换为分
+            amount: Math.round(amount * 100), // 转换为分
             currency,
             metadata: {
-                userId: req.user.userId
+                source: 'destiny-ai',
+                timestamp: new Date().toISOString()
             }
         });
 
-        res.json({
+        console.log('Payment intent created:', paymentIntent.id);
+
+        const response = {
             success: true,
-            clientSecret: paymentIntent.client_secret
-        });
+            clientSecret: paymentIntent.client_secret,
+            paymentIntentId: paymentIntent.id
+        };
+
+        console.log('Sending response:', JSON.stringify(response));
+        res.json(response);
 
     } catch (error) {
-        console.error('Payment intent error:', error);
+        console.error('=== Payment Intent Error ===');
+        console.error('Error:', error);
+        console.error('Stack:', error.stack);
+
         res.status(500).json({
             success: false,
             message: '支付初始化失败',
-            error: error.message
+            error: error.message,
+            details: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });
     }
 });
 
 // 创建订阅
-app.post('/stripe/create-subscription', authenticateToken, async (req, res) => {
+app.post('/stripe/create-subscription', async (req, res) => {
+    console.log('=== Create Subscription Request ===');
+    console.log('Body:', JSON.stringify(req.body));
     try {
         const { priceId, billingDetails = {} } = req.body;
 
@@ -379,7 +408,9 @@ app.post('/stripe/create-subscription', authenticateToken, async (req, res) => {
 });
 
 // 取消订阅
-app.post('/stripe/cancel-subscription', authenticateToken, async (req, res) => {
+app.post('/stripe/cancel-subscription', async (req, res) => {
+    console.log('=== Cancel Subscription Request ===');
+    console.log('Body:', JSON.stringify(req.body));
     try {
         const { subscriptionId } = req.body;
         if (!subscriptionId) return res.status(400).json({ error: 'Subscription ID required' });
