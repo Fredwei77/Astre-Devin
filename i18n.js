@@ -166,7 +166,7 @@ class I18n {
 
                 // Disclaimer
                 'home.disclaimer.title': '⚠️ Important Disclaimer',
-                'home.disclaimer.text': 'Destiny AI provides entertainment and self-reflection tools based on ancient Eastern wisdom traditions. Our readings and analyses are for informational and entertainment purposes only and should not be considered as professional advice for medical, legal, financial, or psychological matters. Results are not guaranteed and should not be the sole basis for important life decisions. Please consult qualified professionals for matters requiring expert guidance.',
+                'home.disclaimer.text': 'Astre Devin provides entertainment and self-reflection tools based on energy cycle analysis and personality blueprinting systems. Our readings and analyses are for informational and entertainment purposes only and should not be considered as professional advice for medical, legal, financial, or psychological matters. Results are not guaranteed and should not be the sole basis for important life decisions. Please consult qualified professionals for matters requiring expert guidance.',
 
                 // Footer
                 'footer.description': 'Combining ancient Eastern wisdom with modern AI technology to help you discover your destiny and make better life decisions.',
@@ -424,7 +424,7 @@ class I18n {
 
                 // 免责声明
                 'home.disclaimer.title': '⚠️ 重要免责声明',
-                'home.disclaimer.text': '命运AI基于古老东方智慧传统提供娱乐和自我反思工具。我们的解读和分析仅用于信息和娱乐目的，不应被视为医疗、法律、财务或心理事务的专业建议。结果不保证，不应作为重要人生决策的唯一依据。需要专家指导的事务请咨询合格的专业人士。',
+                'home.disclaimer.text': 'Astre Devin 基于能量周期分析和性格蓝图系统提供娱乐和自我反思工具。我们的解读和分析仅用于信息和娱乐目的，不应被视为医疗、法律、财务或心理事务的专业建议。结果不保证，不应作为重要人生决策的唯一依据。需要专家指导的事务请咨询合格的专业人士。',
 
                 // 页脚
                 'footer.description': '结合古老东方智慧与现代AI技术，帮助您探索命运并做出更好的人生决策。',
@@ -678,7 +678,7 @@ class I18n {
 
                 // 免責聲明
                 'home.disclaimer.title': '⚠️ 重要免責聲明',
-                'home.disclaimer.text': '命運AI基於古老東方智慧傳統提供娛樂和自我反思工具。我們的解讀和分析僅用於資訊和娛樂目的，不應被視為醫療、法律、財務或心理事務的專業建議。結果不保證，不應作為重要人生決策的唯一依據。需要專家指導的事務請諮詢合格的專業人士。',
+                'home.disclaimer.text': 'Astre Devin 基於能量週期分析和性格藍圖系統提供娛樂和自我反思工具。我們的解讀和分析僅用於資訊和娛樂目的，不應被視為醫療、法律、財務或心理事務的專業建議。結果不保證，不應作為重要人生決策的唯一依據。需要專家指導的事務請諮詢合格的專業人士。',
 
                 // 頁腳
                 'footer.description': '結合古老東方智慧與現代AI技術，幫助您探索命運並做出更好的人生決策。',
@@ -686,7 +686,7 @@ class I18n {
                 'footer.terms': '服務條款',
                 'footer.contact': '聯絡我們',
                 'footer.support': '支援',
-                'footer.copyright': '© 2024 命運AI。保留所有權利。通過古老智慧和現代技術賦能生活。',
+                'footer.copyright': '© 2024 九筮 Astre Devin。保留所有權利。通過古老智慧和現代技術賦能生活。',
 
                 // 工具提示
                 'tooltip.divination': '占卜是通過超自然手段尋求未來或未知知識的實踐。我們的AI使用古老的東方占星原理分析您的生辰八字。',

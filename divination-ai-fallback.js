@@ -245,9 +245,11 @@
          * 获取增强的模拟占卜数据
          */
         async getMockDivinationData(userData) {
-            // 获取当前语言
-            const language = localStorage.getItem('preferredLanguage') || 'zh';
+            // 获取当前语言 - 优先使用 i18n 实例
+            const language = (window.i18n && window.i18n.currentLanguage) || localStorage.getItem('preferredLanguage') || 'zh';
             const isEnglish = language === 'en';
+
+            console.log('[Divination Fallback] 生成模拟数据 - 当前语言:', language);
 
             // 根据用户输入生成更个性化的模拟数据
             const personalizedData = this.generatePersonalizedMockData(userData, isEnglish);

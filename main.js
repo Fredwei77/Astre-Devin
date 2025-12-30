@@ -136,8 +136,8 @@ class DestinyAI {
                 }
                 // Fallback if i18n not ready
                 return [
-                    'Discover Your Destiny',
-                    'Unlock Ancient Wisdom',
+                    'Discover Your Potential',
+                    'Unlock Inner Wisdom',
                     'Navigate Life\'s Journey',
                     'Find Your True Path'
                 ];

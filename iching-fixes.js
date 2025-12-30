@@ -134,21 +134,50 @@ console.log('🔧 加载易经页面修复...');
                 if (answerDiv) answerDiv.classList.add('hidden');
 
                 // 构建系统提示词
-                // 构建精简高效的系统提示词
-                const systemPrompt = `你是一位严谨且智慧的易经大师。请基于用户的占卜结果提供深度解读和行动建议。
-                
-占卜结果参考：
-- 卦象：第${window.currentIChing.hexagramNumber}卦 ${window.currentIChing.hexagram.name}
-- 卦义：${window.currentIChing.hexagram.meaning}
-- 整体分析：${window.currentIChing.analysis}
+                // 获取当前语言
+                const lang = (window.i18n && window.i18n.currentLanguage) || 'zh';
 
-要求：
-1. 结合卦象直接回答用户的问题。
-2. 提供 2-3 条具体、可落地的行动建议。
-3. 保持专业、温和的语调。
-4. 字数控制在 300 字以内。`;
+                // 使用 CONFIG 中的多语言系统提示词
+                let systemPrompt = '';
+                if (window.CONFIG && window.CONFIG.PROMPTS && window.CONFIG.PROMPTS.ICHING && window.CONFIG.PROMPTS.ICHING.FOLLOWUP_SYSTEM) {
+                    systemPrompt = window.CONFIG.PROMPTS.ICHING.FOLLOWUP_SYSTEM(lang);
 
-                const userPrompt = `追问问题：${question}`;
+                    // 补充当前卦象上下文信息
+                    const hexInfo = lang === 'en' ?
+                        `Current context:\n- Hexagram: No.${window.currentIChing.hexagramNumber} ${window.currentIChing.hexagram.name}\n- Interpretation: ${window.currentIChing.hexagram.meaning}\n- Overall Analysis: ${window.currentIChing.analysis}` :
+                        `当前占卜背景：\n- 卦象：第${window.currentIChing.hexagramNumber}卦 ${window.currentIChing.hexagram.name}\n- 卦义：${window.currentIChing.hexagram.meaning}\n- 整体分析：${window.currentIChing.analysis}`;
+
+                    systemPrompt = `${systemPrompt}\n\n${hexInfo}`;
+                } else {
+                    // 降级使用原有逻辑（但稍微国际化）
+                    systemPrompt = lang === 'en' ?
+                        `You are a wise I-Ching master. Please provide deep insights and actionable advice based on the user's I-Ching reading.
+                        
+                        I-Ching Reading Reference:
+                        - Hexagram: No.${window.currentIChing.hexagramNumber} ${window.currentIChing.hexagram.name}
+                        - Meaning: ${window.currentIChing.hexagram.meaning}
+                        - Overall Analysis: ${window.currentIChing.analysis}
+                        
+                        Requirements:
+                        1. Directly answer the user's question based on the hexagram.
+                        2. Provide 2-3 specific, actionable pieces of advice.
+                        3. Maintain a professional and gentle tone.
+                        4. Keep the response under 300 characters.` :
+                        `你是一位严谨且智慧的易经大师。请基于用户的占卜结果提供深度解读和行动建议。
+                        
+                        占卜结果参考：
+                        - 卦象：第${window.currentIChing.hexagramNumber}卦 ${window.currentIChing.hexagram.name}
+                        - 卦义：${window.currentIChing.hexagram.meaning}
+                        - 整体分析：${window.currentIChing.analysis}
+                        
+                        要求：
+                        1. 结合卦象直接回答用户的问题。
+                        2. 提供 2-3 条具体、可落地的行动建议。
+                        3. 保持专业、温和的语调。
+                        4. 字数控制在 300 字以内。`;
+                }
+
+                const userPrompt = lang === 'en' ? `Follow-up question: ${question}` : `追问问题：${question}`;
 
                 // 调用AI服务
                 const aiService = window.aiService || (window.AIService ? new window.AIService() : null);

@@ -246,18 +246,33 @@ class FengShuiAI {
         // Generate key from title (English version preferred as key)
         const normalizedTitle = title.toLowerCase().replace(/\s+/g, '_');
 
-        // Brute force matching for known patterns if normalized title doesn't match directly
+        // Expanded keyMap for more AI response patterns
         const keyMap = {
             'add_water_element': 'fengshui.rec.water.title',
             'increase_fire_energy': 'fengshui.rec.fire.title',
             'optimize_plant_placement': 'fengshui.rec.plant.title',
             'strategic_mirror_placement': 'fengshui.rec.mirror.title',
-            'bedroom_optimization': 'fengshui.rec.bedroom.title'
+            'bedroom_optimization': 'fengshui.rec.bedroom.title',
+            // 添加更多可能的变体
+            'add_water': 'fengshui.rec.water.title',
+            'water_element': 'fengshui.rec.water.title',
+            'increase_fire': 'fengshui.rec.fire.title',
+            'fire_energy': 'fengshui.rec.fire.title',
+            'plant_placement': 'fengshui.rec.plant.title',
+            'plants': 'fengshui.rec.plant.title',
+            'mirror_placement': 'fengshui.rec.mirror.title',
+            'mirrors': 'fengshui.rec.mirror.title',
+            'bedroom': 'fengshui.rec.bedroom.title'
         };
 
         // Try map first, then try the normalized title as a key part
         const key = keyMap[normalizedTitle] || `fengshui.rec.${normalizedTitle}.title`;
         const translated = window.i18n?.t(key);
+
+        // 添加调试日志
+        if (translated === key) {
+            console.log('[Feng Shui] 翻译键未找到:', key, '| 原标题:', title);
+        }
 
         return (translated && translated !== key) ? translated : title;
     }
@@ -274,7 +289,17 @@ class FengShuiAI {
             'increase_fire_energy': 'fengshui.rec.fire.desc',
             'optimize_plant_placement': 'fengshui.rec.plant.desc',
             'strategic_mirror_placement': 'fengshui.rec.mirror.desc',
-            'bedroom_optimization': 'fengshui.rec.bedroom.desc'
+            'bedroom_optimization': 'fengshui.rec.bedroom.desc',
+            // 添加更多变体
+            'add_water': 'fengshui.rec.water.desc',
+            'water_element': 'fengshui.rec.water.desc',
+            'increase_fire': 'fengshui.rec.fire.desc',
+            'fire_energy': 'fengshui.rec.fire.desc',
+            'plant_placement': 'fengshui.rec.plant.desc',
+            'plants': 'fengshui.rec.plant.desc',
+            'mirror_placement': 'fengshui.rec.mirror.desc',
+            'mirrors': 'fengshui.rec.mirror.desc',
+            'bedroom': 'fengshui.rec.bedroom.desc'
         };
 
         const key = keyMap[normalizedTitle] || `fengshui.rec.${normalizedTitle}.desc`;

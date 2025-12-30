@@ -13,29 +13,10 @@
      * 根据易经结果生成建议追问问题 - 支持多语言
      */
     function generateIChingSuggestedQuestions(result) {
-        // 获取当前语言
-        const lang = localStorage.getItem('preferredLanguage') || 'zh';
-        const isEnglish = lang === 'en';
-
-        if (isEnglish) {
-            return [
-                "How can I better seize this opportunity?",
-                "What risks should I be aware of?",
-                "What is the best timing for action?",
-                "How should I adjust my mindset?",
-                "What resources do I need to prepare?",
-                "How to handle unexpected situations?"
-            ];
-        } else {
-            return [
-                "如何更好地把握这个机会？",
-                "需要注意什么风险？",
-                "什么时候是行动的最佳时机？",
-                "应该如何调整心态？",
-                "需要准备什么资源？",
-                "如何应对意外情况？"
-            ];
-        }
+        if (!window.i18n) return [];
+        const questionsStr = window.i18n.t('iching.followup.questions');
+        if (!questionsStr) return [];
+        return questionsStr.split(',');
     }
 
     /**
@@ -70,26 +51,23 @@
         const answerSection = document.getElementById('followupAnswer');
         const answerText = document.getElementById('followupAnswerText');
 
+        const t = (key) => window.i18n ? window.i18n.t(key) : key;
         const question = input.value.trim();
         console.log('📝 用户问题:', question);
 
         if (!question) {
             console.warn('⚠️ 用户未输入问题');
-            const lang = localStorage.getItem('preferredLanguage') || 'zh';
-            const message = lang === 'en' ? 'Please enter your question' : '请输入您的问题';
-            alert(message);
+            alert(t('iching.followup.emptyError'));
             return;
         }
 
         if (!currentIChingResult) {
             console.error('❌ 未找到易经结果');
-            const lang = localStorage.getItem('preferredLanguage') || 'zh';
-            const message = lang === 'en' ? 'Please perform I-Ching divination first' : '请先进行易经占卜';
-            alert(message);
+            alert(t('iching.followup.noResultError'));
             return;
         }
 
-        console.log('✅ 验证通过，开始AI分析...');
+        console.log('✅ 验证通过，开始AI analysis...');
 
         // 显示加载状态
         button.disabled = true;
@@ -98,7 +76,7 @@
 
         try {
             // 获取当前语言
-            const lang = localStorage.getItem('preferredLanguage') || 'zh';
+            const lang = window.i18n ? window.i18n.currentLanguage : 'zh';
 
             // 构建易经追问的系统提示词
             const systemPrompt = buildIChingSystemPrompt(lang);
@@ -125,12 +103,12 @@
 
         } catch (error) {
             console.error('易经追问失败:', error);
+            const t = (key) => window.i18n ? window.i18n.t(key) : key;
 
-            const lang = localStorage.getItem('preferredLanguage') || 'zh';
-            let errorMessage = lang === 'en' ? 'AI analysis failed, please try again later' : 'AI解答失败，请稍后重试';
+            let errorMessage = t('iching.followup.error');
 
             if (error.message.includes('AI服务未初始化')) {
-                errorMessage = lang === 'en' ? 'AI service initialization failed, please refresh the page' : 'AI服务初始化失败，请刷新页面重试';
+                errorMessage = t('iching.followup.initError');
             }
 
             alert(errorMessage);
@@ -155,13 +133,24 @@ Your expertise includes:
 - Deep knowledge of Chinese philosophy and Five Elements theory
 
 Please provide thoughtful, wise, and practical guidance based on the I-Ching divination result and the user's follow-up question.`;
+        } else if (lang === 'zh-TW') {
+            return `你是一位專業的易經大師，深諳中華傳統智慧。你擁有豐富的卦象解讀經驗，能夠基於《易經》提供深刻的指導。
+
+你的專長包括：
+- 傳統易經解卦方法
+- 卦象象徵與含義的理解
+- 將古代智慧與現代生活情境相結合的能力
+- 基於易經原理提供實用指導
+- 中華哲學和五行理論的深厚造詣
+
+請基於易經占卜結果和用戶的追問，提供深思熟慮、智慧且實用的指導。`;
         } else {
             return `你是一位专业的易经大师，深谙中华传统智慧。你拥有丰富的卦象解读经验，能够基于《易经》提供深刻的指导。
 
 你的专长包括：
 - 传统易经解卦方法
 - 卦象象征与含义的理解
-- 将古代智慧与现代生活情境相结合的能力
+- 将古代智慧与现代生活情境向结合的能力
 - 基于易经原理提供实用指导
 - 中华哲学和五行理论的深厚造诣
 
@@ -194,6 +183,27 @@ ${question}
 5. **Potential Outcomes**: What to expect based on different approaches
 
 Please respond in English with wisdom, clarity, and practical insight.`;
+        } else if (lang === 'zh-TW') {
+            return `請基於以下易經占卜結果，為用戶的追問提供深度分析和指導。
+
+**易經占卜結果:**
+- 主卦: ${result.mainHexagram || '未知'}
+- 變爻: ${result.changingLines || '無'}
+- 變卦: ${result.transformedHexagram || '無'}
+- 問卦類別: ${result.category || '綜合'}
+- 占卜總結: ${result.summary || '無摘要'}
+
+**用戶的追問（尋求深挖真相）:**
+${question}
+
+**請提供:**
+1. **深度解析**: 詳細闡釋卦象與用戶具體問題的關係
+2. **實用指導**: 基於易經智慧的具體可行建議
+3. **時機把握**: 根據卦象指導何時行動或等待
+4. **心態調整**: 如何讓思維與卦象教導保持一致
+5. **可能結果**: 基於不同做法的預期結果
+
+請用繁體中文回覆，體現智慧、清晰和實用的洞察。`;
         } else {
             return `请基于以下易经占卜结果，为用户的追问提供深度分析和指导。
 
@@ -212,9 +222,9 @@ ${question}
 2. **实用指导**: 基于易经智慧的具体可行建议
 3. **时机把握**: 根据卦象指导何时行动或等待
 4. **心态调整**: 如何让思维与卦象教导保持一致
-5. **可能结果**: 基于不同做法的预期outcomes
+5. **可能结果**: 基于不同做法的预期结果
 
-请用中文回复，体现智慧、清晰和实用的洞察。`;
+请用简体中文回复，体现智慧、清晰和实用的洞察。`;
         }
     }
 
@@ -226,18 +236,16 @@ ${question}
         let formatted = window.MarkdownFormatter ? window.MarkdownFormatter.parse(answer) : answer.replace(/\n/g, '<br>');
 
         // 高亮关键词（在 HTML 生成后处理）
-        const keywords = lang === 'en' ? [
-            'Guidance', 'Wisdom', 'Timing', 'Action', 'Wait', 'Caution', 'Opportunity',
-            'Hexagram', 'Changing', 'Transform', 'Balance', 'Harmony', 'Flow', 'Energy'
-        ] : [
-            '指导', '智慧', '时机', '行动', '等待', '谨慎', '机会',
-            '卦象', '变化', '转化', '平衡', '和谐', '顺势', '能量'
-        ];
-
-        keywords.forEach(keyword => {
-            const regex = new RegExp(`\\b(${keyword})\\b`, 'gi');
-            formatted = formatted.replace(regex, '<span class="text-mystic-gold font-semibold">$1</span>');
-        });
+        if (window.i18n) {
+            const keywordsStr = window.i18n.t('iching.followup.keywords');
+            if (keywordsStr) {
+                const keywords = keywordsStr.split(',');
+                keywords.forEach(keyword => {
+                    const regex = new RegExp(`(${keyword})`, 'gi');
+                    formatted = formatted.replace(regex, '<span class="text-mystic-gold font-semibold">$1</span>');
+                });
+            }
+        }
 
         return formatted;
     }

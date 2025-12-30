@@ -422,11 +422,14 @@ class AIService {
      * 获取模拟响应（用于测试或API失败时的回退）
      */
     getMockResponse(type) {
-        // 获取当前语言
-        const language = localStorage.getItem('preferredLanguage') || 'zh';
+        // 优先从 i18n 实例获取当前语言，确保强同步
+        const language = (window.i18n && window.i18n.currentLanguage) || localStorage.getItem('preferredLanguage') || 'en';
         const isEnglish = language === 'en';
         const isZhTW = language === 'zh-TW';
         const isSpanish = language === 'es';
+
+        // 添加调试日志
+        console.log('[AI Service] getMockResponse - 当前语言:', language, '| 类型:', type);
 
         // 统一语言标签处理函数
         const text = (en, zh, tw, es) => {
@@ -530,17 +533,61 @@ class AIService {
                     ['避免床頭對門', '保持空間整潔'],
                     ['Evitar cama frente a la puerta', 'Mantener ordenado']
                 )
-            },
-            iching: {
-                hexagramName: text('Qian', '乾卦', '乾卦', 'Qian'),
+            }
+        };
+
+        // 4. 易经模拟数据
+        if (type === 'iching') {
+            return {
                 hexagramNumber: 1,
-                judgment: text('Success', '元亨利贞。创建自强。', '元亨利貞。創建自強。', 'Éxito'),
-                image: text('Sky', '天行健，君子以自强不息。', '天行健，君子以自強不息。', 'Cielo'),
-                advice: text('Be active', '现在是采取主动的时机。', '現在是採取主動的時機。', 'Sea activo'),
-                actions: [text('Action', '采取行动', '採取行動', 'Acción')],
-                warnings: [text('Caution', '避免自负', '避免自負', 'Precaución')],
-                changingLinesInterpretation: text('Change', '当前处于转变期。', '當前處於轉變期。', 'Cambio'),
-                futureHexagram: text('Future', '将转化为新的卦象。', '將轉化為新的卦象。', 'Futuro')
+                hexagramName: text('Qian (The Creative)', '乾卦', '乾卦', 'Qian'),
+                lines_binary: '111111', // Bottom to top: all solid
+                future_lines_binary: '000000', // Example: transformed to Kun
+                judgment: text(
+                    'Success. The creative works sublime success, furthering through perseverance. This hexagram symbolizes the primal power of heaven, suggesting a time of great potential and initiative. It is a moment to act decisively and with confidence.',
+                    '元亨利贞。创建自强。大吉大利，利于固守。此卦象征天之原动力，代表着万物之始，预示着一个充满潜力和主动性的时刻。',
+                    '元亨利貞。創建自強。大吉大利，利於固守。此卦象徵天之原動力，代表著萬物之始，預示著一個充滿潛力和主動性的時刻。',
+                    'Éxito sublime. El principio creativo se manifiesta a través del hexagrama del cielo.'
+                ),
+                image: text(
+                    'The movement of heaven is powerful. The superior person strengthens themselves constantly. Just as the stars move with enduring strength, you should persist in your goals with unwavering determination and inner vitality.',
+                    '天行健，君子以自强不息。君子应该效法天道，不断地追求进步，自我完善，永不停止。',
+                    '天行健，君子以自強不息。君子應該效法天道，不斷地追求進步，自我完善，永不停止。',
+                    'El movimiento del cielo es poderoso.'
+                ),
+                advice: text(
+                    'Currently, you are in a period of upward momentum. Focus on your long-term vision and don\'t be afraid to take a leadership role. Your creative energy is at its peak; use it to lay the groundwork for future success.',
+                    '现在是采取主动的最佳时机。您的创造力正处于顶峰，应勇敢承担领导责任。专注于长期愿景，为未来的成功奠定坚实基础。',
+                    '現在是採取主動的最佳時機。您的創造力正處於頂峰，應勇敢承擔領導責任。專注於長期願景，為未來的发展奠定堅實基礎。',
+                    'Sea activo y tome la iniciativa.'
+                ),
+                summary: text(
+                    'A time of great initiative and creative power. Success is assured through perseverance.',
+                    '大吉之课，此时正是大展宏图、积极进取的黄金时期。只要坚持正道，必获圆满成功。',
+                    '大吉之課，此時正是大展宏圖、積極進取的黃金時期。只要堅持正道，必獲圓滿成功。',
+                    'Un tiempo de gran iniciativa.'
+                ),
+                actions: [
+                    text('Take decisive action', '采取果断行动', '採取果斷行動', 'Acción'),
+                    text('Lead with confidence', '发挥领导才能', '發揮領導能力', 'Liderazgo'),
+                    text('Maintain inner focus', '保持内在专注', '保持內在專注', 'Enfoque')
+                ],
+                warnings: [
+                    text('Avoid arrogance', '戒骄戒躁', '戒驕戒躁', 'Precaución'),
+                    text('Do not overreach', '避免过激', '避免過激', 'Moderación')
+                ],
+                changingLinesInterpretation: text(
+                    'The lines are in a state of flux. Your current situation is rapidly evolving, leading to a significant transformation in your path. Stay adaptable.',
+                    '卦中爻象正在转换，表明您当前面临的局势正在迅速演变。坚持正道，灵活应对这种转变。',
+                    '卦中爻象正在轉換，表明您當前面臨的局勢正在迅速演變。堅持正道，靈活應對這種轉變。',
+                    'Cambio dinámico.'
+                ),
+                futureHexagram: text(
+                    'The creative potential will soon manifest into a stable foundation (Transformation to Kun).',
+                    '乾卦之刚健即将转化为坤卦之柔顺，形成坚实的基础。',
+                    '乾卦之剛健即將轉化為坤卦之柔順，形成堅實的基礎。',
+                    'Futuro estable.'
+                )
             }
         };
 

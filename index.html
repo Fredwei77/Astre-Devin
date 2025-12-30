@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Destiny AI - Ancient Eastern Wisdom for Modern Life</title>
+    <title>Destiny AI - Personal Growth & Self-Discovery Platform</title>
     <meta name="description"
-        content="Discover your destiny with AI-powered Eastern astrology, feng shui, and I-Ching divination. Get personalized insights for better life decisions.">
+        content="Unlock your potential with AI-powered personal growth tools. Explore your personality blueprint, energy cycles, and life trajectory insights for better decision making.">
 
     <!-- Fonts -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif:wght@400;700&family=Noto+Sans+SC:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@400;700&family=Noto+Serif:wght@400;700&family=Noto+Sans+SC:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet">
 
     <!-- Font Awesome Icons -->
@@ -68,13 +68,20 @@
                         'ink-black': '#2c2c2c',
                         'warm-white': '#fafafa',
                         'pale-gold': '#fff8dc',
-                        'mystic-purple': '#4a148c'
+                        'mystic-purple': '#4a148c',
+                        'deep-space': '#0B0E14',
+                        'electric-purple': '#7000FF',
+                        'champagne-gold': '#D4AF37'
                     },
                     fontFamily: {
                         'serif-sc': ['Noto Serif SC', 'serif'],
                         'serif': ['Noto Serif', 'serif'],
                         'sans-sc': ['Noto Sans SC', 'sans-serif'],
-                        'inter': ['Inter', 'sans-serif']
+                        'inter': ['Inter', 'sans-serif'],
+                        'playfair': ['Playfair Display', 'serif']
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     }
                 }
             }
@@ -232,7 +239,7 @@
     </style>
 </head>
 
-<body class="font-inter text-warm-white">
+<body class="font-inter text-warm-white bg-deep-space">
     <!-- Mystical Particle Effects -->
     <div class="mystical-particles">
         <div class="particle"></div>
@@ -293,18 +300,19 @@
                     <span class="text-xl font-serif font-bold glow-text" data-i18n="brand.name">九 筮</span>
                 </div>
 
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="divination.html" class="hover:text-mystic-gold transition-colors"
-                        data-i18n="nav.divination">Divination</a>
-                    <a href="fengshui.html" class="hover:text-mystic-gold transition-colors"
+                <div class="hidden md:flex items-center space-x-6 whitespace-nowrap">
+                    <a href="divination.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
+                        data-i18n="nav.divination">Personality Blueprint</a>
+                    <a href="fengshui.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
                         data-i18n="nav.fengshui">Feng Shui</a>
-                    <a href="iching.html" class="hover:text-mystic-gold transition-colors"
-                        data-i18n="nav.iching">I-Ching</a>
-                    <a href="calendar.html" class="hover:text-mystic-gold transition-colors"
+                    <a href="iching.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
+                        data-i18n="nav.iching">Wisdom Guide</a>
+                    <a href="calendar.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
                         data-i18n="nav.calendar">Calendar</a>
-                    <a href="about.html" class="hover:text-mystic-gold transition-colors" data-i18n="nav.about">About
+                    <a href="about.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
+                        data-i18n="nav.about">About
                         Us</a>
-                    <a href="profile.html" class="hover:text-mystic-gold transition-colors"
+                    <a href="profile.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
                         data-i18n="nav.profile">Profile</a>
                 </div>
 
@@ -425,55 +433,91 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-bg min-h-screen flex items-center justify-center relative">
-        <div id="particle-container" class="particle-container"></div>
+    <!-- Hero Section (Tech-Zen / Celestial Minimalism) -->
+    <section class="relative min-h-screen w-full bg-deep-space overflow-hidden flex items-center justify-center">
+        <!-- --- Qi-Flow 背景层 --- -->
+        <div class="absolute inset-0 z-0">
+            <div
+                class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-electric-purple/20 rounded-full mix-blend-screen filter blur-[120px] animate-pulse-slow">
+            </div>
+            <div class="absolute bottom-[10%] right-[-5%] w-[50%] h-[50%] bg-[#00D1FF]/15 rounded-full mix-blend-screen filter blur-[150px] animate-pulse-slow"
+                style="animation-delay: 2s;"></div>
+            <div class="absolute top-[20%] right-[15%] w-[30%] h-[30%] bg-champagne-gold/10 rounded-full mix-blend-screen filter blur-[100px] animate-pulse-slow"
+                style="animation-delay: 4s;"></div>
 
-        <div class="hero-content text-center max-w-4xl mx-auto px-4">
-            <h1 class="text-5xl md:text-7xl font-serif font-bold mb-6 glow-text">
-                <span id="typed-text"></span>
-            </h1>
+            <!-- 天体网格/星星背景 -->
+            <div
+                class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10">
+            </div>
+            <div id="particle-container" class="particle-container"></div>
+        </div>
 
-            <p class="text-xl md:text-2xl mb-8 text-moon-silver max-w-2xl mx-auto leading-relaxed"
-                data-i18n="home.hero.description">
-                Harness the power of ancient Eastern wisdom combined with modern AI technology.
-                Discover your destiny, optimize your environment, and make better life decisions.
-            </p>
-
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="divination.html"
-                    class="bg-mystic-gold text-deep-navy px-8 py-4 rounded-lg font-semibold text-lg hover:bg-yellow-400 transition-all transform hover:scale-105"
-                    data-i18n="home.hero.cta1">
-                    Start Free Reading
-                </a>
-                <a href="#features"
-                    class="border-2 border-moon-silver text-moon-silver px-8 py-4 rounded-lg font-semibold text-lg hover:bg-moon-silver hover:text-deep-navy transition-all"
-                    data-i18n="home.hero.cta2">
-                    Learn More
-                </a>
+        <!-- --- Hero 内容区 --- -->
+        <div class="relative z-10 text-center max-w-4xl mx-auto px-6">
+            <div class="animate-fadeInUp" style="animation-duration: 1s;">
+                <h2 class="text-champagne-gold text-sm md:text-base tracking-[0.3em] uppercase mb-6 font-medium"
+                    data-i18n="home.hero.tagline">
+                    AI-Powered Celestial Intelligence
+                </h2>
+                <h1 class="text-5xl md:text-8xl font-playfair leading-tight mb-8 text-white">
+                    <span id="typed-text"
+                        class="italic bg-clip-text text-transparent bg-gradient-to-r from-white to-white/40"></span>
+                </h1>
+                <p class="max-w-2xl mx-auto text-lg md:text-xl text-white/60 mb-12 font-light leading-relaxed"
+                    data-i18n="home.hero.description">
+                    Elevate your destiny with the fusion of high-dimensional neural networks and thousands of years of
+                    mystical wisdom.
+                </p>
             </div>
 
-            <div class="mt-12 flex justify-center space-x-8 text-moon-silver">
+            <!-- CTA 按钮与脉冲效果 -->
+            <div class="animate-fadeInUp" style="animation-duration: 1s; animation-delay: 0.5s;">
+                <div class="relative group inline-block">
+                    <div
+                        class="absolute -inset-1 bg-gradient-to-r from-electric-purple to-[#00D1FF] rounded-full blur opacity-40 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse">
+                    </div>
+                    <a href="divination.html"
+                        class="relative px-10 py-5 bg-black rounded-full leading-none flex items-center space-x-6">
+                        <span class="text-white text-lg tracking-widest font-medium" data-i18n="home.hero.cta1">GET YOUR
+                            FREE ENERGY MAP</span>
+                        <span class="text-indigo-400 group-hover:text-white transition duration-200">&rarr;</span>
+                    </a>
+                </div>
+
+                <p class="mt-8 text-xs text-white/30 tracking-widest uppercase" data-i18n="home.hero.subtext">
+                    Start your journey through the quantum stars.
+                </p>
+            </div>
+
+            <!-- Stats Stats -->
+            <div class="mt-16 flex justify-center space-x-12 text-white/40 animate-fadeInUp"
+                style="animation-delay: 1s;">
                 <div class="text-center">
-                    <div class="text-2xl font-bold text-mystic-gold">10M+</div>
-                    <div class="text-sm" data-i18n="home.stats.readings">Readings Completed</div>
+                    <div class="text-2xl font-playfair font-bold text-champagne-gold">10M+</div>
+                    <div class="text-[10px] tracking-widest uppercase" data-i18n="home.stats.readings">Readings</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-2xl font-bold text-mystic-gold">50k+</div>
-                    <div class="text-sm" data-i18n="home.stats.users">Happy Users</div>
+                    <div class="text-2xl font-playfair font-bold text-champagne-gold">50k+</div>
+                    <div class="text-[10px] tracking-widest uppercase" data-i18n="home.stats.users">Seekers</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-2xl font-bold text-mystic-gold">93.9%</div>
-                    <div class="text-sm" data-i18n="home.stats.accuracy">Accuracy Rate</div>
+                    <div class="text-2xl font-playfair font-bold text-champagne-gold">93.9%</div>
+                    <div class="text-[10px] tracking-widest uppercase" data-i18n="home.stats.accuracy">Accuracy</div>
                 </div>
             </div>
+        </div>
+
+        <!-- 装饰性元素：底部流动线 -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center space-y-4 opacity-50">
+            <div class="w-[1px] h-16 bg-gradient-to-b from-transparent via-white/40 to-transparent"></div>
+            <span class="text-[10px] tracking-[0.5em] uppercase rotate-90 origin-left">Scroll</span>
         </div>
     </section>
 
     <!-- Features Section -->
-    <section id="features" class="py-20"
-        style="background: linear-gradient(to bottom, var(--mystic-teal), var(--jade-dark));">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="features" class="py-20 bg-deep-space relative">
+        <div class="absolute inset-0 bg-gradient-to-b from-deep-space via-[#11141d] to-deep-space opacity-50"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center mb-16 scroll-reveal">
                 <h2 class="text-4xl md:text-5xl font-serif font-bold mb-6 glow-text" data-i18n="home.features.title">
                     Ancient Wisdom, Modern Technology
@@ -620,8 +664,9 @@
     </section>
 
     <!-- How It Works Section -->
-    <section class="py-20" style="background: linear-gradient(to bottom, var(--jade-dark), var(--mystic-teal));">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section class="py-20 bg-deep-space relative">
+        <div class="absolute inset-0 bg-gradient-to-b from-deep-space via-[#0f1219] to-deep-space opacity-50"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center mb-16 scroll-reveal">
                 <h2 class="text-4xl md:text-5xl font-serif font-bold mb-6 glow-text" data-i18n="home.howItWorks.title">
                     Your Journey to Self-Discovery
@@ -676,8 +721,9 @@
     </section>
 
     <!-- Pricing Section -->
-    <section class="py-20" style="background: linear-gradient(to bottom, var(--mystic-teal), var(--jade-dark));">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section class="py-20 bg-deep-space relative">
+        <div class="absolute inset-0 bg-gradient-to-b from-deep-space via-[#13161f] to-deep-space opacity-50"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center mb-16 scroll-reveal">
                 <h2 class="text-4xl md:text-5xl font-serif font-bold mb-6 glow-text" data-i18n="home.pricing.title">
                     Choose Your Path
@@ -756,14 +802,14 @@
     </section>
 
     <!-- Disclaimer Section -->
-    <section class="py-8 border-t border-moon-silver/20" style="background: rgba(13, 38, 38, 0.8);">
+    <section class="py-8 border-t border-moon-silver/10 bg-[#080a0f]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-4xl mx-auto">
                 <h3 class="text-lg font-semibold mb-3 text-mystic-gold" data-i18n="home.disclaimer.title">⚠️ Important
                     Disclaimer</h3>
                 <p class="text-sm text-moon-silver leading-relaxed" data-i18n="home.disclaimer.text">
-                    Destiny AI provides entertainment and self-reflection tools based on ancient Eastern wisdom
-                    traditions.
+                    Astre Devin provides personal growth and self-reflection tools based on energy cycle analysis and
+                    personality blueprinting systems.
                     Our readings and analyses are for <strong>informational and entertainment purposes only</strong> and
                     should
                     not be considered as professional advice for medical, legal, financial, or psychological matters.
@@ -775,7 +821,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="py-12" style="background: var(--jade-dark);">
+    <footer class="py-12 bg-deep-space border-t border-moon-silver/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center">
                 <div class="flex items-center justify-center space-x-2 mb-6">
@@ -870,7 +916,7 @@
 
                 <div class="border-t border-moon-silver/20 pt-6">
                     <p class="text-moon-silver text-sm" data-i18n="footer.copyright">
-                        © 2024 Destiny AI. All rights reserved. Empowering lives through ancient wisdom and modern
+                        © 2024 Astre Devin. All rights reserved. Empowering lives through ancient wisdom and modern
                         technology.
                     </p>
                 </div>

@@ -8,6 +8,32 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-navy': '#1a237e',
+                        'deep-space': '#0B0E14',
+                        'electric-purple': '#7000FF',
+                        'champagne-gold': '#D4AF37',
+                        'mystic-gold': '#ffd700',
+                        'moon-silver': '#c0c0c0',
+                        'ink-black': '#2c2c2c',
+                        'warm-white': '#fafafa',
+                        'pale-gold': '#fff8dc',
+                        'mystic-purple': '#4a148c'
+                    },
+                    fontFamily: {
+                        'serif-sc': ['Noto Serif SC', 'serif'],
+                        'serif': ['Noto Serif', 'serif'],
+                        'sans-sc': ['Noto Sans SC', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
 
     <!-- Custom Styles -->
     <link rel="stylesheet" href="mystical-theme.css">
@@ -17,28 +43,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
     <style>
-        /* 与主页一致的背景渐变 */
-        body {
-            background: linear-gradient(135deg, #0a4d4e 0%, #1a1a2e 50%, #16213e 100%);
-            min-height: 100vh;
-        }
+        /* Removed specific background overrides to align with global deep-space theme */
 
-        /* 导航栏背景 */
-        nav {
-            background: rgba(10, 77, 78, 0.95) !important;
-            backdrop-filter: blur(10px);
-        }
-
-        /* Hero区域背景 */
-        .hero-section {
-            background: linear-gradient(135deg, rgba(10, 77, 78, 0.9) 0%, rgba(26, 26, 46, 0.9) 100%);
-            padding: 80px 0;
-            text-align: center;
-        }
-
-        /* 卡片背景 - 使用主页的jade-dark色调 */
+        /* 卡片背景 */
         .section-card {
-            background: rgba(10, 77, 78, 0.3);
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 215, 0, 0.2);
             border-radius: 16px;
@@ -48,15 +57,10 @@
         }
 
         .section-card:hover {
-            background: rgba(10, 77, 78, 0.5);
+            background: rgba(255, 255, 255, 0.1);
             border-color: rgba(255, 215, 0, 0.4);
             transform: translateY(-5px);
             box-shadow: 0 10px 40px rgba(255, 215, 0, 0.2);
-        }
-
-        /* 页脚背景 */
-        footer {
-            background: rgba(10, 77, 78, 0.95) !important;
         }
 
         /* 发光文字效果 - 与主页一致 */
@@ -125,40 +129,42 @@
     </style>
 </head>
 
-<body class="bg-deep-navy text-moon-silver">
+<body class="bg-deep-space text-moon-silver">
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-deep-navy/90 backdrop-blur-md border-b border-white/10">
-        <div class="container mx-auto px-6 py-4">
-            <div class="flex items-center justify-between">
-                <a href="index.html" class="flex items-center space-x-2">
-                    <div
-                        class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border border-mystic-gold/50 bg-black/50">
-                        <img src="resources/logo-processed.png" alt="Dragon Logo" class="w-full h-full object-cover">
-                    </div>
-                    <span class="text-xl font-serif font-bold glow-text" data-i18n="brand.name">九 筮</span>
-                </a>
-
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="index.html" class="hover:text-mystic-gold transition-colors" data-i18n="nav.home">Home</a>
-                    <a href="divination.html" class="hover:text-mystic-gold transition-colors"
-                        data-i18n="nav.divination">Divination</a>
-                    <a href="fengshui.html" class="hover:text-mystic-gold transition-colors"
-                        data-i18n="nav.fengshui">Feng Shui</a>
-                    <a href="iching.html" class="hover:text-mystic-gold transition-colors"
-                        data-i18n="nav.iching">I-Ching</a>
-                    <a href="calendar.html" class="hover:text-mystic-gold transition-colors"
-                        data-i18n="nav.calendar">Calendar</a>
-                    <a href="profile.html" class="hover:text-mystic-gold transition-colors"
-                        data-i18n="nav.profile">Profile</a>
+    <nav class="fixed top-0 left-0 right-0 z-50 mystical-nav border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <div
+                    class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border border-mystic-gold/50 bg-black/50">
+                    <img src="resources/logo-processed.png" alt="Dragon Logo" class="w-full h-full object-cover">
                 </div>
-                <!-- Language Selector -->
+                <span class="text-xl font-serif font-bold glow-text" data-i18n="brand.name">九 筮</span>
+            </div>
+
+            <div class="hidden md:flex items-center space-x-6 whitespace-nowrap">
+                <a href="index.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
+                    data-i18n="nav.home">Home</a>
+                <a href="divination.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
+                    data-i18n="nav.divination">Personality Blueprint</a>
+                <a href="fengshui.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
+                    data-i18n="nav.fengshui">Feng Shui</a>
+                <a href="iching.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
+                    data-i18n="nav.iching">Wisdom Guide</a>
+                <a href="calendar.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
+                    data-i18n="nav.calendar">Calendar</a>
+                <a href="about.html" class="text-mystic-gold font-medium text-sm" data-i18n="nav.about">About
+                    Us</a>
+                <a href="profile.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
+                    data-i18n="nav.profile">Profile</a>
+            </div>
+
+            <div class="flex items-center space-x-4">
                 <select id="languageSelect"
-                    class="bg-white/10 text-moon-silver px-3 py-2 rounded-lg border border-white/20 focus:outline-none focus:border-mystic-gold">
+                    class="bg-white/10 text-moon-silver px-3 py-1 rounded border border-white/20 focus:outline-none focus:border-mystic-gold text-sm">
                     <option value="en">English</option>
                     <option value="zh-CN">简体中文</option>
                     <option value="zh-TW">繁體中文</option>
                 </select>
-
                 <!-- User Menu Placeholder -->
                 <div id="userMenuContainer"></div>
             </div>
@@ -170,7 +176,6 @@
                     </path>
                 </svg>
             </button>
-        </div>
         </div>
     </nav>
 
@@ -356,7 +361,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-deep-navy/50 border-t border-white/10 py-12">
+    <footer class="bg-deep-space border-t border-white/10 py-12">
         <div class="container mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div>

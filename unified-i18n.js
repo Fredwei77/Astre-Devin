@@ -7,7 +7,7 @@
     'use strict';
 
     const STORAGE_KEY = 'destinyai_language';
-    const DEFAULT_LANG = 'en';
+    const DEFAULT_LANG = 'zh-CN'; // 默认使用简体中文
 
     class UnifiedI18n {
         constructor() {
@@ -24,6 +24,17 @@
             this.translations = {};
             this.observers = [];
             this.initialized = false;
+        }
+
+        /**
+         * Alias for currentLang to support legacy scripts
+         */
+        get currentLanguage() {
+            return this.currentLang;
+        }
+
+        set currentLanguage(lang) {
+            this.setLanguage(lang);
         }
 
         /**
@@ -150,6 +161,13 @@
             document.querySelectorAll('[data-i18n-title]').forEach(el => {
                 const key = el.getAttribute('data-i18n-title');
                 el.title = this.t(key);
+                updateCount++;
+            });
+
+            // 3.1 Update elements with data-i18n-aria-label attribute
+            document.querySelectorAll('[data-i18n-aria-label]').forEach(el => {
+                const key = el.getAttribute('data-i18n-aria-label');
+                el.setAttribute('aria-label', this.t(key));
                 updateCount++;
             });
 

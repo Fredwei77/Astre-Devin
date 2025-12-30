@@ -40,6 +40,9 @@
                 extend: {
                     colors: {
                         'deep-navy': '#1a237e',
+                        'deep-space': '#0B0E14',
+                        'electric-purple': '#7000FF',
+                        'champagne-gold': '#D4AF37',
                         'mystic-gold': '#ffd700',
                         'moon-silver': '#c0c0c0',
                         'ink-black': '#2c2c2c',
@@ -63,8 +66,8 @@
 
         .profile-card {
             backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .glow-text {
@@ -289,7 +292,7 @@
     </style>
 </head>
 
-<body class="font-inter text-warm-white">
+<body class="font-inter text-warm-white bg-deep-space">
     <!-- Background Music -->
     <audio id="backgroundMusic" loop preload="auto">
         <source src="Music/Meditation.mp3" type="audio/mpeg">
@@ -350,144 +353,35 @@
                     <span class="text-xl font-serif font-bold glow-text" data-i18n="brand.name">九 筮</span>
                 </div>
 
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="index.html" class="hover:text-mystic-gold transition-colors" data-i18n="nav.home">Home</a>
-                    <a href="divination.html" class="hover:text-mystic-gold transition-colors"
-                        data-i18n="nav.divination">Divination</a>
-                    <a href="fengshui.html" class="hover:text-mystic-gold transition-colors"
+                <div class="hidden md:flex items-center space-x-6 whitespace-nowrap">
+                    <a href="index.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
+                        data-i18n="nav.home">Home</a>
+                    <a href="divination.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
+                        data-i18n="nav.divination">Personality Blueprint</a>
+                    <a href="fengshui.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
                         data-i18n="nav.fengshui">Feng Shui</a>
-                    <a href="iching.html" class="hover:text-mystic-gold transition-colors"
-                        data-i18n="nav.iching">I-Ching</a>
-                    <a href="calendar.html" class="hover:text-mystic-gold transition-colors"
+                    <a href="iching.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
+                        data-i18n="nav.iching">Wisdom Guide</a>
+                    <a href="calendar.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
                         data-i18n="nav.calendar">Calendar</a>
-                    <a href="about.html" class="hover:text-mystic-gold transition-colors" data-i18n="nav.about">About
+                    <a href="about.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
+                        data-i18n="nav.about">About
                         Us</a>
-                    <a href="profile.html" class="hover:text-mystic-gold transition-colors"
+                    <a href="profile.html" class="text-mystic-gold font-medium text-sm"
                         data-i18n="nav.profile">Profile</a>
                 </div>
 
                 <div class="flex items-center space-x-4">
                     <select id="languageSelect"
-                        class="bg-transparent border border-moon-silver/30 rounded px-3 py-1 text-sm">
+                        class="bg-transparent border border-moon-silver/30 rounded px-3 py-1 text-sm text-moon-silver">
                         <option value="en">English</option>
                         <option value="zh-CN">简体中文</option>
                         <option value="zh-TW">繁體中文</option>
                         <option value="es">Español</option>
                     </select>
 
-                    <!-- Login/User Section -->
-                    <div id="authSection" class="flex items-center space-x-3">
-                        <!-- Guest View (Not Logged In) -->
-                        <div id="guestView" class="flex items-center space-x-3">
-                            <button id="loginBtn"
-                                class="text-moon-silver hover:text-mystic-gold transition-colors font-medium flex items-center gap-2"
-                                style="color: #c0c0c0;">
-                                <span data-i18n="nav.login">登入</span>
-                            </button>
-                            <a href="payment.html"
-                                class="bg-mystic-gold text-deep-navy px-4 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors"
-                                style="background: #ffd700; color: #1a237e;" data-i18n="nav.upgrade">
-                                Upgrade
-                            </a>
-                        </div>
-
-                        <!-- User View (Logged In) -->
-                        <div id="userView" class="hidden">
-                            <div class="flex items-center space-x-3">
-                                <!-- User Avatar and Name -->
-                                <div class="flex items-center space-x-2 user-avatar-container">
-                                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-mystic-gold to-moon-silver flex items-center justify-center border-2 border-mystic-gold/50 shadow-lg"
-                                        style="background: linear-gradient(135deg, #ffd700, #c0c0c0);">
-                                        <img id="userAvatar" src="" alt="User Avatar"
-                                            class="w-full h-full rounded-full object-cover hidden">
-                                        <i id="userIcon" class="fas fa-user text-deep-navy text-sm"
-                                            style="color: #1a237e;"></i>
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <span id="userName" class="text-moon-silver font-medium text-sm"
-                                            style="color: #c0c0c0;"></span>
-                                        <span id="userLevel" class="text-mystic-gold text-xs hidden"
-                                            style="color: #ffd700;">VIP</span>
-                                    </div>
-                                </div>
-
-                                <!-- Dropdown Menu Button -->
-                                <div class="relative">
-                                    <button id="userMenuBtn"
-                                        class="text-moon-silver hover:text-mystic-gold transition-all duration-300 p-2 hover:bg-mystic-gold/10 rounded-full"
-                                        style="color: #c0c0c0;">
-                                        <i class="fas fa-chevron-down text-sm"></i>
-                                    </button>
-
-                                    <!-- Dropdown Menu -->
-                                    <div id="userMenu"
-                                        class="absolute right-0 mt-2 w-56 bg-black/95 backdrop-blur-md border-2 border-mystic-gold/30 rounded-xl shadow-2xl hidden z-50 overflow-hidden">
-                                        <!-- User Info Card -->
-                                        <div class="user-info-card">
-                                            <div class="flex items-center space-x-3">
-                                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-mystic-gold to-moon-silver flex items-center justify-center border-2 border-mystic-gold/50"
-                                                    style="background: linear-gradient(135deg, #ffd700, #c0c0c0);">
-                                                    <i class="fas fa-user text-deep-navy" style="color: #1a237e;"></i>
-                                                </div>
-                                                <div class="flex-1">
-                                                    <div id="menuUserName"
-                                                        class="text-warm-white font-semibold text-sm"></div>
-                                                    <div id="menuUserEmail" class="user-email"></div>
-                                                    <div id="menuUserStatus" class="user-status">免费会员</div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Menu Items -->
-                                        <div class="py-2">
-                                            <a href="profile.html"
-                                                class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
-                                                style="color: #c0c0c0;">
-                                                <i class="fas fa-user-circle w-5"></i>
-                                                <span class="ml-3" data-i18n="nav.profile">个人信息</span>
-                                            </a>
-
-                                            <a href="profile.html#readings"
-                                                class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
-                                                style="color: #c0c0c0;">
-                                                <i class="fas fa-history w-5"></i>
-                                                <span class="ml-3" data-i18n="nav.myReadings">我的占卜</span>
-                                            </a>
-
-                                            <a href="payment.html"
-                                                class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
-                                                style="color: #c0c0c0;">
-                                                <i class="fas fa-crown w-5"></i>
-                                                <span class="ml-3" data-i18n="nav.upgrade">会员升级</span>
-                                                <span
-                                                    class="ml-auto text-xs bg-mystic-gold text-deep-navy px-2 py-1 rounded-full font-bold"
-                                                    style="background: #ffd700; color: #1a237e;">HOT</span>
-                                            </a>
-
-                                            <a href="profile.html#settings"
-                                                class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
-                                                style="color: #c0c0c0;">
-                                                <i class="fas fa-cog w-5"></i>
-                                                <span class="ml-3" data-i18n="nav.settings">设置</span>
-                                            </a>
-                                        </div>
-
-                                        <hr class="border-mystic-gold/20 mx-3">
-
-                                        <!-- Logout Button -->
-                                        <div class="py-2">
-                                            <button id="logoutBtn"
-                                                class="w-full flex items-center px-4 py-3 text-moon-silver hover:text-red-400 hover:bg-red-400/10 transition-all"
-                                                style="color: #c0c0c0;">
-                                                <i class="fas fa-sign-out-alt w-5"></i>
-                                                <span class="ml-3" data-i18n="nav.logout">退出登录</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- User Menu Placeholder (Managed by header-auth.js) -->
+                    <div id="userMenuContainer"></div>
                 </div>
             </div>
         </div>
@@ -501,13 +395,13 @@
                 <div class="flex flex-col lg:flex-row items-center lg:items-start space-y-6 lg:space-y-0 lg:space-x-8">
                     <!-- Avatar -->
                     <div class="avatar-container">
-                        <div class="avatar" id="userAvatar">命</div>
-                        <div class="level-badge" id="userLevel">5</div>
+                        <div class="avatar" id="profileAvatar">命</div>
+                        <div class="level-badge" id="profileLevel">5</div>
                     </div>
 
                     <!-- User Info -->
                     <div class="flex-1 text-center lg:text-left">
-                        <h1 class="text-3xl font-serif font-bold mb-2 glow-text" id="userName">Wisdom Seeker</h1>
+                        <h1 class="text-3xl font-serif font-bold mb-2 glow-text" id="profileName">Wisdom Seeker</h1>
                         <p class="text-moon-silver mb-4" id="userTitle">Destiny Explorer • Level 5</p>
 
                         <!-- Stats -->
@@ -1279,23 +1173,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-ink-black py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
-                <div class="flex justify-center space-x-6 mb-4 flex-wrap">
-                    <a href="terms.html" class="text-moon-silver hover:text-mystic-gold transition-colors text-sm"
-                        data-i18n="footer.terms">Terms</a>
-                    <a href="support.html" class="text-moon-silver hover:text-mystic-gold transition-colors text-sm"
-                        data-i18n="footer.support">Support</a>
-                    <a href="about.html" class="text-moon-silver hover:text-mystic-gold transition-colors text-sm"
-                        data-i18n="nav.about">About</a>
-                </div>
-                <p class="text-moon-silver text-sm" data-i18n="profile.footer">
-                    © 2024 Destiny AI. All rights reserved.
-                </p>
-            </div>
-        </div>
-    </footer>
+
 
     <script src="api-config.js"></script>
     <script src="config.js"></script>
@@ -1704,7 +1582,7 @@
                     }
                     displayName = displayName || 'Wisdom Seeker';
 
-                    const userNameElements = document.querySelectorAll('#userName');
+                    const userNameElements = document.querySelectorAll('#profileName');
                     userNameElements.forEach(el => {
                         el.textContent = displayName;
                     });
@@ -1713,7 +1591,7 @@
                     const isPremium = user.isPremium || user.level === 'premium';
                     const level = user.level || 5; // Keep level as number for non-VIP
 
-                    const userLevelElements = document.querySelectorAll('#userLevel');
+                    const userLevelElements = document.querySelectorAll('#profileLevel');
                     userLevelElements.forEach(el => {
                         if (isPremium) {
                             el.textContent = 'VIP';
@@ -1752,19 +1630,9 @@
                         }
                     }
 
-                    // 导航栏的小头像内容
-                    const navAvatarImg = document.getElementById('userAvatar');
-                    const navAvatarIcon = document.getElementById('userIcon');
-                    if (navAvatarImg && navAvatarIcon) {
-                        if (user.avatar) {
-                            navAvatarImg.src = user.avatar;
-                            navAvatarImg.classList.remove('hidden');
-                            navAvatarIcon.parentElement.classList.add('hidden');
-                        } else {
-                            navAvatarImg.classList.add('hidden');
-                            navAvatarIcon.parentElement.classList.remove('hidden');
-                        }
-                    }
+                    // 5. [Updated] Nav avatar handled by header-auth.js, no manual update here needed.
+                    // But if we wanted to update profile page indicators, we do it above.
+                    // Removed legacy nav update code.
 
                     // 5. 更新邮件显示
                     const menuUserEmail = document.getElementById('menuUserEmail');
@@ -1830,6 +1698,7 @@
 
     <!-- 认证系统 - 页面访问控制 -->
     <script src="auth-service.js"></script>
+    <script src="header-auth.js"></script>
     <script src="auth-guard-enhanced.js"></script>
 
     <!-- 用户菜单 -->
@@ -1846,6 +1715,32 @@
             });
         }
     </script>
+    <!-- Footer -->
+    <footer class="py-12 bg-deep-space border-t border-moon-silver/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="text-center">
+                    <p class="text-moon-silver mb-6 max-w-2xl mx-auto" data-i18n="footer.description">
+                        Empowering lives through ancient wisdom and modern technology.
+                    </p>
+                    <div class="flex justify-center space-x-6 mb-8">
+                        <a href="#" class="text-moon-silver hover:text-mystic-gold transition-colors">
+                            <span class="sr-only">Twitter</span>
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-moon-silver hover:text-mystic-gold transition-colors">
+                            <span class="sr-only">GitHub</span>
+                            <i class="fab fa-github text-xl"></i>
+                        </a>
+                    </div>
+                    <p class="text-moon-silver/60 text-sm" data-i18n="footer.copyright">
+                        © 2024 Astre Devin. All rights reserved. Empowering lives through ancient wisdom and modern
+                        technology.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 
 </html>

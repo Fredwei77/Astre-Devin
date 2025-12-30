@@ -55,6 +55,9 @@
                 extend: {
                     colors: {
                         'deep-navy': '#1a237e',
+                        'deep-space': '#0B0E14',
+                        'electric-purple': '#7000FF',
+                        'champagne-gold': '#D4AF37',
                         'mystic-gold': '#ffd700',
                         'moon-silver': '#c0c0c0',
                         'ink-black': '#2c2c2c',
@@ -284,7 +287,7 @@
     </style>
 </head>
 
-<body class="font-inter text-warm-white">
+<body class="font-inter text-warm-white bg-deep-space">
     <!-- Background Music -->
     <audio id="backgroundMusic" loop preload="auto">
         <source src="Music/Meditation.mp3" type="audio/mpeg">
@@ -345,19 +348,21 @@
                     <span class="text-xl font-serif font-bold glow-text" data-i18n="brand.name">九 筮</span>
                 </div>
 
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="index.html" class="hover:text-mystic-gold transition-colors" data-i18n="nav.home">Home</a>
-                    <a href="divination.html" class="hover:text-mystic-gold transition-colors"
-                        data-i18n="nav.divination">Divination</a>
-                    <a href="fengshui.html" class="text-mystic-gold font-semibold" data-i18n="nav.fengshui">Feng
+                <div class="hidden md:flex items-center space-x-6 whitespace-nowrap">
+                    <a href="index.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
+                        data-i18n="nav.home">Home</a>
+                    <a href="divination.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
+                        data-i18n="nav.divination">Personality Blueprint</a>
+                    <a href="fengshui.html" class="text-mystic-gold font-medium text-sm" data-i18n="nav.fengshui">Feng
                         Shui</a>
-                    <a href="iching.html" class="hover:text-mystic-gold transition-colors"
-                        data-i18n="nav.iching">I-Ching</a>
-                    <a href="calendar.html" class="hover:text-mystic-gold transition-colors"
+                    <a href="iching.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
+                        data-i18n="nav.iching">Wisdom Guide</a>
+                    <a href="calendar.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
                         data-i18n="nav.calendar">Calendar</a>
-                    <a href="about.html" class="hover:text-mystic-gold transition-colors" data-i18n="nav.about">About
+                    <a href="about.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
+                        data-i18n="nav.about">About
                         Us</a>
-                    <a href="profile.html" class="hover:text-mystic-gold transition-colors"
+                    <a href="profile.html" class="hover:text-mystic-gold transition-colors font-medium text-sm"
                         data-i18n="nav.profile">Profile</a>
                 </div>
 
@@ -883,7 +888,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="py-12" style="background: var(--jade-dark);">
+    <footer class="py-12 bg-deep-space border-t border-moon-silver/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center">
                 <p class="text-moon-silver mb-6 max-w-2xl mx-auto" data-i18n="footer.description">

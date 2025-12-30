@@ -73,7 +73,7 @@ class IChingAI {
             58: { name: '兑', english: 'The Joyous (Lake)', chinese: '兑为泽', description: '亨，利贞' },
             59: { name: '涣', english: 'Dispersion', chinese: '风水涣', description: '亨，王假有庙，利涉大川，利贞' },
             60: { name: '节', english: 'Limitation', chinese: '水泽节', description: '亨，苦节不可贞' },
-            61: { english: 'Inner Truth', chinese: '风泽中孚', description: '豚鱼吉，利涉大川，利贞' },
+            61: { name: '中孚', english: 'Inner Truth', chinese: '风泽中孚', description: '豚鱼吉，利涉大川，利贞' },
             62: { name: '小过', english: 'Preponderance of the Small', chinese: '雷山小过', description: '亨，利贞，可小事，不可大事' },
             63: { name: '既济', english: 'After Completion', chinese: '水火既济', description: '亨，小利贞，初吉终乱' },
             64: { name: '未济', english: 'Before Completion', chinese: '火水未济', description: '亨，小狐汔济，濡其尾，无攸利' }
@@ -93,7 +93,18 @@ class IChingAI {
             const hexagram = this.hexagrams[hexagramNumber] || this.hexagrams[1];
 
             const lang = (window.i18n && window.i18n.currentLanguage) || 'zh';
-            const hexagramDisplayName = lang === 'en' ? hexagram.english : hexagram.chinese;
+
+            // 显示进度条
+            this.updateProgress(10, window.i18n?.t('iching.progress.initializing') || 'Initializing analysis...');
+
+            let hexagramDisplayName = hexagram.chinese;
+            if (lang === 'en' || lang === 'es') {
+                hexagramDisplayName = hexagram.english;
+            } else if (lang === 'zh-TW') {
+                // If we want Traditional Chinese, we can use a converter or fallback
+                // For now, use the same as zh-CN but allow for future override if we add specific names
+                hexagramDisplayName = hexagram.chinese;
+            }
 
             const questionData = {
                 question: question,
@@ -102,15 +113,40 @@ class IChingAI {
                 changingLines: changingLines
             };
 
+            this.updateProgress(30, window.i18n?.t('iching.progress.step1') || 'Interpreting Hexagram...');
+
             // 调用AI服务获取解读
+            const aiService = window.aiService || (window.AIService ? new window.AIService() : null);
+            if (!aiService) {
+                throw new Error('AI服务未初始化');
+            }
+
+            // 模拟进度更新
+            const progressInterval = setInterval(() => {
+                const currentWidth = parseFloat(document.getElementById('progressBar')?.style.width || '30');
+                if (currentWidth < 90) {
+                    const nextProgress = currentWidth + 2;
+                    let text = window.i18n?.t('iching.progress.step2') || 'Analyzing Hexagram Spirit...';
+                    if (nextProgress > 70) text = window.i18n?.t('iching.progress.step3') || 'Formulating Cosmic Advice...';
+                    this.updateProgress(nextProgress, text);
+                }
+            }, 500);
+
             const result = await aiService.analyzeIChing(questionData);
+
+            clearInterval(progressInterval);
+            this.updateProgress(100, window.i18n?.t('iching.progress.complete') || 'Analysis Complete!');
 
             this.currentReading = {
                 ...result,
                 hexagramNumber: hexagramNumber,
-                hexagramName: hexagram.chinese,
+                hexagramName: hexagramDisplayName,
+                judgment: result.judgment || (lang === 'en' ? hexagram.english : hexagram.chinese),
                 question: question
             };
+
+            // 稍等一下让用户看到100%
+            await new Promise(resolve => setTimeout(resolve, 500));
 
             // 更新显示
             this.displayReading(this.currentReading);
@@ -119,8 +155,39 @@ class IChingAI {
 
         } catch (error) {
             console.error('易经占卜错误:', error);
+            this.updateProgress(0, 'Error: ' + error.message);
             throw error;
         }
+    }
+
+    /**
+     * 更新分析进度
+     */
+    updateProgress(percentage, text) {
+        const progressSection = document.getElementById('progressSection');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const coinSection = document.getElementById('coinSection');
+
+        if (progressSection) progressSection.classList.remove('hidden');
+        if (coinSection) coinSection.classList.add('hidden');
+
+        if (progressBar) progressBar.style.width = `${percentage}%`;
+        if (progressText) {
+            progressText.textContent = text;
+            if (window.i18n) {
+                // Apply current language to static steps if they are visible
+                document.querySelectorAll('[data-i18n^="iching.progress.step"]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    el.textContent = window.i18n.t(key);
+                });
+            }
+        }
+
+        // 更新步骤圆点状态
+        if (percentage >= 30) document.getElementById('step1')?.classList.replace('bg-white/20', 'bg-mystic-gold');
+        if (percentage >= 60) document.getElementById('step2')?.classList.replace('bg-white/20', 'bg-mystic-gold');
+        if (percentage >= 90) document.getElementById('step3')?.classList.replace('bg-white/20', 'bg-mystic-gold');
     }
 
     /**
@@ -144,9 +211,10 @@ class IChingAI {
      * 显示占卜结果
      */
     displayReading(reading) {
-        // 隐藏输入和投币区域
+        // 隐藏不需要的区域
         document.getElementById('methodSection')?.classList.add('hidden');
         document.getElementById('coinSection')?.classList.add('hidden');
+        document.getElementById('progressSection')?.classList.add('hidden');
 
         // 显示结果区域
         const resultsSection = document.getElementById('resultsSection');
@@ -182,6 +250,7 @@ class IChingAI {
     updateHexagramDisplay(reading) {
         const hexagramTitle = document.getElementById('hexagramTitle');
         const hexagramDescription = document.getElementById('hexagramDescription');
+        const finalHexagram = document.getElementById('finalHexagram');
 
         const label = window.i18n ? window.i18n.t('iching.hexagram.label') : 'Hexagram';
         if (hexagramTitle) {
@@ -189,12 +258,21 @@ class IChingAI {
         }
 
         if (hexagramDescription) {
-            hexagramDescription.textContent = reading.judgment || '';
+            // Use summary if available, otherwise judgment
+            hexagramDescription.textContent = reading.summary || reading.judgment || '';
         }
 
-        // Limit updates to text content only, do not overwrite the visual container
-        // Visual changing lines are handled by iching.html's displayFinalResults
-
+        // Draw the hexagram lines if possible
+        if (finalHexagram && reading.lines_binary) {
+            finalHexagram.innerHTML = '';
+            // lines_binary should be something like "111010" (bottom to top)
+            const lines = reading.lines_binary.split('');
+            lines.forEach((l, i) => {
+                const lineDiv = document.createElement('div');
+                lineDiv.className = `hexagram-line ${l === '1' ? 'solid' : 'broken'}`;
+                finalHexagram.appendChild(lineDiv);
+            });
+        }
     }
 
     /**
@@ -234,11 +312,23 @@ class IChingAI {
         // Update Future Hexagram
         const futureHexagramText = document.getElementById('futureHexagramText');
         const futureHexagramCard = document.getElementById('futureHexagramCard');
+        const transformedHexagram = document.getElementById('transformedHexagram');
 
         if (futureHexagramText && futureHexagramCard) {
             if (reading.futureHexagram) {
                 futureHexagramText.innerHTML = formatter.parse(reading.futureHexagram);
                 futureHexagramCard.classList.remove('hidden');
+
+                // Draw transformed lines if binary data exists
+                if (transformedHexagram && reading.future_lines_binary) {
+                    transformedHexagram.innerHTML = '';
+                    const fLines = reading.future_lines_binary.split('');
+                    fLines.forEach(l => {
+                        const lDiv = document.createElement('div');
+                        lDiv.className = `hexagram-line ${l === '1' ? 'solid' : 'broken'}`;
+                        transformedHexagram.appendChild(lDiv);
+                    });
+                }
             } else {
                 futureHexagramCard.classList.add('hidden');
             }

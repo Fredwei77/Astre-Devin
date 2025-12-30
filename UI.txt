@@ -1,0 +1,62 @@
+既然你的目标是**欧美市场**，首页的 UI 必须彻底摆脱传统玄学网站“红金配色、信息堆砌、老旧素材”的刻板印象。
+
+欧美用户对神秘主义的审美偏向于 **"Tech-Zen" (科技禅)** 或 **"Celestial Minimalism" (天体极简主义)**。这能建立一种“权威、专业、高端”的第一印象。
+
+以下是为你设计的首页 UI 更改风格提示词，你可以直接发给 **Antigravity**、**Midjourney**（生成设计图）或 **Claude/GPT**（生成前端代码）：
+
+---
+
+### 1. 核心风格定义 (Core Aesthetics)
+
+* **风格关键词：** Modern Mystic, Dark Mode, Ethereal, Geometric, Scientific-Occultism.
+* **配色方案 (Palette)：** * **主色：** Deep Space Blue (深空蓝 `#0B0E14`) 或 Obsidian (黑曜石色)。
+* **点缀色：** Electric Purple (电光紫), Champagne Gold (香槟金), 或 Cyan (青色，代表能量流)。
+* **辅助色：** 极简白 (Off-white) 用于文字，增加可读性。
+
+
+
+---
+
+### 2. 给图像生成 AI 的提示词 (Midjourney/DALL-E 3)
+
+如果你需要生成一张震撼的首页大图（Hero Image）：
+
+> **Prompt:** > "A website hero background for an Eastern Mysticism AI platform, ultra-modern and minimalist. A floating 3D metallic Ba-Gua symbol in the center, rendered with frosted glass and glowing gold lines. The background is a deep cosmic gradient of dark blue and black. Tiny, sharp star constellations scattered subtly. Cinematic lighting, 8k resolution, Tech-Zen aesthetic, sleek and high-end, similar to Apple or high-end fintech branding."
+
+---
+
+### 3. 给 UI 开发智能体的系统提示词 (System Prompt)
+
+如果你让 Antigravity 直接写网页样式代码，请使用这段描述：
+
+> **System Prompt for UI Redesign:**
+> "Redesign the website homepage to target the US market with a **'Premium Modern Mystic'** style. Follow these constraints:
+> 1. **Hero Section:** A minimalist headline 'Sync Your Life with Ancient Cosmic Intelligence' in Serif font (e.g., Playfair Display). Below it, a subtle animated 'Qi-flow' background using CSS gradients.
+> 2. **Navigation:** Semi-transparent 'Glassmorphism' header.
+> 3. **The Four Pillars (Features):** >    - Use a 4-column grid for Divination, Feng Shui, I-Ching, and Calendar.
+> * Each icon should be a minimalist vector line art (Gold on Dark).
+> * Add a hover effect: Subtle glow and 1.05x scale.
+> 
+> 
+> 4. **Typography:** Use a mix of a clean Sans-serif (like Inter or Montserrat) for body text and a sophisticated Serif for titles.
+> 5. **Call to Action (CTA):** A button with a 'Pulse' glow effect saying 'Get Your Free Energy Map'.
+> 6. **Responsiveness:** Mobile-first design, optimized for high-end smartphones."
+> 
+> 
+
+---
+
+### 4. 首页布局建议 (Section by Section)
+
+| 模块 | 建议改动 | 目的 |
+| --- | --- | --- |
+| **Hero Section** | 巨大的动态标题 + 极简的“出生信息”输入框。 | 立即抓住注意力，降低转化门槛。 |
+| **Social Proof** | 增加一行 "As seen in..." 或用户反馈（即使是模拟的）。 | 建立欧美用户最看重的 Trust (信任度)。 |
+| **Feature Cards** | 别堆文字。用一句话概括：*Feng Shui: Harmonize your space.* | 符合碎片化阅读习惯。 |
+| **Amazon Teaser** | 底部增加一个 'Curated Zen Essentials' 模块，展示 3 个精选产品。 | 潜移默化地引导至你的亚马逊店铺。 |
+
+---
+
+### 下一步建议：
+
+你可以对 Antigravity 说：**“请基于以上 UI 风格，用 React 和 Tailwind CSS 帮我写一个首页的 Hero Section 代码原型。”**
