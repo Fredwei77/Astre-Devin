@@ -368,10 +368,14 @@ class AIService {
         }
 
         // 检查CONFIG是否可用
-        if (typeof CONFIG === 'undefined' || !CONFIG.PROMPTS) {
+        const config = (typeof CONFIG !== 'undefined') ? CONFIG : ((typeof window !== 'undefined' && window.CONFIG) ? window.CONFIG : undefined);
+
+        if (!config || !config.PROMPTS) {
             console.warn('CONFIG.PROMPTS not available, using mock data');
             return this.getMockResponse('fengshui');
         }
+
+        const CONFIG_REF = config;
 
         // 获取当前语言
         const language = localStorage.getItem('preferredLanguage') || 'zh';
