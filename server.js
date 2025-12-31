@@ -24,18 +24,26 @@ app.use(helmet({
     contentSecurityPolicy: false  // 完全禁用 CSP 用于开发
 }));
 
-// CORS configuration - 增强支持本地 file:// 协议访问
 app.use(cors({
     origin: function (origin, callback) {
-        // 允许没有 origin (如本地文件) 或来自环境变量、localhost 的请求
-        if (!origin || origin === 'null' || origin.includes('localhost') || origin.includes('8080')) {
+        const allowedOrigins = [
+            'https://astredevin.netlify.app',
+            'https://destiny-ai-backend.onrender.com', // Self
+            'http://localhost:3000',
+            'http://localhost:5500',
+            'http://127.0.0.1:5500'
+        ];
+
+        // 允许没有 origin (如本地文件) 或在允许列表中
+        if (!origin || origin === 'null' || allowedOrigins.indexOf(origin) !== -1 || origin.includes('localhost')) {
             callback(null, true);
         } else {
-            callback(null, true); // 开发阶段默认全放开，生产环境建议严格限制
+            console.log('Blocked CORS origin:', origin);
+            callback(null, true); // 临时全放开以排除故障
         }
     },
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token']
 }));
 
