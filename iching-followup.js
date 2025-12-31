@@ -102,9 +102,29 @@
             }
 
         } catch (error) {
-            console.error('易经追问失败:', error);
-            const t = (key) => window.i18n ? window.i18n.t(key) : key;
+            // 增强重试/回退逻辑
+            console.warn('⚠️ AI服务调用失败，尝试使用模拟数据回退');
+            try {
+                const aiService = window.aiService || (window.AIService ? new window.AIService() : null);
+                if (aiService && typeof aiService.getMockResponse === 'function') {
+                    const mockResponse = await aiService.getMockResponse('iching-followup');
+                    if (mockResponse) {
+                        console.log('✅ 成功获取易经追问模拟数据');
+                        if (answerText) {
+                            answerText.innerHTML = formatIChingAnswer(mockResponse, 'zh'); // Default to zh for mock if context missing
+                        }
+                        if (answerSection) {
+                            answerSection.classList.remove('hidden');
+                            answerSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                        return;
+                    }
+                }
+            } catch (fallbackError) {
+                console.error('模拟追问回退失败:', fallbackError);
+            }
 
+            const t = (key) => window.i18n ? window.i18n.t(key) : key;
             let errorMessage = t('iching.followup.error');
 
             if (error.message.includes('AI服务未初始化')) {

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feng Shui Mastery: Harmonizing Your Life</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap');
+
+        :root {
+            --primary-gold: #D4AF37;
+            --deep-navy: #0A192F;
+            --paper-bg: #fdfbf7;
+            --text-color: #2c3e50;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #eee;
+            color: var(--text-color);
+            margin: 0;
+            line-height: 1.8;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .book-container {
+            width: 100%;
+            max-width: 900px;
+            background-color: var(--paper-bg);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+            margin: 40px 0;
+            position: relative;
+        }
+
+        /* Cover Page */
+        .cover-page {
+            height: 1000px;
+            background: linear-gradient(135deg, var(--deep-navy) 0%, #1a2a40 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cover-border {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            border: 2px solid var(--primary-gold);
+            pointer-events: none;
+        }
+
+        .cover-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            color: var(--primary-gold);
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .cover-subtitle {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-style: italic;
+            margin-bottom: 60px;
+            opacity: 0.9;
+        }
+
+        .compass-icon {
+            font-size: 8rem;
+            color: var(--primary-gold);
+            opacity: 0.2;
+            animation: rotate 60s linear infinite;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Content Pages */
+        .page {
+            padding: 80px 100px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--deep-navy);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            border-bottom: 3px solid var(--primary-gold);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-top: 40px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        .highlight-box {
+            background-color: rgba(212, 175, 55, 0.1);
+            border-left: 4px solid var(--primary-gold);
+            padding: 20px;
+            margin: 30px 0;
+            font-style: italic;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px;
+            background-color: var(--deep-navy);
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .download-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--primary-gold);
+            color: var(--deep-navy);
+            padding: 15px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-5px);
+        }
+
+        @media print {
+            body {
+                background: none;
+                margin: 0;
+            }
+
+            .book-container {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+            }
+
+            .download-btn {
+                display: none;
+            }
+
+            .page {
+                page-break-after: always;
+            }
+        }
+    </style>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <button onclick="window.print()" class="download-btn">
+        <i class="fas fa-file-pdf mr-2"></i> Save as PDF
+    </button>
+
+    <div class="book-container">
+
+        <!-- Cover -->
+        <div class="cover-page">
+            <div class="cover-border"></div>
+            <i class="fas fa-compass compass-icon"></i>
+            <h1 class="cover-title">Feng Shui Mastery</h1>
+            <h2 class="cover-subtitle">Use Ancient Wisdom to Harmonize Your Life</h2>
+            <p style="margin-top: 50px;">A Comprehensive Guide for Beginners</p>
+            <p style="font-size: 0.9rem; margin-top: auto;">Presented by Destiny AI</p>
+        </div>
+
+        <!-- Introduction -->
+        <div class="page">
+            <h1>Introduction</h1>
+            <p>Welcome to the world of Feng Shui (风水), the ancient Chinese art of placement. Literally translating to
+                "Wind-Water," Feng Shui is a practice that dates back over 3,000 years. It is based on the idea that our
+                homes are a mirror of what's happening inside us.</p>
+            <p>The goal of Feng Shui is to harmonize your energy with your home's energy. By doing so, you can discover
+                how to unblock the energy in your home and life, allowing things to flow easily and effortlessly.</p>
+
+            <div class="highlight-box">
+                "We shape our buildings; thereafter they shape us." — Winston Churchill
+            </div>
+
+            <p>In this guide, we will explore the fundamental principles of Feng Shui and provide practical,
+                easy-to-apply tips to enhance the energy flow in your living spaces, attracting wealth, health, and
+                harmony.</p>
+        </div>
+
+        <!-- Chapter 1: Core Principles -->
+        <div class="page">
+            <h1>Chapter 1: Core Principles</h1>
+
+            <h2>Qi (Mortal Energy)</h2>
+            <p>At the heart of Feng Shui is "Qi" (pronounced "chee"). This is the life force or energy flow that
+                permeates everything. Good Feng Shui allows Qi to flow freely and gently through your home, nourishing
+                every corner. Blocked or stagnant Qi can lead to difficulties in life.</p>
+
+            <h2>Yin and Yang</h2>
+            <p>This is the principle of balance. Yin is feminine, dark, passive, and soft. Yang is masculine, light,
+                active, and hard. A harmonious home balances these opposing forces. For example, a bedroom should be
+                more Yin (restful), while a living room or office should be more Yang (energetic).</p>
+
+            <h2>The Five Elements</h2>
+            <p>Feng Shui uses the five-element system to analyze energy:</p>
+            <ul>
+                <li><strong>Wood:</strong> Representing growth and vitality. Used for family and wealth.</li>
+                <li><strong>Fire:</strong> Representing passion and energy. Used for fame and reputation.</li>
+                <li><strong>Earth:</strong> Representing grounding and stability. Used for health and knowledge.</li>
+                <li><strong>Metal:</strong> Representing logic and precision. Used for creativity and children.</li>
+                <li><strong>Water:</strong> Representing wisdom and flow. Used for career and life path.</li>
+            </ul>
+        </div>
+
+        <!-- Chapter 2: Wealth & Prosperity -->
+        <div class="page">
+            <h1>Chapter 2: Attracting Wealth</h1>
+            <p>One of the most popular applications of Feng Shui is to attract abundance. Here are key ways to activate
+                the flow of prosperity.</p>
+
+            <h2>The Wealth Corner</h2>
+            <p>In the Bagua map, the Wealth area is located in the <strong>Southeast</strong> sector of your home or
+                room (or the far left corner from the main door entry). </p>
+
+            <h2>Activation Tips</h2>
+            <ul>
+                <li><strong>Add Living Plants:</strong> Wood element feeds wealth. Healthy, round-leaved plants (like
+                    Jade plants) are excellent.</li>
+                <li><strong>Water Features:</strong> A small fountain or images of flowing water symbolize money flowing
+                    into your life.</li>
+                <li><strong>Gold & Purple:</strong> Use these colors as accents in the wealth corner to symbolize
+                    opulence.</li>
+                <li><strong>Fix Leaks:</strong> Dripping taps represent money leaking away. Fix them immediately!</li>
+            </ul>
+        </div>
+
+        <!-- Chapter 3: Health & Vitality -->
+        <div class="page">
+            <h1>Chapter 3: Health & Vitality</h1>
+            <p>Health is wealth. The center of your home (the Tai Chi) represents overall health and wellbeing.</p>
+
+            <h2>The Bedroom</h2>
+            <p>Since we spend a third of our lives sleeping, the bedroom is critical for health.</p>
+            <ul>
+                <li><strong>Bed Position:</strong> Place your bed in the "Command Position" — you should see the door
+                    but not be directly in line with it.</li>
+                <li><strong>No Electronics:</strong> Remove TVs and computers to reduce EMFs and mental clutter.</li>
+                <li><strong>Neutral Colors:</strong> Use skin tones, soft browns, or creams for a restful sleep
+                    environment.</li>
+            </ul>
+
+            <h2>The Kitchen</h2>
+            <p>The kitchen is the heart of the home. Keep the stove clean and working perfectly, as it represents your
+                ability to feed yourself and your family.</p>
+        </div>
+
+        <!-- Chapter 4: Taboos to Avoid -->
+        <div class="page">
+            <h1>Chapter 4: Common Taboos</h1>
+            <p>Sometimes, knowing what <em>not</em> to do is just as important. Here are common Feng Shui mistakes ("Sha
+                Qi") to avoid.</p>
+
+            <h2>Poison Arrows</h2>
+            <p>Sharp corners of furniture pointing directly at where you sit or sleep are called "poison arrows." They
+                create cutting energy. Soften these corners with fabric or plants.</p>
+
+            <h2>Mirrors Facing the Bed</h2>
+            <p>Mirrors can bounce energy around and disturb sleep. It is said that they can also invite third parties
+                into a relationship. Cover them at night or reposition them.</p>
+
+            <h2>Clutter</h2>
+            <p>Clutter is the biggest enemy of good Feng Shui. It represents stagnant energy and unresolved issues.
+                Clear your clutter to clear your mind and open space for new opportunities.</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>&copy; 2025 Destiny AI. All Rights Reserved.</p>
+            <p>May Qi flow abundantly in your life.</p>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

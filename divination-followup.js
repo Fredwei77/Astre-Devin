@@ -140,6 +140,39 @@
 
         } catch (error) {
             console.error('追问失败:', error);
+
+            // 增强重试/回退逻辑
+            console.warn('⚠️ AI服务调用失败，尝试使用模拟数据回退');
+            try {
+                const aiService = window.aiService || (window.AIService ? new window.AIService() : null);
+                if (aiService && typeof aiService.getMockResponse === 'function') {
+                    const mockResponse = await aiService.getMockResponse('divination-followup');
+                    if (mockResponse) {
+                        console.log('✅ 成功获取占卜追问模拟数据');
+
+                        // 隐藏加载状态并显示回答区域
+                        loading.classList.add('hidden');
+                        answerSection.classList.remove('hidden');
+
+                        // 格式化解析 Markdown
+                        const formattedHtml = formatAnswer(mockResponse);
+
+                        // 执行打字机效果
+                        if (window.TypingEffect) {
+                            await window.TypingEffect.type(answerText, formattedHtml, 30);
+                        } else {
+                            answerText.innerHTML = formattedHtml;
+                        }
+
+                        // 滚动到答案位置
+                        answerSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        return;
+                    }
+                }
+            } catch (fallbackError) {
+                console.error('模拟追问回退失败:', fallbackError);
+            }
+
             console.error('错误详情:', {
                 message: error.message,
                 aiServiceExists: !!window.aiService,

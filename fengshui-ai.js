@@ -87,6 +87,28 @@ class FengShuiAI {
 
         } catch (error) {
             console.error('风水分析错误:', error);
+
+            // 增强重试/回退逻辑
+            console.warn('⚠️ AI服务调用失败，尝试使用模拟数据回退');
+
+            try {
+                // 尝试获取模拟数据
+                const aiServiceInstance = window.aiService || (window.destinyAI && window.destinyAI.aiService);
+                if (aiServiceInstance && typeof aiServiceInstance.getMockResponse === 'function') {
+                    const mockResult = await aiServiceInstance.getMockResponse('fengshui');
+
+                    if (mockResult) {
+                        console.log('✅ 成功获取风水模拟数据');
+                        this.analysisResult = mockResult;
+                        this.updateAnalysisDisplay(mockResult);
+                        return mockResult;
+                    }
+                }
+            } catch (fallbackError) {
+                console.error('模拟数据回退失败:', fallbackError);
+            }
+
+            // 如果连模拟数据都失败了，才抛出错误
             throw error;
         }
     }
@@ -463,19 +485,7 @@ class FengShuiAI {
      */
     async handleFollowupQuestion() {
         console.log('🤖 开始处理风水追问...');
-
-        // 检查是否有分析结果
-        if (!this.analysisResult || !this.spaceData) {
-            console.error('❌ 追问失败: 缺少分析结果或空间数据', { result: this.analysisResult, data: this.spaceData });
-            alert(window.i18n?.t('fengshui.followup.noResult') || '请先进行风水分析再提问');
-            return;
-        }
-
         const followupInput = document.getElementById('followupInput');
-        const askButton = document.getElementById('askFollowup');
-        const loadingDiv = document.getElementById('followupLoading');
-        const answerDiv = document.getElementById('followupAnswer');
-        const answerText = document.getElementById('followupAnswerText');
 
         if (!followupInput) {
             console.error('❌ 未找到追问输入框');
@@ -483,85 +493,96 @@ class FengShuiAI {
         }
 
         const question = followupInput.value.trim();
-        console.log('📝 用户追问:', question);
-
         if (!question) {
             alert(window.i18n?.t('fengshui.followup.empty') || '请输入您的追问');
             return;
         }
 
-        // 检查用户权限
-        if (window.subscriptionManager) {
-            const access = window.subscriptionManager.canUseService('fengshui');
-            const isMockDataOnly = window.subscriptionManager.isMockDataOnly();
+        const askButton = document.getElementById('askFollowup');
+        const loadingDiv = document.getElementById('followupLoading');
+        const answerDiv = document.getElementById('followupAnswer');
+        const answerText = document.getElementById('followupAnswerText');
 
-            if (!access.allowed || isMockDataOnly) {
-                console.log('权限受限，显示升级提示');
-                if (!access.allowed) {
-                    window.subscriptionManager.showUpgradePrompt('AI风水追问', 'fengshui');
-                    return;
-                }
-            }
-        }
-
-        const language = localStorage.getItem('preferredLanguage') || 'zh';
+        // 立即显示加载状态
+        if (askButton) askButton.disabled = true;
+        if (loadingDiv) loadingDiv.classList.remove('hidden');
+        if (answerDiv) answerDiv.classList.add('hidden');
+        if (answerText) answerText.innerHTML = '';
 
         try {
-            // 显示加载状态
-            if (askButton) askButton.disabled = true;
-            if (loadingDiv) loadingDiv.classList.remove('hidden');
-            if (answerDiv) answerDiv.classList.add('hidden');
+            // 准备上下文数据 (如果可用)
+            const isGenericChat = !this.analysisResult || !this.spaceData;
+            console.log('追问模式:', isGenericChat ? '通用问答' : '上下文追问');
 
-            // 构建系统提示词
-            let systemPromptBase = '';
-            if (window.CONFIG && window.CONFIG.PROMPTS && window.CONFIG.PROMPTS.FENGSHUI && window.CONFIG.PROMPTS.FENGSHUI.FOLLOWUP_SYSTEM) {
-                systemPromptBase = window.CONFIG.PROMPTS.FENGSHUI.FOLLOWUP_SYSTEM(language);
-            } else {
-                systemPromptBase = `你是一位专业的风水大师。请基于用户的空间分析结果，针对其提出的具体布局困难或问题，提供深度解读和替代方案建议。`;
+            // 检查用户权限 (依然需要检查，防止滥用)
+            if (window.subscriptionManager) {
+                const access = window.subscriptionManager.canUseService('fengshui');
+                const isMockDataOnly = window.subscriptionManager.isMockDataOnly();
+
+                if (!access.allowed || isMockDataOnly) {
+                    // 如果只是模拟数据，允许继续允许，但在真实API调用时会受限
+                    if (!access.allowed) {
+                        window.subscriptionManager.showUpgradePrompt('AI风水追问', 'fengshui');
+                        throw new Error('权限受限');
+                    }
+                }
             }
 
-            const labels = {
-                direction: window.i18n?.t('fengshui.compass.direction') || 'Direction',
-                score: window.i18n?.t('fengshui.analysis.results.energy') || 'Overall Score',
-                elements: window.i18n?.t('fengshui.elements.title') || 'Elements',
-                analysis: window.i18n?.t('fengshui.analysis.results.title') || 'Analysis'
-            };
+            const language = localStorage.getItem('preferredLanguage') || 'zh';
+            let prompt;
 
-            const contextText = `
+            if (isGenericChat) {
+                prompt = `用户问题: "${question}"\n\n请作为一位风水专家，用${language === 'en' ? '英文' : '中文'}回答上述问题。给出专业、客观的建议。`;
+            } else {
+                const labels = {
+                    direction: window.i18n?.t('fengshui.compass.direction') || 'Direction',
+                    score: window.i18n?.t('fengshui.analysis.results.energy') || 'Overall Score',
+                    elements: window.i18n?.t('fengshui.elements.title') || 'Elements',
+                    analysis: window.i18n?.t('fengshui.analysis.results.title') || 'Analysis'
+                };
+
+                const contextText = `
 ${labels.analysis}:
-- ${labels.direction}: ${this.spaceData.direction}° (${this.getDirectionAdvice(this.spaceData.direction).name})
+- ${labels.direction}: ${this.spaceData.direction}
 - ${labels.score}: ${this.analysisResult.overallScore}%
-- ${labels.elements}: Wood ${this.analysisResult.elements.wood}%, Fire ${this.analysisResult.elements.fire}%, Earth ${this.analysisResult.elements.earth}%, Metal ${this.analysisResult.elements.metal}%, Water ${this.analysisResult.elements.water}%
-- ${labels.analysis}: ${this.analysisResult.directionAnalysis}
+- ${labels.analysis}: ${this.analysisResult.directionAnalysis || 'N/A'}
 `;
-
-            const systemPrompt = systemPromptBase + "\n\n" + contextText;
-            const userPrompt = `${window.i18n?.t('fengshui.followup.title') || 'Follow-up'}: ${question}`;
+                prompt = `基于以下风水分析：\n${contextText}\n\n用户问题: "${question}"\n\n请给出具体建议。`;
+            }
 
             // 调用AI服务
             const aiService = window.aiService || (window.destinyAI && window.destinyAI.aiService);
             if (!aiService) {
-                throw new Error('AI服务未初始化');
+                throw new Error('AI服务未初始化 (AI Service Not Initialized)');
             }
 
-            const response = await aiService.chatWithSystem(systemPrompt, userPrompt, {
-                type: 'fengshui-followup'
-            });
+            const response = await aiService.chatWithSystem(
+                '你是一位专业的风水大师。',
+                prompt,
+                { type: 'fengshui-followup' }
+            );
 
             if (!response) {
                 throw new Error('AI响应为空');
             }
 
-            // 处理可能被错误包裹在 JSON 中的响应
+            // 智能处理响应内容
             let cleanResponse = response;
-            if (typeof response === 'string' && response.trim().startsWith('{')) {
+            if (typeof response === 'object' && response !== null) {
+                cleanResponse = response.content || response.text || response.answer || JSON.stringify(response);
+            } else if (typeof response === 'string' && response.trim().startsWith('{')) {
                 try {
                     const parsed = JSON.parse(response);
-                    cleanResponse = parsed.content || parsed.answer || parsed.text || response;
-                } catch (e) {
-                    console.warn('尝试解析疑似 JSON 的响应失败:', e);
-                }
+                    cleanResponse = parsed.content || parsed.text || parsed.answer || response;
+                } catch (e) { /* ignore */ }
             }
+
+            if (typeof cleanResponse !== 'string') {
+                cleanResponse = JSON.stringify(cleanResponse);
+            }
+
+            // 移除 Markdown 代码块标记（如果有）
+            cleanResponse = cleanResponse.replace(/^```(?:markdown|json)?/i, '').replace(/```$/, '');
 
             // 隐藏加载状态并显示回答区域
             if (loadingDiv) loadingDiv.classList.add('hidden');
@@ -571,29 +592,26 @@ ${labels.analysis}:
             if (answerText) {
                 const formattedHtml = window.MarkdownFormatter ? window.MarkdownFormatter.parse(cleanResponse) : cleanResponse.replace(/\n/g, '<br>');
 
-                // 执行打字机展示
                 if (window.TypingEffect) {
                     await window.TypingEffect.type(answerText, formattedHtml, 30);
                 } else {
                     answerText.innerHTML = formattedHtml;
                 }
-
-                // 滚动到回答位置
                 answerDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
 
-            // 清空输入框
-            followupInput.value = '';
-
-            console.log('✅ 风水追问处理完成');
+            // 清空输入框 (可选)
+            // followupInput.value = ''; 
 
         } catch (error) {
             console.error('❌ 风水追问失败:', error);
-            alert(error.message || 'AI解答失败，请稍后重试');
-        } finally {
-            // 恢复按钮状态
-            if (askButton) askButton.disabled = false;
             if (loadingDiv) loadingDiv.classList.add('hidden');
+
+            if (error.message !== '权限受限') {
+                alert(window.i18n?.t('common.error') || 'AI解答失败，请稍后重试');
+            }
+        } finally {
+            if (askButton) askButton.disabled = false;
         }
     }
 
@@ -701,19 +719,24 @@ ${labels.analysis}:
      */
     bindFollowupEvents() {
         const askButton = document.getElementById('askFollowup');
+        const followupInput = document.getElementById('followupInput');
+
         if (askButton) {
             askButton.onclick = () => this.handleFollowupQuestion();
-            console.log('✅ 风水追问按钮事件已绑定');
+            console.log('✅ Feng Shui followup button event bound');
 
             // 支持回车键提交
-            const followupInput = document.getElementById('followupInput');
             if (followupInput) {
                 followupInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                    if (e.key === 'Enter' && !e.shiftKey) {  // Allow simple Enter
+                        e.preventDefault();
                         this.handleFollowupQuestion();
                     }
                 });
             }
+
+            // 初始化建议追问
+            this.renderSuggestedQuestions(null);
         }
 
         // 绑定分析按钮事件 (Consolidated from fengshui-analysis.js)

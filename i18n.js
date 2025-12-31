@@ -114,8 +114,8 @@ class I18n {
                 'home.howItWorks.step4.desc': 'Use the wisdom gained to make better decisions and improve your life.',
 
                 // Divination Page
-                'divination.title': 'AI Divination & Fortune Reading',
-                'divination.subtitle': 'Discover your destiny through advanced AI analysis of your birth chart and life path.',
+                'divination.title': 'AI Personality Blueprint & Energy Analysis',
+                'divination.subtitle': 'Discover your potential through advanced AI analysis of your personality blueprint and energy cycles.',
                 'divination.form.title': 'Enter Your Birth Information',
                 'divination.form.birthDate': 'Birth Date',
                 'divination.form.birthTime': 'Birth Time',
@@ -134,12 +134,13 @@ class I18n {
                 'divination.category.love.desc': 'Relationships & marriage',
                 'divination.category.health': 'Health',
                 'divination.category.health.desc': 'Wellness & vitality',
-                'divination.button.analyze': 'Analyze My Destiny',
+                'divination.button.analyze': 'Analyze My Energy Blueprint',
                 'divination.dateFormat': 'Format: MM/DD/YYYY (e.g., 12/31/1990)',
                 'divination.timeFormat': 'Format: 12-hour (e.g., 2:30 PM)',
                 'divination.dateLabel': '📅 English Format',
                 'divination.timeLabel': '🕐 12-Hour Format',
                 'divination.clickToSelect': 'Click to select',
+                'divination.progress.title': 'Analyzing Your Energy',
 
                 // Feng Shui Page
                 'fengshui.title': 'Feng Shui Analysis & Compass',
@@ -177,7 +178,7 @@ class I18n {
                 'footer.copyright': '© 2024 Destiny AI. All rights reserved. Empowering lives through ancient wisdom and modern technology.',
 
                 // Tooltips
-                'tooltip.divination': 'Divination is the practice of seeking knowledge of the future or unknown through supernatural means. Our AI analyzes your birth chart using ancient Eastern astrological principles.',
+                'tooltip.divination': 'Energy Analysis is the practice of understanding personal rhythms. Our AI analyzes your personality blueprint using ancient Eastern wisdom principles.',
                 'tooltip.fengshui': 'Feng Shui (literally "wind-water") is an ancient Chinese practice of arranging your environment to promote harmony and positive energy flow.',
                 'tooltip.iching': 'The I-Ching (Book of Changes) is a 3,000-year-old Chinese divination text. It uses 64 hexagrams to provide guidance on life decisions.',
                 'tooltip.elements': 'The Five Elements (Wood, Fire, Earth, Metal, Water) are fundamental concepts in Chinese philosophy representing different types of energy.',
@@ -372,8 +373,8 @@ class I18n {
                 'home.howItWorks.step4.desc': '使用获得的智慧做出更好的决策，改善您的生活。',
 
                 // 占卜页面
-                'divination.title': 'AI占卜与命运解读',
-                'divination.subtitle': '通过先进的AI分析您的生辰八字和人生轨迹，探索您的命运。',
+                'divination.title': 'AI性格蓝图与能量分析',
+                'divination.subtitle': '通过先进的AI分析您的性格特质和能量周期，探索您的内在潜能。',
                 'divination.form.title': '输入您的出生信息',
                 'divination.form.birthDate': '出生日期',
                 'divination.form.birthTime': '出生时间',
@@ -392,12 +393,13 @@ class I18n {
                 'divination.category.love.desc': '感情与婚姻',
                 'divination.category.health': '健康',
                 'divination.category.health.desc': '健康与活力',
-                'divination.button.analyze': '分析我的命运',
+                'divination.button.analyze': '分析我的能量蓝图',
                 'divination.dateFormat': '格式：月/日/年（例如：12/31/1990）',
                 'divination.timeFormat': '格式：12小时制（例如：下午2:30）',
                 'divination.dateLabel': '📅 英文格式',
                 'divination.timeLabel': '🕐 12小时制',
                 'divination.clickToSelect': '点击选择',
+                'divination.progress.title': '正在分析您的能量',
 
                 // 风水页面
                 'fengshui.title': '风水分析与罗盘',
@@ -435,7 +437,7 @@ class I18n {
                 'footer.copyright': '© 2024 命运AI。保留所有权利。通过古老智慧和现代技术赋能生活。',
 
                 // 工具提示
-                'tooltip.divination': '占卜是通过超自然手段寻求未来或未知知识的实践。我们的AI使用古老的东方占星原理分析您的生辰八字。',
+                'tooltip.divination': '能量分析是了解个人节奏和潜能的实践。我们的AI使用古老的东方智慧原理分析您的性格蓝图。',
                 'tooltip.fengshui': '风水（字面意思是"风-水"）是一种古老的中国实践，通过安排环境来促进和谐和正能量流动。',
                 'tooltip.iching': '易经（变化之书）是一本有3000年历史的中国占卜文本。它使用64个卦象为人生决策提供指导。',
                 'tooltip.elements': '五行（木、火、土、金、水）是中国哲学中的基本概念，代表不同类型的能量。',
@@ -630,8 +632,8 @@ class I18n {
                 'home.howItWorks.step4.desc': '使用獲得的智慧做出更好的決策，改善您的生活。',
 
                 // 占卜頁面
-                'divination.title': 'AI占卜與命運解讀',
-                'divination.subtitle': '通過先進的AI分析您的生辰八字和人生軌跡，探索您的命運。',
+                'divination.title': 'AI性格藍圖與能量分析',
+                'divination.subtitle': '通過先進的AI分析您的性格特質和能量週期，探索您的內在潛能。',
                 'divination.form.title': '輸入您的出生資訊',
                 'divination.form.birthDate': '出生日期',
                 'divination.form.birthTime': '出生時間',
@@ -650,12 +652,13 @@ class I18n {
                 'divination.category.love.desc': '感情與婚姻',
                 'divination.category.health': '健康',
                 'divination.category.health.desc': '健康與活力',
-                'divination.button.analyze': '分析我的命運',
+                'divination.button.analyze': '分析我的能量藍圖',
                 'divination.dateFormat': '格式：月/日/年（例如：12/31/1990）',
                 'divination.timeFormat': '格式：12小時制（例如：下午2:30）',
                 'divination.dateLabel': '📅 英文格式',
                 'divination.timeLabel': '🕐 12小時制',
                 'divination.clickToSelect': '點擊選擇',
+                'divination.progress.title': '正在分析您的能量',
 
                 // 風水頁面
                 'fengshui.title': '風水分析與羅盤',
@@ -689,7 +692,7 @@ class I18n {
                 'footer.copyright': '© 2024 九筮 Astre Devin。保留所有權利。通過古老智慧和現代技術賦能生活。',
 
                 // 工具提示
-                'tooltip.divination': '占卜是通過超自然手段尋求未來或未知知識的實踐。我們的AI使用古老的東方占星原理分析您的生辰八字。',
+                'tooltip.divination': '能量分析是了解個人節奏和潛能的實踐。我們的AI使用古老的東方智慧原理分析您的性格藍圖。',
                 'tooltip.fengshui': '風水（字面意思是「風-水」）是一種古老的中國實踐，通過安排環境來促進和諧和正能量流動。',
                 'tooltip.iching': '易經（變化之書）是一本有3000年歷史的中國占卜文本。它使用64個卦象為人生決策提供指導。',
                 'tooltip.elements': '五行（木、火、土、金、水）是中國哲學中的基本概念，代表不同類型的能量。',

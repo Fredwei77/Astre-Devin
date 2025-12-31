@@ -98,8 +98,8 @@ window.TRANSLATIONS = {
         'home.disclaimer.text': 'Astre Devin provides personal growth and self-reflection tools based on energy cycle analysis and personality blueprinting systems. Our readings and analyses are for informational and entertainment purposes only and should not be considered professional advice for medical, legal, financial, or psychological matters. Results are not guaranteed and should not be used as the sole basis for important life decisions. Please consult qualified professionals for matters requiring expert guidance.',
 
         // Divination Page
-        'divination.title': 'AI Divination & Fortune Reading',
-        'divination.subtitle': 'Discover your destiny through advanced AI analysis of your birth chart and life path. Get personalized insights based on ancient Eastern wisdom.',
+        'divination.title': 'AI Personality Blueprint & Energy Analysis',
+        'divination.subtitle': 'Discover your potential through advanced AI analysis of your personality blueprint and energy cycles. Get personalized insights based on ancient Eastern wisdom.',
         'divination.form.title': 'Enter Your Birth Information',
         'divination.form.birthDate.label': 'Birth Date',
         'divination.form.birthDate.placeholder': 'MM/DD/YYYY',
@@ -125,8 +125,8 @@ window.TRANSLATIONS = {
         'divination.category.love.desc': 'Relationships & marriage',
         'divination.category.health': 'Health',
         'divination.category.health.desc': 'Wellness & vitality',
-        'divination.button.analyze': 'Analyze My Destiny',
-        'divination.progress.title': 'Analyzing Your Destiny',
+        'divination.button.analyze': 'Analyze My Energy Blueprint',
+        'divination.progress.title': 'Analyzing Your Energy',
         'divination.progress.initializing': 'Initializing analysis...',
         'divination.progress.step1': 'Calculating Birth Chart',
         'divination.progress.step2': 'Analyzing Elements',
@@ -1158,8 +1158,8 @@ window.TRANSLATIONS = {
         'home.disclaimer.text': 'Astre Devin 基于能量周期分析和性格蓝图系统提供娱乐和自我反思工具。我们的解读和分析仅用于信息和娱乐目的，不应被视为医疗、法律、财务或心理事务的专业建议。结果不保证，不应作为重要人生决策的唯一依据。需要专家指导的事务请咨询合格的专业人士。',
 
         // 占卜页面
-        'divination.title': 'AI占卜与命运解读',
-        'divination.subtitle': '通过先进的AI分析您的生辰八字和人生轨迹，探索您的命运。获得基于古老东方智慧的个性化洞察。',
+        'divination.title': 'AI性格蓝图与能量分析',
+        'divination.subtitle': '通过先进的AI分析您的性格特质和能量周期，探索您的内在潜能。获得基于东方智慧的个性化洞察。',
         'divination.form.title': '输入您的出生信息',
         'divination.form.birthDate.label': '出生日期',
         'divination.form.birthDate.placeholder': 'MM/DD/YYYY',
@@ -1185,8 +1185,8 @@ window.TRANSLATIONS = {
         'divination.category.love.desc': '感情与婚姻',
         'divination.category.health': '健康',
         'divination.category.health.desc': '健康与活力',
-        'divination.button.analyze': '分析我的命运',
-        'divination.progress.title': '正在分析您的命运',
+        'divination.button.analyze': '分析我的能量藍圖',
+        'divination.progress.title': '正在分析您的能量',
         'divination.progress.initializing': '初始化分析...',
         'divination.progress.step1': '计算生辰八字',
         'divination.progress.step2': '分析五行',
@@ -1276,6 +1276,16 @@ window.TRANSLATIONS = {
         'divination.fallback.title': '体验模式',
         'divination.fallback.desc': '当前使用演示数据，体验完整功能',
         'divination.footer': '© 2024 命运AI。保留所有权利。您的命运，我们的智慧。',
+
+        // 客户支持页面
+        'support.title': '帮助中心 & AI 支持',
+        'support.ai_service': '24/7 AI 客户服务',
+        'support.sla': '投诉将在 3 个工作日内得到答复。',
+        'support.compensation_title': '满意度保障',
+        'support.compensation_desc': '若对结果不满意，我们将赠送价值 $29 的《风水布局电子书》作为补偿，替代退款。',
+        'support.complaint_label': '报告误导性内容',
+        'support.chat_placeholder': '在此输入您的问题...',
+        'support.ai_greeting': '您好。我是神谕助手。今天有什么可以帮您的吗？',
 
         // 风水页面
         'fengshui.title': '风水分析与罗盘',
@@ -2073,8 +2083,8 @@ window.TRANSLATIONS = {
         'home.disclaimer.text': 'Astre Devin 基於能量週期分析和性格藍圖系統提供娛樂和自我反思工具。我們的解讀和分析僅用於資訊和娛樂目的，不應被視為醫療、法律、財務或心理事務的專業建議。結果不保證，不應作為重要人生決策的唯一依據。需要專家指導的事務請諮詢合格的專業人士。',
 
         // 占卜頁面
-        'divination.title': 'AI占卜與命運解讀',
-        'divination.subtitle': '通過先進的AI分析您的生辰八字和人生軌跡，探索您的命運。獲得基於古老東方智慧的個性化洞察。',
+        'divination.title': 'AI性格藍圖與能量分析',
+        'divination.subtitle': '通過先進的AI分析您的性格特質和能量週期，探索您的內在潛能。獲得基於東方智慧的個性化洞察。',
         'divination.form.title': '輸入您的出生資訊',
         'divination.form.birthDate.label': '出生日期',
         'divination.form.birthDate.placeholder': 'MM/DD/YYYY',
@@ -2100,8 +2110,8 @@ window.TRANSLATIONS = {
         'divination.category.love.desc': '感情與婚姻',
         'divination.category.health': '健康',
         'divination.category.health.desc': '健康與活力',
-        'divination.button.analyze': '分析我的命運',
-        'divination.progress.title': '正在分析您的命運',
+        'divination.button.analyze': '分析我的能量藍圖',
+        'divination.progress.title': '正在分析您的能量',
 
         // 頁腳
         'footer.services': '核心服務',
@@ -2202,6 +2212,16 @@ window.TRANSLATIONS = {
         'divination.result.luckyColors': '幸運顏色',
         'divination.result.luckyNumbers': '幸運數字',
         'divination.footer': '© 2024 九筮 Astre Devin。保留所有權利。您的命運，我們的智慧。',
+
+        // 客戶支持頁面
+        'support.title': '幫助中心 & AI 支持',
+        'support.ai_service': '24/7 AI 客戶服務',
+        'support.sla': '投訴將在 3 個工作日內得到答覆。',
+        'support.compensation_title': '滿意度保障',
+        'support.compensation_desc': '若對結果不滿意，我們將贈送價值 $29 的《風水佈局電子書》作為補償，替代退款。',
+        'support.complaint_label': '報告誤導性內容',
+        'support.chat_placeholder': '在此輸入您的問題...',
+        'support.ai_greeting': '您好。我是神諭助手。今天有什麼可以幫您的嗎？',
 
         // Analysis Simulation
         'analysis.simulation.personality.1': '富有創造力和直覺思維',

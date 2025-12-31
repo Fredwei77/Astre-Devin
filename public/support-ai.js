@@ -108,8 +108,8 @@ class SupportAI {
                     <p>${compensationDesc}</p>
                     <div class="mt-4 p-3 bg-white/10 rounded-lg border border-mystic-gold/30">
                         <p class="text-xs mb-2">🎁 Your Exclusive Gift:</p>
-                        <a href="#" onclick="alert('Downloading Feng Shui Mastery E-Book (PDF)...'); return false;" class="inline-flex items-center text-mystic-gold hover:underline">
-                            <i class="fas fa-file-pdf mr-2"></i>[Download] Feng Shui Mastery.pdf
+                        <a href="/public/ebooks/feng-shui-mastery.html" target="_blank" class="inline-flex items-center text-mystic-gold hover:underline">
+                            <i class="fas fa-book-open mr-2"></i>[Open] Feng Shui Mastery E-Book
                         </a>
                     </div>
                 </div>

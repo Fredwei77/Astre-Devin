@@ -78,8 +78,11 @@ class AIService {
         const isLocalFile = window.location.protocol === 'file:' || window.location.origin === 'null';
 
         if (isLocalFile) {
-            console.log('Environment: Local file detected (CORS restricted). Using Mock Mode.');
-            this.mockMode = true;
+            console.log('Environment: Local file detected. Attempting to connect to local server (localhost:3000)...');
+            // Do NOT force mock mode. Allow connection to backend.
+            if (!this.apiUrl || this.apiUrl.startsWith('/')) {
+                this.apiUrl = 'http://localhost:3000/api/ai/chat';
+            }
         }
 
         // 如果是模拟模式，返回模拟数据
@@ -232,8 +235,8 @@ class AIService {
             let friendlyErrorMessage = error.message;
 
             if (isCorsError && window.location.protocol === 'file:') {
-                friendlyErrorMessage = '环境受到限制：由于浏览器安全策略 (CORS)，直接双击打开本地 HTML 文件无法调用 AI 服务。请使用本地服务器运行（例如在 VS Code 中点击 "Go Live"）或者将项目部署到 Web 环境。';
-                console.error('检测到跨域拦截，当前处于 file:// 协议');
+                friendlyErrorMessage = '连接失败：请确保本地服务器已启动 (运行 start.bat)。如果服务器未运行，应用无法连接AI服务，将自动降级为模拟模式。';
+                console.error('检测到连接失败，可能由于本地服务器未启动');
             }
 
             // 检查用户是否有权限
