@@ -10,3 +10,11 @@ services:
         value: production
       - key: PORT
         value: 3000
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: FRONTEND_URL
+        value: https://astredevin.netlify.app

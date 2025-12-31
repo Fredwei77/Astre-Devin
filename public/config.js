@@ -4,9 +4,9 @@
 const CONFIG = {
   // OpenRouter API配置 - 通过后端代理访问，不在前端暴露密钥
   OPENROUTER_API_KEY: '', // 已移除 - 使用后端代理
-  OPENROUTER_API_URL: (typeof window !== 'undefined' && window.location.protocol === 'file:')
-    ? (window.API_BASE_URL ? `${window.API_BASE_URL}/ai/chat` : 'http://localhost:3000/api/ai/chat')
-    : '/api/ai/chat', // 通过后端代理
+  OPENROUTER_API_URL: (typeof window !== 'undefined' && window.API_BASE_URL)
+    ? `${window.API_BASE_URL}/ai/chat`
+    : '/api/ai/chat', // 回退方案
 
   // Stripe 可发布密钥 - 通过环境变量注入
   // 使用测试密钥作为fallback（仅用于开发和测试）

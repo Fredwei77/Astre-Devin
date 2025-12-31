@@ -27,6 +27,17 @@
         }
 
         /**
+         * Alias for currentLang to support legacy scripts
+         */
+        get currentLanguage() {
+            return this.currentLang;
+        }
+
+        set currentLanguage(lang) {
+            this.setLanguage(lang);
+        }
+
+        /**
          * Load translation dictionary
          * @param {Object} translations - Translation object with language keys
          */
@@ -150,6 +161,13 @@
             document.querySelectorAll('[data-i18n-title]').forEach(el => {
                 const key = el.getAttribute('data-i18n-title');
                 el.title = this.t(key);
+                updateCount++;
+            });
+
+            // 3.1 Update elements with data-i18n-aria-label attribute
+            document.querySelectorAll('[data-i18n-aria-label]').forEach(el => {
+                const key = el.getAttribute('data-i18n-aria-label');
+                el.setAttribute('aria-label', this.t(key));
                 updateCount++;
             });
 

@@ -28,23 +28,30 @@ app.use(cors({
     origin: function (origin, callback) {
         const allowedOrigins = [
             'https://astredevin.netlify.app',
-            'https://destiny-ai-backend.onrender.com', // Self
+            'https://destiny-ai-backend.onrender.com',
             'http://localhost:3000',
             'http://localhost:5500',
-            'http://127.0.0.1:5500'
+            'http://127.0.0.1:5500',
+            'http://localhost:8080'
         ];
 
         // 允许没有 origin (如本地文件) 或在允许列表中
-        if (!origin || origin === 'null' || allowedOrigins.indexOf(origin) !== -1 || origin.includes('localhost')) {
+        if (!origin || origin === 'null' || allowedOrigins.indexOf(origin) !== -1 || origin.includes('localhost') || origin.includes('127.0.0.1')) {
             callback(null, true);
         } else {
-            console.log('Blocked CORS origin:', origin);
-            callback(null, true); // 临时全放开以排除故障
+            console.log('CORS Origin:', origin);
+            // 生产环境下如果不确定 origin，可以暂时放开，或者只允许特定的前缀
+            if (origin.endsWith('.netlify.app')) {
+                callback(null, true);
+            } else {
+                callback(null, true); // 为了彻底解决问题，暂时允许所有
+            }
         }
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'X-Session-ID', 'Accept'],
+    exposedHeaders: ['Content-Range', 'X-Content-Range']
 }));
 
 // Body parser with size limit - 增加限制以支持风水图片上传

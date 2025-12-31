@@ -136,8 +136,8 @@ class DestinyAI {
                 }
                 // Fallback if i18n not ready
                 return [
-                    'Discover Your Destiny',
-                    'Unlock Ancient Wisdom',
+                    'Discover Your Potential',
+                    'Unlock Inner Wisdom',
                     'Navigate Life\'s Journey',
                     'Find Your True Path'
                 ];
@@ -1202,6 +1202,12 @@ class DestinyAI {
                                     recommendations: result.recommendations ? result.recommendations.map(r => r.title) : []
                                 };
                                 window.FengshuiFollowup.init(fengshuiResult);
+                            }
+
+                            // 同步到统筹风水 AI 实例，确保追问功能可用
+                            if (window.fengShuiAI) {
+                                window.fengShuiAI.setAnalysisData(result, spaceData);
+                                console.log('✅ 已同步分析结果及空间数据到 window.fengShuiAI');
                             }
                         }
                     })

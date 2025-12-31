@@ -3,13 +3,13 @@
  * Payment UI Components
  */
 
-(function() {
+(function () {
     'use strict';
 
     /**
      * 显示支付表单（会员订阅）
      */
-    window.showPaymentForm = function(planType) {
+    window.showPaymentForm = function (planType) {
         const plans = {
             premium: {
                 name: 'Premium',
@@ -32,34 +32,46 @@
         const modal = document.createElement('div');
         modal.id = 'paymentModal';
         modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4';
-        
+
+        const subtotal = plan.price;
+        const tax = (subtotal * 0.07).toFixed(2);
+        const total = (parseFloat(subtotal) + parseFloat(tax)).toFixed(2);
+
         modal.innerHTML = `
             <div class="bg-gradient-to-br from-deep-navy to-mystic-purple rounded-xl p-8 max-w-md w-full border-2 border-mystic-gold/30">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-serif font-bold text-mystic-gold">订阅 ${plan.name}</h2>
+                    <h2 class="text-2xl font-serif font-bold text-mystic-gold" data-i18n="` + (planType === 'premium' ? 'payment.button.choosePremium' : 'payment.plan.professional') + `">${plan.name}</h2>
                     <button onclick="closePaymentModal()" class="text-moon-silver hover:text-mystic-gold text-2xl">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
 
-                <div class="mb-6 p-4 bg-mystic-gold/10 rounded-lg border border-mystic-gold/30">
-                    <div class="flex justify-between items-center">
-                        <span class="text-lg font-semibold">总计:</span>
-                        <span class="text-2xl font-bold text-mystic-gold">$${plan.price}/月</span>
+                <div class="mb-6 p-4 bg-mystic-gold/10 rounded-lg border border-mystic-gold/30 space-y-2">
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-moon-silver" data-i18n="payment.price.subtotal">小计:</span>
+                        <span class="font-medium">$${subtotal.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-moon-silver" data-i18n="payment.price.tax">消费税 (7%):</span>
+                        <span class="font-medium">$${tax}</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-2 border-t border-mystic-gold/30">
+                        <span class="text-lg font-semibold" data-i18n="payment.price.total">总计:</span>
+                        <span class="text-2xl font-bold text-mystic-gold">$${total}/月</span>
                     </div>
                 </div>
 
                 <form id="subscriptionForm" class="space-y-4">
                     <!-- 姓名 -->
                     <div>
-                        <label class="block text-moon-silver mb-2">姓名</label>
+                        <label class="block text-moon-silver mb-2" data-i18n="payment.modal.name">姓名</label>
                         <input type="text" id="cardholderName" required
-                            class="form-input" placeholder="张三">
+                            class="form-input" data-i18n-placeholder="payment.placeholder.name" placeholder="张三">
                     </div>
 
                     <!-- 邮箱 -->
                     <div>
-                        <label class="block text-moon-silver mb-2">邮箱</label>
+                        <label class="block text-moon-silver mb-2" data-i18n="payment.modal.email">邮箱</label>
                         <input type="email" id="cardholderEmail" required
                             class="form-input" placeholder="your@email.com">
                     </div>
@@ -80,7 +92,7 @@
                     <!-- 提交按钮 -->
                     <button type="submit" id="submitPayment"
                         class="w-full bg-mystic-gold text-deep-navy py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                        <span id="buttonText">订阅 $${plan.price}/月</span>
+                        <span id="buttonText">立即支付 $${total}</span>
                         <span id="spinner" class="hidden">
                             <i class="fas fa-spinner fa-spin"></i> 处理中...
                         </span>
@@ -98,7 +110,7 @@
         // 初始化 Stripe 元素
         setTimeout(() => {
             const cardElement = window.createPaymentElements('card-element');
-            
+
             if (cardElement) {
                 // 监听卡片输入错误
                 cardElement.on('change', (event) => {
@@ -146,7 +158,7 @@
 
             // 使用增强版支付服务
             const paymentService = window.EnhancedStripePaymentService || window.StripePaymentService;
-            
+
             if (!paymentService) {
                 throw new Error('支付服务未初始化');
             }
@@ -162,9 +174,18 @@
                 const mockNote = result.mock ? ' (测试模式)' : '';
                 showSuccessMessage('订阅成功！' + mockNote, '欢迎成为 ' + plan.name + ' 会员');
                 closePaymentModal();
-                
+
                 // 刷新页面或更新用户状态
+                // 延迟刷新或恢复，给予用户看到成功消息的时间
                 setTimeout(() => {
+                    if (window.statePreserver) {
+                        // 尝试恢复之前页面的状态
+                        const savedState = JSON.parse(localStorage.getItem('saved_page_state') || '{}');
+                        if (savedState && savedState.path && savedState.path !== 'payment.html') {
+                            window.location.href = savedState.path;
+                            return;
+                        }
+                    }
                     window.location.reload();
                 }, 2000);
             } else {
@@ -184,13 +205,13 @@
     /**
      * 显示商品支付表单
      */
-    window.showProductPaymentForm = function(product, quantity = 1) {
+    window.showProductPaymentForm = function (product, quantity = 1) {
         const total = (product.price * quantity).toFixed(2);
 
         const modal = document.createElement('div');
         modal.id = 'paymentModal';
         modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4';
-        
+
         modal.innerHTML = `
             <div class="bg-gradient-to-br from-deep-navy to-mystic-purple rounded-xl p-8 max-w-md w-full border-2 border-mystic-gold/30">
                 <div class="flex justify-between items-center mb-6">
@@ -201,7 +222,7 @@
                 </div>
 
                 <!-- 商品信息 -->
-                <div class="mb-6 p-4 bg-white/5 rounded-lg">
+                <div class="mb-6 p-4 bg-white/5 rounded-lg space-y-2">
                     <div class="flex items-center gap-3 mb-3">
                         ${product.image_url ? `
                             <img src="${product.image_url}" alt="${product.name_en || product.name}" 
@@ -214,9 +235,17 @@
                             <p class="text-sm text-moon-silver">$${product.price} × ${quantity}</p>
                         </div>
                     </div>
-                    <div class="flex justify-between items-center pt-3 border-t border-mystic-gold/30">
-                        <span class="text-lg font-semibold">总计:</span>
-                        <span class="text-2xl font-bold text-mystic-gold">$${total}</span>
+                    <div class="flex justify-between items-center text-sm pt-2 border-t border-white/10">
+                        <span class="text-moon-silver" data-i18n="payment.price.subtotal">小计:</span>
+                        <span class="font-medium">$${(product.price * quantity).toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-moon-silver" data-i18n="payment.price.tax">消费税 (7%):</span>
+                        <span class="font-medium">$${((product.price * quantity) * 0.07).toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-2 border-t border-mystic-gold/30">
+                        <span class="text-lg font-semibold" data-i18n="payment.price.total">总计:</span>
+                        <span class="text-2xl font-bold text-mystic-gold">$${((product.price * quantity) * 1.07).toFixed(2)}</span>
                     </div>
                 </div>
 
@@ -251,7 +280,7 @@
                     <!-- 提交按钮 -->
                     <button type="submit" id="submitProductPayment"
                         class="w-full bg-mystic-gold text-deep-navy py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                        <span id="buttonTextProduct">支付 $${total}</span>
+                        <span id="buttonTextProduct">立即支付 $${((product.price * quantity) * 1.07).toFixed(2)}</span>
                         <span id="spinnerProduct" class="hidden">
                             <i class="fas fa-spinner fa-spin"></i> 处理中...
                         </span>
@@ -265,7 +294,7 @@
         // 初始化 Stripe 元素
         setTimeout(() => {
             const cardElement = window.createPaymentElements('card-element-product');
-            
+
             if (cardElement) {
                 cardElement.on('change', (event) => {
                     const displayError = document.getElementById('card-errors-product');
@@ -316,7 +345,7 @@
             if (result.success) {
                 showSuccessMessage('购买成功！', '您的订单已确认');
                 closePaymentModal();
-                
+
                 setTimeout(() => {
                     window.location.href = 'profile.html#orders';
                 }, 2000);
@@ -336,7 +365,7 @@
     /**
      * 关闭支付模态框
      */
-    window.closePaymentModal = function() {
+    window.closePaymentModal = function () {
         const modal = document.getElementById('paymentModal');
         if (modal) {
             modal.remove();
@@ -346,7 +375,7 @@
     /**
      * 显示联系销售表单
      */
-    window.showContactForm = function() {
+    window.showContactForm = function () {
         alert('请联系我们的销售团队：sales@destinyai.com');
     };
 
