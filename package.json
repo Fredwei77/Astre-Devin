@@ -2,7 +2,7 @@
   "name": "destiny-ai-netlify-backend",
   "version": "1.0.0",
   "description": "Destiny AI Backend for Netlify Functions",
-  "main": "netlify/functions/api.js",
+  "main": "server.js",
   "scripts": {
     "dev": "vite",
     "prebuild": "node scripts/build.js",
