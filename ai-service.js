@@ -15,15 +15,30 @@ class AIService {
 
     initializeConfig() {
         // 如果CONFIG还没有加载，使用默认配置
-        if (typeof CONFIG !== 'undefined') {
+        // 优先使用 API_CONFIG (新版配置)
+        if (typeof API_CONFIG !== 'undefined') {
+            this.apiKey = ''; // 后端代理模式无需前端Key
+            this.apiUrl = `${window.API_BASE_URL}/ai/chat`; // 使用 api-config.js 生成的完整URL
+            this.model = 'deepseek/deepseek-chat'; // 默认模型
+            this.models = {
+                DIVINATION: 'deepseek/deepseek-chat',
+                FENGSHUI: 'amazon/nova-lite-v1',
+                ICHING: 'deepseek/deepseek-chat'
+            };
+            this.mockMode = false; // 默认关闭模拟模式，由后端决定
+            console.log('AI Service: Loaded configuration from API_CONFIG');
+            console.log('AI Service: API URL set to:', this.apiUrl);
+        }
+        // 兼容旧版 CONFIG
+        else if (typeof CONFIG !== 'undefined') {
             this.apiKey = CONFIG.OPENROUTER_API_KEY;
             this.apiUrl = CONFIG.OPENROUTER_API_URL;
             this.model = CONFIG.AI_MODEL;
             this.models = CONFIG.MODELS || {};
             this.mockMode = CONFIG.FEATURES.MOCK_MODE;
-            console.log('AI Service: CONFIG loaded successfully');
+            console.log('AI Service: Loaded configuration from CONFIG');
         } else {
-            console.warn('CONFIG not loaded, using default values');
+            console.warn('AI Service: CONFIG or API_CONFIG not loaded, using default values');
             // 使用默认配置 - 通过后端代理，不暴露密钥
             this.apiKey = ''; // ⚠️ 不在前端存储密钥
             this.apiUrl = '/api/ai/chat'; // 使用后端代理
@@ -54,6 +69,12 @@ class AIService {
 
     // 检查配置是否完全可用
     isConfigurationReady() {
+        if (this.promptsAvailable) return true;
+
+        // 检查 API_CONFIG
+        if (typeof API_CONFIG !== 'undefined') return true;
+
+        // 检查旧版 CONFIG
         return typeof CONFIG !== 'undefined' &&
             CONFIG.PROMPTS &&
             CONFIG.PROMPTS.DIVINATION &&

@@ -4,11 +4,14 @@
 
 // API Configuration
 const API_CONFIG = {
-    // 后端API基础URL - 请修改为您的实际后端地址
-    // 后端API基础URL - 空字符串表示使用当前域名（适配 Netlify Functions）
-    BASE_URL: '',
+    // 后端API基础URL -根据环境自动切换
+    // 如果在Netlify上，使用Render部署的后端（需用户替换为实际Render URL）
+    // 如果在本地，使用localhost:3000
+    BASE_URL: window.location.hostname.includes('netlify.app')
+        ? 'https://destiny-ai-backend.onrender.com' // ⚠️ 请替换为您的 Render 后端 URL
+        : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : ''),
 
-    // API版本 - 移除版本号以匹配 server-netlify.js 的 /api/ai/chat 路由
+    // API版本
     VERSION: '',
 
     // API端点
