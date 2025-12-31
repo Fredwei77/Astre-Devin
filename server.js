@@ -39,7 +39,7 @@ app.use(cors({
     origin: function (origin, callback) {
         const allowedOrigins = [
             'https://astredevin.netlify.app',
-            'https://destiny-ai-backend.onrender.com',
+            'https://astre-devin.onrender.com',
             'http://localhost:3000',
             'http://localhost:5500',
             'http://127.0.0.1:5500',

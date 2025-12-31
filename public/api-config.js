@@ -8,7 +8,7 @@ const API_CONFIG = {
     // 如果在Netlify上，使用Render部署的后端（需用户替换为实际Render URL）
     // 如果在本地，使用localhost:3000
     BASE_URL: window.location.hostname.includes('netlify.app')
-        ? 'https://destiny-ai-backend.onrender.com' // ⚠️ 请替换为您的 Render 后端 URL
+        ? 'https://astre-devin.onrender.com' // 已更新为您的实际 Render 后端 URL
         : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : ''),
 
     // API版本
