@@ -1,3 +1,3 @@
 git add .
-git commit -m "fix: synchronize root resources and enhance fallbacks"
-git push origin master
+git commit -m "fix: resolve production stripe error by syncing root resources and enhance fallbacks"
+git push origin main
