@@ -2,6 +2,17 @@
 // DESTINY AI - SECURE BACKEND SERVER
 // ============================================
 
+// 全局错误捕获 (针对部署环境诊断)
+process.on('uncaughtException', (err) => {
+    console.error('CRITICAL: Uncaught Exception:', err.message);
+    console.error(err.stack);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('CRITICAL: Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -539,10 +550,19 @@ app.use((req, res) => {
 // START SERVER
 // ============================================
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`🚀 Destiny AI Server running on port ${PORT}`);
     console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`🔒 CORS enabled for: ${process.env.FRONTEND_URL || 'http://localhost:8080'}`);
+});
+
+server.on('error', (error) => {
+    if (error.code === 'EADDRINUSE') {
+        console.error(`❌ Error: Port ${PORT} is already in use`);
+    } else {
+        console.error('❌ Server startup error:', error.message);
+    }
+    process.exit(1);
 });
 
 module.exports = app;
