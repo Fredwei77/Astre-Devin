@@ -8,10 +8,12 @@ const CONFIG = {
     ? `${window.API_BASE_URL}/ai/chat`
     : '/api/ai/chat', // 回退方案
 
-  // Stripe 可发布密钥 - 通过环境变量注入
-  // 使用测试密钥作为fallback（仅用于开发和测试）
-  STRIPE_PUBLISHABLE_KEY: (typeof window !== 'undefined' && window.ENV && window.ENV.STRIPE_PUBLISHABLE_KEY) ||
-    'pk_test_51QYBqbP3r4cXOLlBKCrJxqVGZqkMHGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqY',
+  STRIPE_PUBLISHABLE_KEY: (function () {
+    const key = (typeof window !== 'undefined' && window.ENV && window.ENV.STRIPE_PUBLISHABLE_KEY) ||
+      'pk_test_51QYBqbP3r4cXOLlBKCrJxqVGZqkMHGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqY';
+    console.log('💳 Stripe Key Source:', (typeof window !== 'undefined' && window.ENV && window.ENV.STRIPE_PUBLISHABLE_KEY) ? 'window.ENV' : 'Fallback (Test Mode)');
+    return key;
+  })(),
 
   // 模型选择 - 使用 DeepSeek 和 Gemini
   AI_MODEL: 'deepseek/deepseek-chat', // 主模型：DeepSeek（高性价比，强推理能力）
