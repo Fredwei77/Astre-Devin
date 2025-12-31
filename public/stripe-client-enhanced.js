@@ -39,6 +39,12 @@
         STRIPE_PUBLISHABLE_KEY = window.ENV.STRIPE_PUBLISHABLE_KEY;
     }
 
+    // 最后的安全保障：如果仍然为空，则使用测试密钥
+    if (!STRIPE_PUBLISHABLE_KEY) {
+        STRIPE_PUBLISHABLE_KEY = 'pk_test_51QYBqbP3r4cXOLlBKCrJxqVGZqkMHGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqY';
+        console.warn('⚠️ Stripe 密钥加载失败，已自动回退到测试密钥');
+    }
+
     // 初始化 Stripe
     let stripe = null;
     let elements = null;
