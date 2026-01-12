@@ -233,9 +233,12 @@
             } catch (error) {
                 console.error('创建支付意图失败:', error);
 
-                // 网络错误时自动切换到测试模式
-                if (error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
-                    console.log('🔄 网络错误，使用测试模式');
+                // 网络错误或后端未初始化时自动切换到测试模式
+                if (error.message.includes('fetch') ||
+                    error.message.includes('Failed to fetch') ||
+                    error.message.includes('Stripe 未初始化') ||
+                    error.message.includes('Stripe Not Initialized')) {
+                    console.warn('⚠️ 支付服务暂时不可用（后端未配置或网络错误），自动切换至模拟/测试模式');
                     await mockDelay();
                     return {
                         success: true,

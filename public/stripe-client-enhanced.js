@@ -39,10 +39,21 @@
         STRIPE_PUBLISHABLE_KEY = window.ENV.STRIPE_PUBLISHABLE_KEY;
     }
 
+    // 检查是否为占位符 (CI/CD 占位符通常包含重复的重复模式 q6I9i6)
+    const isPlaceholder = STRIPE_PUBLISHABLE_KEY &&
+        (STRIPE_PUBLISHABLE_KEY.includes('q6I9i6') ||
+            STRIPE_PUBLISHABLE_KEY.endsWith('...') ||
+            (STRIPE_PUBLISHABLE_KEY.startsWith('pk_live_51QYBqbP3r4cXOLlB') && STRIPE_PUBLISHABLE_KEY.length > 80 && STRIPE_PUBLISHABLE_KEY.includes('i6q6I9i6')));
+
+    if (isPlaceholder) {
+        console.warn('⚠️ 检测到占位符密钥模式，将重置为空以触发测试模式回退');
+        STRIPE_PUBLISHABLE_KEY = '';
+    }
+
     // 最后的安全保障：如果仍然为空，则使用测试密钥
     if (!STRIPE_PUBLISHABLE_KEY) {
         STRIPE_PUBLISHABLE_KEY = 'pk_test_51QYBqbP3r4cXOLlBKCrJxqVGZqkMHGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqY';
-        console.warn('⚠️ Stripe 密钥加载失败，已自动回退到测试密钥');
+        console.warn('⚠️ Stripe 密钥加载失败或为占位符，已自动回退到测试密钥');
     }
 
     // 初始化 Stripe
@@ -222,9 +233,12 @@
             } catch (error) {
                 console.error('创建支付意图失败:', error);
 
-                // 网络错误时自动切换到测试模式
-                if (error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
-                    console.log('🔄 网络错误，使用测试模式');
+                // 网络错误或后端未初始化时自动切换到测试模式
+                if (error.message.includes('fetch') ||
+                    error.message.includes('Failed to fetch') ||
+                    error.message.includes('Stripe 未初始化') ||
+                    error.message.includes('Stripe Not Initialized')) {
+                    console.warn('⚠️ 支付服务暂时不可用（后端未配置或网络错误），自动切换至模拟/测试模式');
                     await mockDelay();
                     return {
                         success: true,
@@ -261,10 +275,16 @@
                 };
             }
 
-            if (!stripe || !cardElement) {
+            if (!stripe) {
                 return {
                     success: false,
-                    error: 'Stripe 未初始化'
+                    error: 'Stripe 未就绪 (stripe object is null)。请确保网络畅通并刷新页面。'
+                };
+            }
+            if (!cardElement) {
+                return {
+                    success: false,
+                    error: '支付输入框未挂载 (cardElement is null)。请确保按照正确的流程打开支付弹窗。'
                 };
             }
 
