@@ -9,9 +9,17 @@ const CONFIG = {
     : '/api/ai/chat', // 回退方案
 
   STRIPE_PUBLISHABLE_KEY: (function () {
-    const key = (typeof window !== 'undefined' && window.ENV && window.ENV.STRIPE_PUBLISHABLE_KEY) ||
-      'pk_test_51QYBqbP3r4cXOLlBKCrJxqVGZqkMHGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqY';
-    console.log('💳 Stripe Key Source:', (typeof window !== 'undefined' && window.ENV && window.ENV.STRIPE_PUBLISHABLE_KEY) ? 'window.ENV' : 'Fallback (Test Mode)');
+    let key = (typeof window !== 'undefined' && window.ENV && window.ENV.STRIPE_PUBLISHABLE_KEY) || '';
+
+    // 检测是否为占位符
+    const isPlaceholder = key && (key.includes('q6I9i6') || key.length > 80 && key.startsWith('pk_live_51QYBqbP3r4cXOLlB'));
+
+    if (isPlaceholder || !key) {
+      if (isPlaceholder) console.warn('⚠️ Detected Stripe placeholder key, falling back to test mode.');
+      key = 'pk_test_51QYBqbP3r4cXOLlBKCrJxqVGZqkMHGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqY';
+    }
+
+    console.log('💳 Stripe Key Source:', (key.startsWith('pk_live_') && !isPlaceholder) ? 'window.ENV' : 'Fallback (Test Mode)');
     return key;
   })(),
 

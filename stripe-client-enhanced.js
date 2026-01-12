@@ -39,10 +39,20 @@
         STRIPE_PUBLISHABLE_KEY = window.ENV.STRIPE_PUBLISHABLE_KEY;
     }
 
+    // 检查是否为占位符 (CI/CD 占位符通常包含重复的模式且长度固定)
+    const isPlaceholder = STRIPE_PUBLISHABLE_KEY &&
+        (STRIPE_PUBLISHABLE_KEY.includes('q6I9i6') ||
+            STRIPE_PUBLISHABLE_KEY.length >= 80 && STRIPE_PUBLISHABLE_KEY.startsWith('pk_live_51QYBqbP3r4cXOLlB'));
+
+    if (isPlaceholder) {
+        console.warn('⚠️ 检测到无效的 Stripe 占位符密钥，将重置为空以触发回退逻辑');
+        STRIPE_PUBLISHABLE_KEY = '';
+    }
+
     // 最后的安全保障：如果仍然为空，则使用测试密钥
     if (!STRIPE_PUBLISHABLE_KEY) {
         STRIPE_PUBLISHABLE_KEY = 'pk_test_51QYBqbP3r4cXOLlBKCrJxqVGZqkMHGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqY';
-        console.warn('⚠️ Stripe 密钥加载失败，已自动回退到测试密钥');
+        console.warn('⚠️ Stripe 密钥加载失败或为占位符，已自动回退到测试密钥');
     }
 
     // 初始化 Stripe

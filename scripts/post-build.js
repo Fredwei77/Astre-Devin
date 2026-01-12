@@ -29,15 +29,27 @@ htmlFiles.forEach(file => {
 
         // 替换JS文件引用，添加版本参数（避免重复添加）
         const jsPattern = /<script\s+src="([^"]+\.js)(?:\?v=\d+)?"/g;
-        const newContent = content.replace(jsPattern, (match, src) => {
+        let newContent = content.replace(jsPattern, (match, src) => {
             modified = true;
             return `<script src="${src}?v=${version}"`;
         });
 
+        // 注入生产环境 Stripe 密钥（如果环境变量存在）
+        const stripeKey = process.env.STRIPE_PUBLISHABLE_KEY;
+        if (stripeKey && stripeKey.startsWith('pk_live_')) {
+            // 使用更通用的正则匹配占位符
+            const placeholderRegex = /pk_live_51QYBqbP3r4cXOLlB[a-zA-Z0-9]{40,}/g;
+            if (placeholderRegex.test(newContent)) {
+                newContent = newContent.replace(placeholderRegex, stripeKey);
+                modified = true;
+                console.log(`🔑 Injected production Stripe key into ${file}`);
+            }
+        }
+
         if (modified) {
             fs.writeFileSync(filePath, newContent, 'utf8');
             updatedCount++;
-            console.log(`✅ Updated ${file} with version parameters`);
+            console.log(`✅ Updated ${file} (Version: ${version})`);
         } else {
             console.log(`⚠️  No JS references found in ${file}`);
         }
