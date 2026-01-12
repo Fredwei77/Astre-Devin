@@ -389,7 +389,8 @@
                                 style="color: #c0c0c0;">
                                 <span data-i18n="nav.login">登入</span>
                             </button>
-                            <a href="payment.html"
+                            <a href="#"
+                                onclick="if(window.statePreserver) window.statePreserver.saveCurrentPage(); window.location.href='payment.html'; return false;"
                                 class="bg-mystic-gold text-deep-navy px-4 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors"
                                 style="background: #ffd700; color: #1a237e;" data-i18n="nav.upgrade">
                                 Upgrade
@@ -462,11 +463,12 @@
                                                 <span class="ml-3" data-i18n="nav.myReadings">My Readings</span>
                                             </a>
 
-                                            <a href="payment.html"
+                                            <a href="#"
+                                                onclick="if(window.statePreserver) window.statePreserver.saveCurrentPage(); window.location.href='payment.html'; return false;"
                                                 class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
-                                                style="color: #c0c0c0;" data-i18n="nav.upgrade" title="Upgrade">
+                                                title="Upgrade" style="color: #c0c0c0;">
                                                 <i class="fas fa-crown w-5"></i>
-                                                <span class="ml-3" data-i18n="nav.upgrade">Upgrade</span>
+                                                <span class="ml-3" data-i18n="nav.upgrade"></span>
                                                 <span
                                                     class="ml-auto text-xs bg-mystic-gold text-deep-navy px-2 py-1 rounded-full font-bold"
                                                     style="background: #ffd700; color: #1a237e;">HOT</span>
@@ -995,10 +997,10 @@
     <script src="config.js"></script>
     <script src="utils.js"></script>
     <!-- Stripe Payment Integration -->
+    <!-- 支付系统 -->
     <script src="https://js.stripe.com/v3/"></script>
-    <script src="stripe-client-enhanced.js"></script>
-
-    <script src="subscription-manager.js"></script>
+    <script src="stripe-client-enhanced.js?v=2"></script>
+    <script src="subscription-manager.js?v=2"></script>
     <script src="ai-service.js"></script>
 
     <!-- Main Program -->

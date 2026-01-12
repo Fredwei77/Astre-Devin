@@ -242,6 +242,126 @@ class SubscriptionManager {
     }
 
     /**
+     * 注入支付模态框所需的样式
+     */
+    injectPaymentStyles() {
+        if (document.getElementById('payment-modal-styles')) return;
+
+        const style = document.createElement('style');
+        style.id = 'payment-modal-styles';
+        style.textContent = `
+            .payment-form {
+                background: rgba(26, 35, 126, 0.95);
+                border: 2px solid #ffd700;
+                backdrop-filter: blur(20px);
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            }
+            .form-input {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 215, 0, 0.3);
+                border-radius: 8px;
+                padding: 12px;
+                color: #fafafa;
+                width: 100%;
+                transition: all 0.3s ease;
+            }
+            .form-input:focus {
+                outline: none;
+                border-color: #ffd700;
+                box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+            }
+            .security-badge {
+                background: rgba(46, 125, 50, 0.2);
+                border: 1px solid #2e7d32;
+                color: #4caf50;
+            }
+            #stripe-card-element {
+                padding: 12px;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    /**
+     * 确保支付模态框存在
+     */
+    ensurePaymentModal(payInfo, isEnglish) {
+        this.injectPaymentStyles();
+        let modal = document.getElementById('unifiedPaymentModal');
+
+        if (modal) {
+            modal.remove(); // 重新创建以更新信息
+        }
+
+        modal = document.createElement('div');
+        modal.id = 'unifiedPaymentModal';
+        modal.className = 'fixed inset-0 z-[10000] flex items-center justify-center p-4';
+
+        // 获取预填信息
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const defaultEmail = user.email || '';
+
+        modal.innerHTML = `
+            <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" onclick="window.subscriptionManager.hidePaymentModal()"></div>
+            <div class="payment-form rounded-2xl p-6 sm:p-8 max-w-md w-full relative animate-fadeInUp">
+                <button onclick="window.subscriptionManager.hidePaymentModal()" class="absolute top-4 right-4 text-moon-silver hover:text-mystic-gold transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                
+                <div class="text-center mb-6">
+                    <div class="text-4xl mb-3">💎</div>
+                    <h3 class="text-2xl font-serif font-bold text-mystic-gold mb-2">
+                        ${isEnglish ? 'Complete Payment' : '完成支付'}
+                    </h3>
+                    <p class="text-moon-silver text-sm">
+                        ${isEnglish ? `Purchasing: ${payInfo.nameEn}` : `正在购买：${payInfo.name}`}
+                    </p>
+                    <div class="text-3xl font-bold text-mystic-gold mt-2">$${payInfo.price}</div>
+                </div>
+
+                <form id="unifiedPaymentForm" class="space-y-4">
+                    <div>
+                        <label class="block text-moon-silver mb-1.5 text-sm font-medium">
+                            ${isEnglish ? 'Email Address' : '邮箱地址'}
+                        </label>
+                        <input type="email" id="unifiedCardholderEmail" class="form-input" 
+                               placeholder="your@email.com" value="${defaultEmail}" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-moon-silver mb-1.5 text-sm font-medium">
+                            ${isEnglish ? 'Card Information' : '银行卡信息'}
+                        </label>
+                        <div id="unified-stripe-card-element" class="form-input"></div>
+                        <div id="unified-card-errors" class="text-red-400 text-xs mt-2 min-h-[1rem]"></div>
+                    </div>
+
+                    <div class="security-badge rounded-lg p-3 text-center text-xs">
+                        🔒 ${isEnglish ? 'Secure encrypted payment' : '加密安全支付'}
+                    </div>
+
+                    <button type="submit" id="unifiedPaymentSubmit"
+                        class="w-full bg-gradient-to-r from-mystic-gold to-yellow-400 text-deep-navy py-3.5 rounded-xl font-bold hover:from-yellow-400 hover:to-mystic-gold transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg">
+                        ${isEnglish ? 'Pay Now' : '立即支付'}
+                    </button>
+                </form>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+        return modal;
+    }
+
+    /**
+     * 隐藏支付模态框
+     */
+    hidePaymentModal() {
+        const modal = document.getElementById('unifiedPaymentModal');
+        if (modal) modal.remove();
+        document.body.style.overflow = '';
+    }
+
+    /**
      * 处理按次付费
      */
     async processPayPerUse(serviceType) {
@@ -259,82 +379,76 @@ class SubscriptionManager {
             window.statePreserver.saveCurrentPage();
         }
 
-        // 关闭当前选择模态框
-        const modal = document.querySelector('.fixed.inset-0:not(.payment-processing-modal)');
-        if (modal) modal.remove();
+        // 统一获取支付服务
+        const paymentService = window.EnhancedStripePaymentService || window.StripePaymentService;
+        if (!paymentService) {
+            const errorMsg = isEnglish ? 'Payment system failed to load. Please refresh.' : '支付系统加载失败，请刷新页面。';
+            if (window.showErrorMessage) window.showErrorMessage('Error', errorMsg);
+            else alert(errorMsg);
+            return;
+        }
 
-        try {
-            // 显示支付处理提示
-            this.showPaymentProcessing(payInfo, isEnglish);
+        // 显示统一模态框
+        const modal = this.ensurePaymentModal(payInfo, isEnglish);
+        document.body.style.overflow = 'hidden';
 
-            // 1. 调用支付服务创建支付意图
-            const paymentService = window.EnhancedStripePaymentService || window.StripePaymentService;
-
-            if (!paymentService) {
-                console.error('[SubscriptionManager] Payment service object missing completely.');
-                throw new Error(isEnglish ? 'Payment system unavailable (Code: INIT_FAIL). Please refresh.' : '支付系统未初始化 (代码: INIT_FAIL)。请刷新页面重试。');
-            }
-
-            // 检查商品 ID 是否需要映射
-            const productId = `product_${serviceType}`;
-
-            // 2. 调用商品购买逻辑 (Stripe Client 处理弹窗和确认)
-            // 注意：因为 purchaseProduct 内部可能已经处理了确认逻辑，我们在这里直接调用
-            const result = await paymentService.purchaseProduct(productId, 1, {
-                serviceType: serviceType,
-                name: 'User', // 理想情况下从 auth 获取
-                email: 'user@example.com'
-            });
-
-            // 关闭正在处理模态框
-            const processingModal = document.querySelector('.payment-processing-modal');
-            if (processingModal) processingModal.remove();
-
-            if (result.success) {
-                // 3. 授予一次使用权限
-                this.grantSingleUse(serviceType);
-
-                // 4. 显示支付成功提示
-                this.showPaymentSuccess(payInfo, isEnglish);
-            } else {
-                console.warn('[SubscriptionManager] Payment failed:', result.error);
-                throw new Error(result.error || (isEnglish ? 'Payment failed. Please try again.' : '支付失败，请重试。'));
-            }
-        } catch (error) {
-            console.error('[SubscriptionManager] Payment error details:', error);
-            const processingModal = document.querySelector('.payment-processing-modal');
-            if (processingModal) processingModal.remove();
-
-            if (window.showErrorMessage) {
-                window.showErrorMessage(isEnglish ? 'Payment Not Completed' : '支付未完成', error.message);
-            } else {
-                // 如果没有自定义错误弹窗，使用原生alert，但样式美化一点（如果有Toast）
-                if (window.showToastMessage) {
-                    window.showToastMessage(error.message, 'error', 5000);
-                } else {
-                    alert(`${isEnglish ? 'Payment Error' : '支付错误'}: ${error.message}`);
+        // 初始化 Stripe Element
+        setTimeout(() => {
+            if (window.createPaymentElements) {
+                const card = window.createPaymentElements('unified-stripe-card-element');
+                if (card) {
+                    card.on('change', (event) => {
+                        const displayError = document.getElementById('unified-card-errors');
+                        if (event.error) displayError.textContent = event.error.message;
+                        else displayError.textContent = '';
+                    });
                 }
             }
-        }
+        }, 100);
+
+        // 绑定提交事件
+        const form = document.getElementById('unifiedPaymentForm');
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('unifiedPaymentSubmit');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i>${isEnglish ? 'Processing...' : '处理中...'}`;
+
+            try {
+                const email = document.getElementById('unifiedCardholderEmail').value;
+                const productId = `product_${serviceType}`;
+
+                // 调用核心购买逻辑
+                const result = await paymentService.purchaseProduct(productId, 1, {
+                    serviceType,
+                    email
+                });
+
+                if (result.success) {
+                    this.hidePaymentModal();
+                    this.grantSingleUse(serviceType);
+                    this.showPaymentSuccess(payInfo, isEnglish);
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                console.error('[SubscriptionManager] Payment failed:', error);
+                const errorDisplay = document.getElementById('unified-card-errors');
+                if (errorDisplay) errorDisplay.textContent = error.message;
+
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        };
     }
 
     /**
-     * 显示支付处理中
+     * 显示支付处理中 (保持向后兼容)
      */
     showPaymentProcessing(payInfo, isEnglish) {
-        const modal = document.createElement('div');
-        modal.className = 'payment-processing-modal fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4';
-        modal.innerHTML = `
-            <div class="bg-gradient-to-br from-deep-navy to-jade-dark border-2 border-mystic-gold rounded-2xl p-8 max-w-md w-full text-center">
-                <div class="text-6xl mb-4">💳</div>
-                <h3 class="text-2xl font-bold text-mystic-gold mb-2">${isEnglish ? 'Processing Payment' : '正在处理支付'}</h3>
-                <p class="text-moon-silver mb-4">${isEnglish ? 'Please wait...' : '请稍候...'}</p>
-                <div class="flex justify-center">
-                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-mystic-gold"></div>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modal);
+        // 现在的逻辑在 processPayPerUse 中通过按钮状态处理，这里留空或精简
     }
 
     /**
@@ -342,16 +456,17 @@ class SubscriptionManager {
      */
     showPaymentSuccess(payInfo, isEnglish) {
         const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4';
+        modal.id = 'unifiedPaymentSuccessModal';
+        modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-[11000] flex items-center justify-center p-4';
         modal.innerHTML = `
             <div class="bg-gradient-to-br from-deep-navy to-jade-dark border-2 border-mystic-gold rounded-2xl p-8 max-w-md w-full text-center">
                 <div class="text-6xl mb-4">✅</div>
                 <h3 class="text-2xl font-bold text-green-400 mb-2">${isEnglish ? 'Payment Successful!' : '支付成功！'}</h3>
-                <p class="text-moon-silver mb-4">
+                <p class="text-moon-silver mb-6">
                     ${isEnglish ? `You can now use ${payInfo.nameEn}` : `您现在可以使用${payInfo.name}`}
                 </p>
                 <button onclick="window.subscriptionManager.handleContinueAfterPay('${payInfo.url}')" 
-                        class="bg-mystic-gold text-deep-navy px-8 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors">
+                        class="w-full bg-mystic-gold text-deep-navy py-4 rounded-xl font-bold hover:bg-yellow-400 transition-colors shadow-lg">
                     ${isEnglish ? 'Continue' : '继续'}
                 </button>
             </div>
@@ -363,22 +478,19 @@ class SubscriptionManager {
      * 支付成功后的继续逻辑：尝试恢复状态并跳转
      */
     handleContinueAfterPay(targetUrl) {
-        // 关闭当前页面的模态框
-        const modal = document.querySelector('.fixed.inset-0');
+        // 关闭成功弹窗
+        const modal = document.getElementById('unifiedPaymentSuccessModal');
         if (modal) modal.remove();
 
         const currentPath = window.location.pathname.split('/').pop() || 'index.html';
 
         if (currentPath === targetUrl) {
-            // 如果已经在目标页面，尝试恢复状态
             if (window.statePreserver) {
                 window.statePreserver.restoreCurrentPage();
             } else {
                 window.location.reload();
             }
         } else {
-            // 如果在不同页面（如从 payment.html 过来），跳转到对应页面
-            // statePreserver 已经在跳转前保存了（如果是从 showUpgradePrompt 跳转的话）
             window.location.href = targetUrl;
         }
     }

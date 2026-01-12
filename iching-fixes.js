@@ -196,13 +196,20 @@ console.log('🔧 加载易经页面修复...');
                 if (answerDiv) answerDiv.classList.remove('hidden');
 
                 // 使用打字机效果显示回答 (支持 Markdown)
-                if (window.TypingEffect && answerText) {
+                const render = (text) => {
+                    if (window.utils && typeof window.utils.renderMarkdown === 'function') {
+                        return window.utils.renderMarkdown(text);
+                    }
                     const formatter = window.MarkdownFormatter || { parse: (t) => t };
-                    const formattedResponse = formatter.parse(response);
+                    return formatter.parse(text);
+                };
+
+                const formattedResponse = render(response);
+
+                if (window.TypingEffect && answerText) {
                     await window.TypingEffect.type(answerText, formattedResponse, 30);
                 } else if (answerText) {
-                    const formatter = window.MarkdownFormatter || { parse: (t) => t };
-                    answerText.innerHTML = formatter.parse(response);
+                    answerText.innerHTML = `<div class="typewriter-text">${formattedResponse}</div>`;
                 }
 
                 // 清空输入框

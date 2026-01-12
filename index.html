@@ -340,7 +340,8 @@
                                 <i class="fas fa-sign-in-alt"></i>
                                 <span data-i18n="nav.login">登入</span>
                             </button>
-                            <a href="payment.html"
+                            <a href="#"
+                                onclick="if(window.statePreserver) window.statePreserver.saveCurrentPage(); window.location.href='payment.html'; return false;"
                                 class="bg-mystic-gold text-deep-navy px-4 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors"
                                 data-i18n="nav.getStarted">
                                 开始使用
@@ -404,7 +405,8 @@
                                                 <span class="ml-3" data-i18n="nav.myReadings">我的占卜</span>
                                             </a>
 
-                                            <a href="payment.html"
+                                            <a href="#"
+                                                onclick="if(window.statePreserver) window.statePreserver.saveCurrentPage(); window.location.href='payment.html'; return false;"
                                                 class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all">
                                                 <i class="fas fa-crown w-5"></i>
                                                 <span class="ml-3" data-i18n="nav.upgrade">会员升级</span>
@@ -775,7 +777,8 @@
                         <li data-i18n="payment.feature.tracking">✓ 个人成长追踪</li>
                         <li data-i18n="payment.feature.consultations">✓ 专家咨询 (2次/月)</li>
                     </ul>
-                    <a href="#" onclick="window.location.href='payment.html?plan=premium'; return false;"
+                    <a href="#"
+                        onclick="if(window.statePreserver) window.statePreserver.saveCurrentPage(); window.location.href='payment.html?plan=premium'; return false;"
                         class="block w-full bg-mystic-gold text-deep-navy py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors"
                         data-i18n="payment.button.choosePremium">
                         选择高级版
@@ -797,10 +800,11 @@
                         <li data-i18n="payment.feature.whiteLabel">✓ 白标解决方案</li>
                         <li data-i18n="payment.feature.dedicatedSupport">✓ 专属客户经理</li>
                     </ul>
-                    <a href="mailto:weiming5311@hotmail.com?subject=Professional Plan Inquiry&body=I'm interested in the Professional plan. Please contact me."
-                        class="block w-full bg-moon-silver text-deep-navy py-3 rounded-lg font-semibold hover:bg-white transition-colors"
-                        data-i18n="payment.button.contactSales">
-                        联系销售
+                    <a href="#"
+                        onclick="if(window.statePreserver) window.statePreserver.saveCurrentPage(); window.location.href='payment.html?plan=professional'; return false;"
+                        class="block w-full bg-mystic-gold text-deep-navy py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors"
+                        data-i18n="payment.button.chooseProfessional">
+                        选择专业版
                     </a>
                 </div>
             </div>

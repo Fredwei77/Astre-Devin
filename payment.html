@@ -527,9 +527,9 @@
                     </ul>
 
                     <button
-                        class="w-full bg-moon-silver text-deep-navy py-3 rounded-lg font-semibold hover:bg-white transition-colors"
-                        onclick="showContactForm()" data-i18n="payment.button.contactSales">
-                        Contact Sales
+                        class="w-full bg-mystic-gold text-deep-navy py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors"
+                        onclick="showPaymentForm('professional')" data-i18n="payment.button.chooseProfessional">
+                        Choose Professional
                     </button>
                 </div>
             </div>
@@ -893,8 +893,8 @@
             checkPlanParam() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const plan = urlParams.get('plan');
-                if (plan === 'premium') {
-                    showPaymentForm('premium');
+                if (plan === 'premium' || plan === 'professional') {
+                    showPaymentForm(plan);
                 }
             }
 
@@ -923,14 +923,26 @@
 
                             // 支付成功后的重定向与状态恢复
                             setTimeout(() => {
+                                let redirectUrl = 'index.html'; // 默认回退到首页
+
+                                // 1. 尝试从状态保存器恢复
                                 if (window.statePreserver) {
                                     const savedState = JSON.parse(localStorage.getItem('saved_page_state') || '{}');
                                     if (savedState && savedState.path && savedState.path !== 'payment.html') {
-                                        window.location.href = savedState.path;
-                                        return;
+                                        redirectUrl = savedState.path;
                                     }
                                 }
-                                window.location.reload();
+
+                                // 2. 如果没有保存的状态，尝试使用 document.referrer (如果不是来自 payment 页面本身)
+                                if (redirectUrl === 'index.html' && document.referrer) {
+                                    const refUrl = new URL(document.referrer);
+                                    if (!refUrl.pathname.includes('payment.html')) {
+                                        redirectUrl = document.referrer;
+                                    }
+                                }
+
+                                console.log(`🚀 支付成功，准备跳转至: ${redirectUrl}`);
+                                window.location.href = redirectUrl;
                             }, 2000);
                         } else {
                             throw new Error(result.error);

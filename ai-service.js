@@ -26,8 +26,8 @@ class AIService {
                 ICHING: 'deepseek/deepseek-chat'
             };
             this.mockMode = false; // 默认关闭模拟模式，由后端决定
-            console.log('AI Service: Loaded configuration from API_CONFIG');
-            console.log('AI Service: API URL set to:', this.apiUrl);
+            // console.log('AI Service: Loaded configuration from API_CONFIG');
+            // console.log('AI Service: API URL set to:', this.apiUrl);
         }
         // 兼容旧版 CONFIG
         else if (typeof CONFIG !== 'undefined') {
@@ -36,7 +36,7 @@ class AIService {
             this.model = CONFIG.AI_MODEL;
             this.models = CONFIG.MODELS || {};
             this.mockMode = CONFIG.FEATURES.MOCK_MODE;
-            console.log('AI Service: Loaded configuration from CONFIG');
+            // console.log('AI Service: Loaded configuration from CONFIG');
         } else {
             console.warn('AI Service: CONFIG or API_CONFIG not loaded, using default values');
             // 使用默认配置 - 通过后端代理，不暴露密钥
@@ -54,7 +54,7 @@ class AIService {
 
     // 重新初始化配置（当CONFIG加载后调用）
     reloadConfig() {
-        console.log('AI Service: Reloading configuration...');
+        // console.log('AI Service: Reloading configuration...');
         this.initializeConfig();
 
         // 验证PROMPTS是否可用
@@ -90,44 +90,54 @@ class AIService {
      * @returns {Promise<object>} AI响应
      */
     async sendRequest(systemPrompt, userPrompt, options = {}) {
-        // 仅作日志记录，不再拦截使用限制
-        if (typeof window !== 'undefined' && window.subscriptionManager) {
-            console.log('AI Service: 发送请求，绕过使用限制检查');
-        }
+        // 权限校验与自动降级逻辑
+        let canAccessRealAI = false;
+        let serviceType = options.type || 'divination';
+        let serviceStatus = { allowed: false, type: 'none' };
 
-        // Detect local file environment (CORS restriction)
-        const isLocalFile = window.location.protocol === 'file:' || window.location.origin === 'null';
+        // 映射追问类型到主服务类型，以便正确校验权限
+        if (serviceType === 'divination-followup') serviceType = 'divination';
+        if (serviceType === 'iching-followup') serviceType = 'iching';
+        if (serviceType === 'fengshui-followup') serviceType = 'fengshui';
 
-        if (isLocalFile) {
-            console.log('Environment: Local file detected. Attempting to connect to local server (localhost:3000)...');
-            // Do NOT force mock mode. Allow connection to backend.
-            if (!this.apiUrl || this.apiUrl.startsWith('/')) {
-                this.apiUrl = 'http://localhost:3000/api/ai/chat';
+        if (typeof window !== 'undefined') {
+            const auth = window.AuthService;
+            const sub = window.subscriptionManager;
+
+            if (auth && sub) {
+                const isAuthenticated = auth.isAuthenticated();
+                serviceStatus = sub.canUseService(serviceType);
+
+                if (isAuthenticated && serviceStatus.allowed) {
+                    canAccessRealAI = true;
+                    console.log(`[AI Service] 权限校验通过: 用户已登录且拥有 ${serviceType} 权限 (${serviceStatus.type})`);
+                } else {
+                    console.warn(`[AI Service] 权限校验未通过: ${!isAuthenticated ? '未登录' : '未支付'}。自动切换至模拟模式。`);
+                }
+            } else {
+                console.warn('[AI Service] 权限/订阅管理器未加载，安全降级至模拟模式');
             }
         }
 
-        // 如果是模拟模式，返回模拟数据
-        if (this.mockMode || isLocalFile) {
-            console.log('使用模拟模式，类型:', options.type);
+        // Detect local file environment
+        const isLocalFile = window.location.protocol === 'file:' || window.location.origin === 'null';
+        const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+        // 如果没有权限访问真实AI，或者强制开启模拟模式，直接返回模拟数据
+        if (!canAccessRealAI || this.mockMode) {
+            console.log('使用模拟数据返回，原因:', !canAccessRealAI ? '无权限/未登录' : '强制模拟');
             const mockData = await this.getMockResponse(options.type);
-            console.log('模拟数据:', mockData);
             return mockData;
         }
 
         // 验证API配置
-        // 如果使用后端代理（apiUrl以/api开头），则不需要检查apiKey
         const isUsingProxy = this.apiUrl && (this.apiUrl.startsWith('/api') || this.apiUrl.includes('/api/'));
-
-        if (!isUsingProxy && (!this.apiKey || this.apiKey === 'YOUR_OPENROUTER_API_KEY_HERE' || this.apiKey === '')) {
-            throw new Error('请在config.js中配置有效的OPENROUTER_API_KEY或使用后端代理');
-        }
 
         try {
             // 限流控制
             await this.rateLimit();
 
             // 构建请求头
-            const isUsingProxy = this.apiUrl && (this.apiUrl.startsWith('/api') || this.apiUrl.includes('/api/'));
             const headers = {
                 'Content-Type': 'application/json'
             };
@@ -139,9 +149,14 @@ class AIService {
                 headers['X-Title'] = (typeof CONFIG !== 'undefined' ? CONFIG.APP_NAME : 'Destiny AI');
             }
 
+            // 添加30秒超时控制
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000);
+
             const response = await fetch(this.apiUrl, {
                 method: 'POST',
                 headers: headers,
+                signal: controller.signal,
                 body: JSON.stringify({
                     model: options.model || this.model, // 使用指定模型或默认模型
                     messages: [
@@ -158,11 +173,27 @@ class AIService {
                     max_tokens: options.maxTokens || 4000,
                     top_p: options.topP || 0.9
                 })
-            });
+            }).finally(() => clearTimeout(timeoutId));
 
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(`API请求失败: ${response.status} - ${errorData.error?.message || response.statusText}`);
+                let errorDetails = '';
+                try {
+                    const text = await response.text();
+                    console.error(`❌ AI API Error [${response.status}]:`, text);
+                    errorDetails = text;
+
+                    // 尝试解析 JSON 错误
+                    try {
+                        const json = JSON.parse(text);
+                        if (json.details || json.error) {
+                            errorDetails = json.details || json.error;
+                        }
+                    } catch (e) { }
+                } catch (e) {
+                    errorDetails = response.statusText;
+                }
+
+                throw new Error(`API请求失败: ${response.status} - ${errorDetails}`);
             }
 
             const data = await response.json();
@@ -199,6 +230,12 @@ class AIService {
                 }
 
                 console.log('✅ JSON解析成功:', parsed);
+
+                // 成功获取真实AI响应后，扣除单次使用次数 (如果适用)
+                if (typeof window !== 'undefined' && window.subscriptionManager && canAccessRealAI && serviceStatus.type === 'singleUse') {
+                    window.subscriptionManager.consumeSingleUse(serviceType);
+                }
+
                 return parsed;
 
             } catch (e) {
@@ -217,6 +254,12 @@ class AIService {
 
                         const parsed = JSON.parse(jsonContent);
                         console.log('✅ JSON结构提取成功:', parsed);
+
+                        // 成功获取真实AI响应后，扣除单次使用次数 (如果适用)
+                        if (typeof window !== 'undefined' && window.subscriptionManager && canAccessRealAI && serviceStatus.type === 'singleUse') {
+                            window.subscriptionManager.consumeSingleUse(serviceType);
+                        }
+
                         return parsed;
                     }
                 } catch (finalError) {
@@ -261,8 +304,9 @@ class AIService {
             }
 
             // 检查用户是否有权限
-            const isLocalFile = window.location.protocol === 'file:' || window.location.origin === 'null';
-            if (!isLocalFile && typeof window !== 'undefined' && window.subscriptionManager) {
+            const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+            if (!isLocalFile && !isLocalHost && typeof window !== 'undefined' && window.subscriptionManager) {
                 const canUseAI = window.subscriptionManager.canUseAI();
                 const isPaidUser = window.subscriptionManager.isPremiumUser() || window.subscriptionManager.hasSingleUseCredits();
 
@@ -273,8 +317,8 @@ class AIService {
                 }
             }
 
-            // 本地环境、免费用户或未登录用户，可以回退到模拟模式
-            console.warn('API请求失败或处于本地环境，使用模拟数据');
+            // 本地环境、内网测试环境或未授权用户，可以回退到模拟模式
+            console.warn('API请求失败且处于开发环境或无权状态，使用模拟数据降级');
             return this.getMockResponse(options.type);
         }
     }
@@ -560,13 +604,15 @@ class AIService {
                     ['避免床头对门', '保持空间整洁'],
                     ['避免床頭對門', '保持空間整潔'],
                     ['Evitar cama frente a la puerta', 'Mantener ordenado']
-                )
+                ),
+                isMock: true
             }
         };
 
         // 4. 易经模拟数据
         if (type === 'iching') {
             return {
+                isMock: true,
                 hexagramNumber: 1,
                 hexagramName: text('Qian (The Creative)', '乾卦', '乾卦', 'Qian'),
                 lines_binary: '111111', // Bottom to top: all solid
@@ -625,36 +671,50 @@ class AIService {
             const isIChing = type === 'iching-followup' || (type === 'chat' && window.location.href.includes('iching'));
 
             if (isIChing) {
-                return text(
-                    "### I-Ching Deep Insights\n\nBased on your hexagram and follow-up question:\n\n1. **Current Trend**: You are in a stage of preparation.\n2. **Guidance**: Stay steady and focus on inner growth.\n3. **Actions**: Observe carefully before taking major steps.",
-                    "### 易经深挖真相\n\n结合您的卦象与当前追问，为您进行深度解析：\n\n1. **局势趋势**：目前正处于“蓄势待发”的阶段，不宜操之过急。\n2. **大师建议**：内求定力，外寻契机。保持专注，力量自然会显现。\n3. **具体行动**：在接下来的两周内多观察，少表态，稳扎稳打。",
-                    "### 易經深挖真相\n\n結合您的卦象與當前追問，為您进行深度解析：\n\n1. **局勢趨勢**：目前正處於「蓄勢待發」的階段，不宜操之過急。\n2. **大師建議**：內求定力，外尋契機。保持專注，力量自然會顯現。\n3. **具體行動**：在接下來的兩周內多觀察，少表態，穩紮穩打。",
-                    "### Análisis Profundo de I-Ching\n\nBasado en su hexagrama y pregunta de seguimiento:\n\n1. **Tendencia**: Está en una etapa de preparación.\n2. **Guía**: Manténgase firme en su crecimiento interno."
-                );
+                return {
+                    content: text(
+                        "### I-Ching Deep Insights\n\nBased on your hexagram and follow-up question:\n\n1. **Current Trend**: You are in a stage of preparation.\n2. **Guidance**: Stay steady and focus on inner growth.\n3. **Actions**: Observe carefully before taking major steps.",
+                        "### 易经深挖真相\n\n结合您的卦象与当前追问，为您进行深度解析：\n\n1. **局势趋势**：目前正处于“蓄势待发”的阶段，不宜操之过急。\n2. **大师建议**：内求定力，外寻契机。保持专注，力量自然会显现。\n3. **具体行动**：在接下来的两周内多观察，少表态，稳扎稳打。",
+                        "### 易經深挖真相\n\n結合您的卦象與當前追問，為您进行深度解析：\n\n1. **局勢趨勢**：目前正處於「蓄勢待發」的階段，不宜操之過急。\n2. **大師建議**：內求定力，外尋契機。保持專注，力量自然會顯現。\n3. **具體行動**：在接下來的兩周內多觀察，少表態，穩紮穩打。",
+                        "### Análisis Profundo de I-Ching\n\nBasado en su hexagrama y pregunta de seguimiento:\n\n1. **Tendencia**: Está en una etapa de preparación.\n2. **Guía**: Manténgase firme en su crecimiento interno."
+                    ),
+                    isMock: true
+                };
             }
 
             if (isFengShui) {
-                return text(
-                    "### Alternative Feng Shui Solutions\n\n1. **Plant Selection**: Use small succulents.\n2. **Color**: Use light blue in the North.",
-                    "### 风水替代方案建议\n\n1. **植物选择**：可以使用小型多肉植物。\n2. **色彩搭配**：在北方方位使用淡蓝色饰品。",
-                    "### 風水替代方案建議\n\n1. **植物選擇**：可以使用小型多肉植物。\n2. **色彩搭配**：在北方方位使用淡藍色飾品。",
-                    "### Soluciones alternativas de Feng Shui\n\n1. **Selección de plantas**: Use suculentas pequeñas.\n2. **Color**: Use azul claro en el norte."
-                );
+                return {
+                    content: text(
+                        "### Alternative Feng Shui Solutions\n\n1. **Plant Selection**: Use small succulents.\n2. **Color**: Use light blue in the North.",
+                        "### 风水替代方案建议\n\n1. **植物选择**：可以使用小型多肉植物。\n2. **色彩搭配**：在北方方位使用淡蓝色饰品。",
+                        "### 風水替代方案建議\n\n1. **植物選擇**：可以使用小型多肉植物。\n2. **色彩搭配**：在北方方位使用淡藍色飾品。",
+                        "### Soluciones alternativas de Feng Shui\n\n1. **Selección de plantas**: Use suculentas pequeñas.\n2. **Color**: Use azul claro en el norte."
+                    ),
+                    isMock: true
+                };
             }
 
             // Default for divination followup
-            return text(
-                "### Deep Truth Insights\n\n1. **Career**: Strong potential for management.\n2. **Wealth**: Positive stars ahead.\n3. **Advice**: Focus on long-term goals.",
-                "### 深挖真相 - 深度解析\n\n1. **事业潜能**：暗示您具有极强的管理才能与领导潜质。\n2. **财运趋势**：流年逢“财星”生旺，意味着未来有不错的偏财机遇。\n3. **大师叮嘱**：凡事需循序渐进，切莫急功近利。",
-                "### 深挖真相 - 深度解析\n\n1. **事業潛能**：暗示您具有極強的管理才能與領導潛質。\n2. **財運趨勢**：流年逢“財星”生旺，意味著未來有不錯的偏財機遇。\n3. **大師叮囑**：凡事需循序漸進，切莫急功近利。",
-                "### Perspectivas de la Verdad Profunda\n\n1. **Carrera**: Gran potencial de liderazgo.\n2. **Riqueza**: Próximas oportunidades financieras."
-            );
+            return {
+                content: text(
+                    "### Deep Truth Insights\n\n1. **Career**: Strong potential for management.\n2. **Wealth**: Positive stars ahead.\n3. **Advice**: Focus on long-term goals.",
+                    "### 深挖真相 - 深度解析\n\n1. **事业潜能**：暗示您具有极强的管理才能与领导潜质。\n2. **财运趋势**：流年逢“财星”生旺，意味着未来有不错的偏财机遇。\n3. **大师叮嘱**：凡事需循序渐进，切莫急功近利。",
+                    "### 深挖真相 - 深度解析\n\n1. **事業潛能**：暗示您具有極強的管理才能與領導潛質。\n2. **財運趨勢**：流年逢“財星”生旺，意味著未來有不錯的偏財機遇。\n3. **大師叮囑**：凡事需循序漸進，切莫急功近利。",
+                    "### Perspectivas de la Verdad Profunda\n\n1. **Carrera**: Gran potencial de liderazgo.\n2. **Riqueza**: Próximas oportunidades financieras."
+                ),
+                isMock: true
+            };
         }
 
         return new Promise(resolve => {
             // 模拟网络延迟
             setTimeout(() => {
-                resolve(mockData[type] || mockData.divination);
+                // 如果是占卜类型，且 mockData 中没有该键，但 mockData 本身就是占卜结果结构
+                if (type === 'divination' && !mockData['divination']) {
+                    resolve(mockData);
+                } else {
+                    resolve(mockData[type] || mockData.divination);
+                }
             }, 1000);
         });
     }
@@ -677,6 +737,10 @@ class AIService {
 
             // 如果响应是对象，尝试提取文本内容
             if (response && typeof response === 'object') {
+                // 如果是 mock 数据且包含 isMock 标记，返回该对象以便前端处理
+                if (response.isMock) {
+                    return response;
+                }
                 // 如果是标准 JSON 响应包，尝试寻找 content 字段
                 return response.content || response.text || response.answer || JSON.stringify(response);
             }

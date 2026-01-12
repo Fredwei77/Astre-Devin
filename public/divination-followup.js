@@ -3,7 +3,7 @@
  * Divination Follow-up Questions Feature
  */
 
-(function() {
+(function () {
     'use strict';
 
     // 存储当前占卜结果
@@ -14,73 +14,30 @@
      */
     function generateSuggestedQuestions(result, category) {
         // 获取当前语言
-        const lang = localStorage.getItem('preferredLanguage') || 'zh';
+        const lang = window.i18n?.getCurrentLanguage() || 'en';
         const isEnglish = lang === 'en';
-        
-        const suggestions = {
-            career: isEnglish ? [
-                "How can I improve my career fortune?",
-                "When is the best time to change jobs?",
-                "Am I suitable for entrepreneurship?",
-                "How to improve my relationship with my boss?"
-            ] : [
-                "如何提升我的事业运势？",
-                "什么时候是换工作的最佳时机？",
-                "我适合创业吗？",
-                "如何改善与上司的关系？"
-            ],
-            wealth: isEnglish ? [
-                "How can I increase my wealth fortune?",
-                "What advice do you have for investment and financial management?",
-                "When is my wealth fortune at its peak?",
-                "How to avoid financial losses?"
-            ] : [
-                "如何增加我的财富运？",
-                "投资理财有什么建议？",
-                "什么时候是财运最旺的时期？",
-                "如何避免破财？"
-            ],
-            love: isEnglish ? [
-                "How can I improve my love fortune?",
-                "When will I meet my soulmate?",
-                "How to resolve conflicts in relationships?",
-                "Are my partner and I compatible?"
-            ] : [
-                "如何改善我的感情运势？",
-                "什么时候会遇到真命天子/天女？",
-                "如何化解感情中的矛盾？",
-                "我和伴侣是否合适？"
-            ],
-            health: isEnglish ? [
-                "How can I improve my health?",
-                "What health issues should I pay attention to?",
-                "What wellness methods are most suitable for me?",
-                "How to boost my vitality?"
-            ] : [
-                "如何改善我的健康状况？",
-                "需要注意哪些健康问题？",
-                "什么养生方法最适合我？",
-                "如何提升精气神？"
-            ]
-        };
 
-        // 根据类别返回建议问题，如果没有选择类别则返回通用问题
-        if (category && suggestions[category]) {
-            return suggestions[category];
+        // Try to get category specific suggestions from translations
+        const suggestionKey = category ? `divination.followup.suggestions.${category}` : 'divination.followup.suggestions.general';
+        const suggestionsStr = window.i18n?.t(suggestionKey);
+
+        if (suggestionsStr && suggestionsStr !== suggestionKey) {
+            return suggestionsStr.split(',').map(q => q.trim());
         }
 
-        // 通用建议问题
-        return isEnglish ? [
-            "How can I improve my overall fortune?",
-            "What should I pay attention to in the coming year?",
-            "What is my lucky direction?",
-            "How to resolve unfavorable factors?"
-        ] : [
-            "如何提升我的整体运势？",
-            "未来一年需要注意什么？",
-            "我的幸运方位是什么？",
-            "如何化解不利因素？"
-        ];
+        // Fallback to general suggestions if category specific one fails
+        const generalStr = window.i18n?.t('divination.followup.suggestions.general');
+        if (generalStr && generalStr !== 'divination.followup.suggestions.general') {
+            return generalStr.split(',').map(q => q.trim());
+        }
+
+        // final fallback based on language
+        if (lang === 'zh-TW') {
+            return ["如何提升我的整體運勢？", "未來一年需要注意什麼？"];
+        }
+        return isEnglish ?
+            ["How can I improve my overall fortune?", "What should I pay attention to in the coming year?"] :
+            ["如何提升我的整体运势？", "未来一年需要注意什么？"];
     }
 
     /**
@@ -91,7 +48,7 @@
         if (!container) return;
 
         container.innerHTML = '';
-        
+
         questions.forEach(question => {
             const button = document.createElement('button');
             button.className = 'text-xs bg-mystic-gold/20 hover:bg-mystic-gold/30 text-mystic-gold border border-mystic-gold/40 px-3 py-2 rounded-lg transition-all';
@@ -108,7 +65,7 @@
      */
     async function handleFollowupQuestion() {
         console.log('🤖 开始处理追问请求...');
-        
+
         const input = document.getElementById('divinationFollowupInput');
         const button = document.getElementById('askDivinationFollowup');
         const loading = document.getElementById('divinationFollowupLoading');
@@ -117,7 +74,7 @@
 
         const question = input.value.trim();
         console.log('📝 用户问题:', question);
-        
+
         if (!question) {
             console.warn('⚠️ 用户未输入问题');
             alert(window.i18n?.t('divination.followup.emptyError') || '请输入您的问题');
@@ -129,60 +86,137 @@
             alert(window.i18n?.t('divination.followup.noResultError') || '请先进行占卜分析');
             return;
         }
-        
+
         console.log('✅ 验证通过，开始AI分析...');
 
         // 显示加载状态
         button.disabled = true;
         loading.classList.remove('hidden');
         answerSection.classList.add('hidden');
+        answerText.innerHTML = ''; // 清空之前的内容
 
         try {
             // 获取当前语言
-            const lang = localStorage.getItem('preferredLanguage') || 'zh';
-            
+            const lang = window.i18n?.getCurrentLanguage() || 'en';
+
             // 获取优化的系统提示词
-            const systemPrompt = window.CONFIG?.PROMPTS?.DIVINATION?.FOLLOWUP_SYSTEM?.(lang) || 
-                                 (lang === 'en' ? 
-                                  'You are a professional Eastern numerology master.' : 
-                                  '你是一位专业的东方命理大师。');
-            
+            const systemPrompt = window.CONFIG?.PROMPTS?.DIVINATION?.FOLLOWUP_SYSTEM?.(lang) ||
+                (lang === 'en' ?
+                    'You are a professional Eastern numerology master.' :
+                    '你是一位专业的东方命理大师。');
+
             // 构建追问上下文（用户提示词）
             const userPrompt = buildFollowupContext(currentDivinationResult, question);
-            
+
             // 调用AI服务，传入系统提示词和用户提示词
             // 确保使用正确的AI服务实例
-            const aiService = window.aiService || (window.AIService ? new window.AIService() : null);
-            if (!aiService) {
-                throw new Error('AI服务未初始化');
+            let aiService = window.aiService;
+            if (!aiService && window.AIService) {
+                console.log('🔄 尝试创建新的 AIService 实例...');
+                aiService = new window.AIService();
             }
-            const response = await aiService.chatWithSystem(systemPrompt, userPrompt);
-            
-            // 显示答案
-            answerText.innerHTML = formatAnswer(response);
+
+            if (!aiService) {
+                throw new Error('AI服务未初始化 (AIService missing)');
+            }
+            const response = await aiService.chatWithSystem(systemPrompt, userPrompt, {
+                type: 'divination-followup'
+            });
+
+            // 隐藏加载状态并显示回答区域
+            loading.classList.add('hidden');
             answerSection.classList.remove('hidden');
-            
+
+            // 解析响应内容和 Mock标记
+            let content = response;
+            let isMock = false;
+
+            if (response && typeof response === 'object') {
+                content = response.content || response.text || response.answer || '';
+                if (response.isMock) isMock = true;
+            }
+
+            // 格式化解析 Markdown
+            let formattedHtml = formatAnswer(content);
+
+            // 如果是模拟数据，添加提示徽章
+            if (isMock) {
+                const badgeHtml = `
+                    <div class="mb-4 inline-flex items-center px-3 py-1 rounded-full bg-mystic-gold/10 border border-mystic-gold/30 text-mystic-gold text-xs font-medium">
+                        <i class="fas fa-flask mr-2"></i>
+                        ${window.i18n?.t('common.trialMode') || 'Trial Mode / 模拟演示'}
+                    </div>
+                    <div class="mb-2 text-xs text-moon-silver/60">
+                        ${window.i18n?.t('common.trialMessage') || 'Upgrade to Premium for real AI analysis.'}
+                    </div>
+                `;
+                formattedHtml = badgeHtml + formattedHtml;
+            }
+
+            // 执行打字机效果
+            if (window.TypingEffect) {
+                await window.TypingEffect.type(answerText, formattedHtml, 30);
+            } else {
+                answerText.innerHTML = formattedHtml;
+            }
+
             // 滚动到答案位置
             answerSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
+            // 清空输入框
+            input.value = '';
+
         } catch (error) {
             console.error('追问失败:', error);
+
+            // 增强重试/回退逻辑
+            console.warn('⚠️ AI服务调用失败，尝试使用模拟数据回退');
+            try {
+                const aiService = window.aiService || (window.AIService ? new window.AIService() : null);
+                if (aiService && typeof aiService.getMockResponse === 'function') {
+                    const mockResponse = await aiService.getMockResponse('divination-followup');
+                    if (mockResponse) {
+                        console.log('✅ 成功获取占卜追问模拟数据');
+
+                        // 隐藏加载状态并显示回答区域
+                        loading.classList.add('hidden');
+                        answerSection.classList.remove('hidden');
+
+                        // 格式化解析 Markdown
+                        const formattedHtml = formatAnswer(mockResponse);
+
+                        // 执行打字机效果
+                        if (window.TypingEffect) {
+                            await window.TypingEffect.type(answerText, formattedHtml, 30);
+                        } else {
+                            answerText.innerHTML = `<div class="typewriter-text">${formattedHtml}</div>`;
+                        }
+
+                        // 滚动到答案位置
+                        answerSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        return;
+                    }
+                }
+            } catch (fallbackError) {
+                console.error('模拟追问回退失败:', fallbackError);
+            }
+
             console.error('错误详情:', {
                 message: error.message,
                 aiServiceExists: !!window.aiService,
                 AIServiceExists: !!window.AIService,
                 configExists: typeof CONFIG !== 'undefined'
             });
-            
+
             // 更详细的错误提示
-            let errorMessage = 'AI解答失败，请稍后重试';
+            let errorMessage = window.i18n?.t('divination.followup.error') || 'AI解答失败，请稍后重试';
             if (error.message.includes('AI服务未初始化')) {
-                errorMessage = 'AI服务初始化失败，请刷新页面重试';
+                errorMessage = window.i18n?.t('divination.followup.initError') || 'AI服务初始化失败，请刷新页面重试';
             } else if (error.message.includes('请先进行占卜分析')) {
-                errorMessage = '请先进行占卜分析后再提问';
+                errorMessage = window.i18n?.t('divination.followup.noResultError') || '请先进行占卜分析后再提问';
             }
-            
-            alert(window.i18n?.t('divination.followup.error') || errorMessage);
+
+            alert(errorMessage);
         } finally {
             button.disabled = false;
             loading.classList.add('hidden');
@@ -194,17 +228,17 @@
      */
     function buildFollowupContext(result, question) {
         // 获取当前语言
-        const lang = localStorage.getItem('preferredLanguage') || 'zh';
+        const lang = window.i18n?.getCurrentLanguage() || 'en';
         const isEnglish = lang === 'en';
-        
+
         const birthInfo = result.birthInfo || {};
         const category = result.category || (isEnglish ? 'General' : '综合');
-        
+
         // 提取五行数据
         const elements = result.elements || {};
         const elementsStr = `Wood: ${elements.wood || 0}, Fire: ${elements.fire || 0}, Earth: ${elements.earth || 0}, Metal: ${elements.metal || 0}, Water: ${elements.water || 0}`;
         const elementsStrZh = `木: ${elements.wood || 0}, 火: ${elements.fire || 0}, 土: ${elements.earth || 0}, 金: ${elements.metal || 0}, 水: ${elements.water || 0}`;
-        
+
         if (isEnglish) {
             return `Please answer the user's follow-up question based on the following birth information and perform in-depth BaZi analysis.
 
@@ -269,7 +303,7 @@ Please output the report following these steps, with a language style combining 
 
 **IMPORTANT: Please respond in ENGLISH. All text must be in English. Use professional yet accessible language.**`;
         }
-        
+
         return `请根据以下出生信息回答用户的追问，并进行深度八字分析。
 
 **Task（任务）**：根据下方的出生信息，进行深度的八字排盘与运势推演。请遵循"排大运"规则（分阳年、阴年），务必计算胎元、命宫和身宫。
@@ -338,28 +372,29 @@ ${question}
      * 格式化AI答案 - 支持多语言关键词高亮
      */
     function formatAnswer(answer) {
-        // 获取当前语言
-        const lang = localStorage.getItem('preferredLanguage') || 'zh';
-        const isEnglish = lang === 'en';
-        
-        // 将换行符转换为HTML
-        let formatted = answer.replace(/\n/g, '<br>');
-        
-        // 高亮关键词
-        const keywords = isEnglish ? [
-            'Recommend', 'Suggestion', 'Advice', 'Note', 'Suitable', 'Avoid', 'Enhance', 'Improve',
-            'Timing', 'Direction', 'Color', 'Number', 'Fortune', 'Luck', 'Career', 'Wealth',
-            'Love', 'Health', 'Important', 'Key', 'Essential', 'Beneficial'
-        ] : [
-            '建议', '注意', '适合', '避免', '提升', '改善', '时机', '方位', 
-            '颜色', '数字', '运势', '财运', '事业', '感情', '健康', '重要', '关键', '有利'
-        ];
-        
-        keywords.forEach(keyword => {
-            const regex = new RegExp(`\\b(${keyword})\\b`, 'gi');
-            formatted = formatted.replace(regex, '<span class="text-mystic-gold font-semibold">$1</span>');
-        });
-        
+        // 优先使用全局统一的 Markdown 渲染器
+        if (window.utils && typeof window.utils.renderMarkdown === 'function') {
+            return window.utils.renderMarkdown(answer);
+        }
+
+        // 使用 MarkdownFormatter 进行解析
+        return window.MarkdownFormatter ? window.MarkdownFormatter.parse(answer) : answer.replace(/\n/g, '<br>');
+
+        // 从 i18n 系统获取关键词并进行高亮（在 HTML 生成后处理）
+        const keywordsKey = 'divination.followup.keywords';
+        const keywordsStr = window.i18n?.t(keywordsKey);
+
+        if (keywordsStr && keywordsStr !== keywordsKey) {
+            const keywords = keywordsStr.split(',').map(k => k.trim());
+            keywords.forEach(keyword => {
+                // Determine if it's CJK to use appropriate regex
+                const isCJK = /[\u4e00-\u9fa5]/.test(keyword);
+                // For English use word boundaries, for CJK use simple match
+                const regex = isCJK ? new RegExp(`(${keyword})`, 'g') : new RegExp(`\\b(${keyword})\\b`, 'gi');
+                formatted = formatted.replace(regex, '<span class="text-mystic-gold font-semibold">$1</span>');
+            });
+        }
+
         return formatted;
     }
 
@@ -368,19 +403,19 @@ ${question}
      */
     function initFollowup(divinationResult, selectedCategory) {
         console.log('🔮 初始化占卜追问功能...');
-        
+
         if (!divinationResult) {
             console.warn('⚠️ 占卜结果为空，无法初始化追问功能');
             return;
         }
-        
+
         currentDivinationResult = divinationResult;
         console.log('✅ 占卜结果已保存:', divinationResult);
-        
+
         // 生成并渲染建议问题
         const questions = generateSuggestedQuestions(divinationResult, selectedCategory);
         renderSuggestedQuestions(questions);
-        
+
         // 绑定追问按钮事件
         const askButton = document.getElementById('askDivinationFollowup');
         if (askButton) {
@@ -402,7 +437,7 @@ ${question}
         } else {
             console.warn('⚠️ 未找到追问输入框元素');
         }
-        
+
         // 监听语言切换事件
         window.addEventListener('languageChanged', () => {
             if (currentDivinationResult) {
@@ -410,7 +445,7 @@ ${question}
                 renderSuggestedQuestions(questions);
             }
         });
-        
+
         console.log('🔮 占卜追问功能初始化完成');
     }
 
@@ -419,11 +454,11 @@ ${question}
      */
     function resetFollowup() {
         currentDivinationResult = null;
-        
+
         const input = document.getElementById('divinationFollowupInput');
         const answerSection = document.getElementById('divinationFollowupAnswer');
         const suggestionsContainer = document.getElementById('divinationFollowupSuggestions');
-        
+
         if (input) input.value = '';
         if (answerSection) answerSection.classList.add('hidden');
         if (suggestionsContainer) suggestionsContainer.innerHTML = '';

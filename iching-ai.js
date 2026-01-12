@@ -122,7 +122,7 @@ class IChingAI {
             }
 
             // 模拟进度更新
-            const progressInterval = setInterval(() => {
+            let progressInterval = setInterval(() => {
                 const currentWidth = parseFloat(document.getElementById('progressBar')?.style.width || '30');
                 if (currentWidth < 90) {
                     const nextProgress = currentWidth + 2;
@@ -134,7 +134,7 @@ class IChingAI {
 
             const result = await aiService.analyzeIChing(questionData);
 
-            clearInterval(progressInterval);
+            if (progressInterval) clearInterval(progressInterval);
             this.updateProgress(100, window.i18n?.t('iching.progress.complete') || 'Analysis Complete!');
 
             this.currentReading = {
@@ -154,6 +154,7 @@ class IChingAI {
             return this.currentReading;
 
         } catch (error) {
+            if (typeof progressInterval !== 'undefined') clearInterval(progressInterval);
             console.error('易经占卜错误:', error);
 
             // 增强重试/回退逻辑
@@ -254,6 +255,27 @@ class IChingAI {
         const resultsSection = document.getElementById('resultsSection');
         if (resultsSection) {
             resultsSection.classList.remove('hidden');
+
+            // 移除旧的 Mock 标记
+            const oldBadge = document.getElementById('ichingMockBadge');
+            if (oldBadge) oldBadge.remove();
+
+            // 如果是模拟数据，添加顶部标记
+            if (reading.isMock) {
+                const badge = document.createElement('div');
+                badge.id = 'ichingMockBadge';
+                badge.className = 'mb-6 p-3 bg-mystic-gold/10 border border-mystic-gold/30 rounded-lg flex items-center justify-center text-mystic-gold';
+                badge.innerHTML = `
+                    <i class="fas fa-flask mr-2"></i>
+                    <span class="font-medium text-sm">
+                        ${window.i18n?.t('common.trialMode') || 'Trial Mode / 模拟演示'} - 
+                        <span class="text-moon-silver text-xs opacity-80 pl-1">
+                             ${window.i18n?.t('common.trialMessage') || 'Upgrade for real AI analysis'}
+                        </span>
+                    </span>
+                `;
+                resultsSection.insertBefore(badge, resultsSection.firstChild);
+            }
         }
 
         // 更新卦象信息

@@ -110,9 +110,14 @@
 
             // 调用AI服务，传入系统提示词和用户提示词
             // 确保使用正确的AI服务实例
-            const aiService = window.aiService || (window.AIService ? new window.AIService() : null);
+            let aiService = window.aiService;
+            if (!aiService && window.AIService) {
+                console.log('🔄 尝试创建新的 AIService 实例...');
+                aiService = new window.AIService();
+            }
+
             if (!aiService) {
-                throw new Error('AI服务未初始化');
+                throw new Error('AI服务未初始化 (AIService missing)');
             }
             const response = await aiService.chatWithSystem(systemPrompt, userPrompt, {
                 type: 'divination-followup'
@@ -122,8 +127,31 @@
             loading.classList.add('hidden');
             answerSection.classList.remove('hidden');
 
+            // 解析响应内容和 Mock标记
+            let content = response;
+            let isMock = false;
+
+            if (response && typeof response === 'object') {
+                content = response.content || response.text || response.answer || '';
+                if (response.isMock) isMock = true;
+            }
+
             // 格式化解析 Markdown
-            const formattedHtml = formatAnswer(response);
+            let formattedHtml = formatAnswer(content);
+
+            // 如果是模拟数据，添加提示徽章
+            if (isMock) {
+                const badgeHtml = `
+                    <div class="mb-4 inline-flex items-center px-3 py-1 rounded-full bg-mystic-gold/10 border border-mystic-gold/30 text-mystic-gold text-xs font-medium">
+                        <i class="fas fa-flask mr-2"></i>
+                        ${window.i18n?.t('common.trialMode') || 'Trial Mode / 模拟演示'}
+                    </div>
+                    <div class="mb-2 text-xs text-moon-silver/60">
+                        ${window.i18n?.t('common.trialMessage') || 'Upgrade to Premium for real AI analysis.'}
+                    </div>
+                `;
+                formattedHtml = badgeHtml + formattedHtml;
+            }
 
             // 执行打字机效果
             if (window.TypingEffect) {
@@ -161,7 +189,7 @@
                         if (window.TypingEffect) {
                             await window.TypingEffect.type(answerText, formattedHtml, 30);
                         } else {
-                            answerText.innerHTML = formattedHtml;
+                            answerText.innerHTML = `<div class="typewriter-text">${formattedHtml}</div>`;
                         }
 
                         // 滚动到答案位置
@@ -344,8 +372,13 @@ ${question}
      * 格式化AI答案 - 支持多语言关键词高亮
      */
     function formatAnswer(answer) {
+        // 优先使用全局统一的 Markdown 渲染器
+        if (window.utils && typeof window.utils.renderMarkdown === 'function') {
+            return window.utils.renderMarkdown(answer);
+        }
+
         // 使用 MarkdownFormatter 进行解析
-        let formatted = window.MarkdownFormatter ? window.MarkdownFormatter.parse(answer) : answer.replace(/\n/g, '<br>');
+        return window.MarkdownFormatter ? window.MarkdownFormatter.parse(answer) : answer.replace(/\n/g, '<br>');
 
         // 从 i18n 系统获取关键词并进行高亮（在 HTML 生成后处理）
         const keywordsKey = 'divination.followup.keywords';

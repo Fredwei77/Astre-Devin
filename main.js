@@ -25,7 +25,7 @@ class DestinyAI {
                     window.aiService.reloadConfig();
                 }
 
-                console.log('AI Service 初始化成功');
+                // console.log('AI Service 初始化成功');
             } catch (error) {
                 console.warn('AI Service 初始化失败:', error);
             }
@@ -285,6 +285,9 @@ class DestinyAI {
             return;
         }
 
+        // 存储出生信息，供追问功能使用
+        this.birthInfo = { birthDate, birthTime, birthPlace, gender };
+
         if (this.selectedCategories.length === 0) {
             alert(window.i18n ? window.i18n.t('divination.category.title') : 'Please select at least one category for analysis.');
             return;
@@ -339,7 +342,7 @@ class DestinyAI {
 
                 // 验证配置是否完全可用
                 if (window.aiService.isConfigurationReady && window.aiService.isConfigurationReady()) {
-                    console.log('✅ AI配置验证成功，所有PROMPTS可用');
+                    // console.log('✅ AI配置验证成功，所有PROMPTS可用');
                 } else {
                     console.warn('⚠️ AI配置验证失败，某些PROMPTS可能不可用');
                 }
@@ -367,7 +370,7 @@ class DestinyAI {
 
             const result = await window.aiService.analyzeDivination(userData);
 
-            console.log('AI 分析结果:', result);
+            // console.log('AI 分析结果:', result);
 
             this.updateProgress(75, 'Generating insights...');
 
@@ -387,7 +390,8 @@ class DestinyAI {
 
         } catch (error) {
             console.error('AI分析错误:', error);
-            this.showNotification('分析失败，使用模拟数据', 'error');
+            const errorMsg = window.i18n ? window.i18n.t('divination.error.analysisFailed') : 'Analysis failed, using mock data';
+            this.showNotification(errorMsg, 'error');
 
             // 回退到模拟分析
             this.simulateAnalysis();
@@ -435,7 +439,8 @@ class DestinyAI {
                 water: 35
             },
             luckyColors: ['gold', 'silver', 'purple', 'green', 'orange'],
-            luckyNumbers: [3, 7, 9, 21, 36]
+            luckyNumbers: [3, 7, 9, 21, 36],
+            isMock: true
         };
 
         const progressBar = document.getElementById('progressBar');
@@ -504,6 +509,27 @@ class DestinyAI {
         } else {
             console.error('找不到 resultsSection 元素');
             return;
+        }
+
+        // 移除旧的 Mock 标记
+        const oldBadge = document.getElementById('divinationMockBadge');
+        if (oldBadge) oldBadge.remove();
+
+        // 如果是模拟数据，添加顶部标记
+        if (this.analysisResults && this.analysisResults.isMock) {
+            const badge = document.createElement('div');
+            badge.id = 'divinationMockBadge';
+            badge.className = 'mb-6 p-3 bg-mystic-gold/10 border border-mystic-gold/30 rounded-lg flex items-center justify-center text-mystic-gold';
+            badge.innerHTML = `
+                <i class="fas fa-flask mr-2"></i>
+                <span class="font-medium text-sm">
+                    ${window.i18n?.t('common.trialMode') || 'Trial Mode / 模拟演示'} - 
+                    <span class="text-moon-silver text-xs opacity-80 pl-1">
+                         ${window.i18n?.t('common.trialMessage') || 'Upgrade for real AI analysis'}
+                    </span>
+                </span>
+            `;
+            resultsSection.insertBefore(badge, resultsSection.firstChild);
         }
 
         // Generate and display results

@@ -39,13 +39,14 @@
         STRIPE_PUBLISHABLE_KEY = window.ENV.STRIPE_PUBLISHABLE_KEY;
     }
 
-    // 检查是否为占位符 (CI/CD 占位符通常包含重复的模式且长度固定)
+    // 检查是否为占位符 (CI/CD 占位符通常包含重复的重复模式 q6I9i6)
     const isPlaceholder = STRIPE_PUBLISHABLE_KEY &&
         (STRIPE_PUBLISHABLE_KEY.includes('q6I9i6') ||
-            STRIPE_PUBLISHABLE_KEY.length >= 80 && STRIPE_PUBLISHABLE_KEY.startsWith('pk_live_51QYBqbP3r4cXOLlB'));
+            STRIPE_PUBLISHABLE_KEY.endsWith('...') ||
+            (STRIPE_PUBLISHABLE_KEY.startsWith('pk_live_51QYBqbP3r4cXOLlB') && STRIPE_PUBLISHABLE_KEY.length > 80 && STRIPE_PUBLISHABLE_KEY.includes('i6q6I9i6')));
 
     if (isPlaceholder) {
-        console.warn('⚠️ 检测到无效的 Stripe 占位符密钥，将重置为空以触发回退逻辑');
+        console.warn('⚠️ 检测到占位符密钥模式，将重置为空以触发测试模式回退');
         STRIPE_PUBLISHABLE_KEY = '';
     }
 
@@ -101,7 +102,30 @@
         }
 
         try {
-            elements = stripe.elements();
+            // 获取当前系统语言并映射到 Stripe 支持的 locale
+            const currentLang = (window.i18n && window.i18n.currentLang) || localStorage.getItem('destinyai_language') || 'zh-CN';
+            const localeMap = {
+                'en': 'en',
+                'zh-CN': 'zh',
+                'zh-TW': 'zh-TW',
+                'es': 'es'
+            };
+            const stripeLocale = localeMap[currentLang] || 'auto';
+            console.log(`🌐 设置 Stripe 表单语言为: ${stripeLocale} (系统语言: ${currentLang})`);
+
+            // 如果已经存在 cardElement，先将其销毁以确保语言更新生效
+            if (cardElement) {
+                try {
+                    cardElement.unmount();
+                    cardElement.destroy();
+                } catch (e) {
+                    console.warn('清理旧 Card Element 时出错:', e);
+                }
+                cardElement = null;
+            }
+
+            // 使用指定的 locale 创建 elements 实例
+            elements = stripe.elements({ locale: stripeLocale });
 
             cardElement = elements.create('card', {
                 style: {
@@ -248,10 +272,16 @@
                 };
             }
 
-            if (!stripe || !cardElement) {
+            if (!stripe) {
                 return {
                     success: false,
-                    error: 'Stripe 未初始化'
+                    error: 'Stripe 未就绪 (stripe object is null)。请确保网络畅通并刷新页面。'
+                };
+            }
+            if (!cardElement) {
+                return {
+                    success: false,
+                    error: '支付输入框未挂载 (cardElement is null)。请确保按照正确的流程打开支付弹窗。'
                 };
             }
 

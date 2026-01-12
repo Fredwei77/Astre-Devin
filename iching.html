@@ -478,7 +478,8 @@
                                 style="color: #c0c0c0;">
                                 <span data-i18n="nav.login">登入</span>
                             </button>
-                            <a href="payment.html"
+                            <a href="#"
+                                onclick="if(window.statePreserver) window.statePreserver.saveCurrentPage(); window.location.href='payment.html'; return false;"
                                 class="bg-mystic-gold text-deep-navy px-4 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors"
                                 style="background: #ffd700; color: #1a237e;" data-i18n="nav.upgrade">
                                 Upgrade
@@ -548,7 +549,8 @@
                                                 <span class="ml-3" data-i18n="nav.myReadings">我的占卜</span>
                                             </a>
 
-                                            <a href="payment.html"
+                                            <a href="#"
+                                                onclick="if(window.statePreserver) window.statePreserver.saveCurrentPage(); window.location.href='payment.html'; return false;"
                                                 class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
                                                 style="color: #c0c0c0;">
                                                 <i class="fas fa-crown w-5"></i>

@@ -471,17 +471,21 @@ app.post('/api/ai/chat',
     // CSRF验证暂时禁用，因为AI API已有限流保护
     // validateCSRF,
     async (req, res) => {
-        console.log('--- AI Request Start ---');
-        console.log('Method:', req.method);
-        console.log('Body keys:', Object.keys(req.body));
-        if (req.body.messages) {
-            console.log('Has image:', JSON.stringify(req.body).includes('base64'));
+        if (!process.env.OPENROUTER_API_KEY) {
+            console.error('❌ Missing OPENROUTER_API_KEY in environment variables');
+            return res.status(500).json({
+                error: 'Backend Configuration Error',
+                details: 'OPENROUTER_API_KEY is not set in .env'
+            });
         }
+
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 60000); // 60秒超时
 
-            const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            // Use globalThis.fetch for Node 18+ compatibility
+            const fetchFn = globalThis.fetch || fetch;
+            const response = await fetchFn('https://openrouter.ai/api/v1/chat/completions', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,

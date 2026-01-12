@@ -91,9 +91,35 @@
             }
             const response = await aiService.chatWithSystem(systemPrompt, userPrompt);
 
+            // 智能处理响应内容
+            let cleanResponse = response;
+            let isMock = false;
+
+            if (typeof response === 'object' && response !== null) {
+                cleanResponse = response.content || response.text || response.answer || JSON.stringify(response);
+                if (response.isMock) isMock = true;
+            } else if (typeof response === 'string' && response.trim().startsWith('{')) {
+                try {
+                    const parsed = JSON.parse(response);
+                    cleanResponse = parsed.content || parsed.text || parsed.answer || response;
+                } catch (e) { /* ignore */ }
+            }
+
             // 显示答案
             if (answerText) {
-                answerText.innerHTML = formatIChingAnswer(response, lang);
+                let displayHtml = formatIChingAnswer(cleanResponse, lang);
+
+                // 如果是模拟数据，添加提示徽章
+                if (isMock) {
+                    const badgeHtml = `
+                        <div class="mb-4 inline-flex items-center px-3 py-1 rounded-full bg-mystic-gold/10 border border-mystic-gold/30 text-mystic-gold text-xs font-medium">
+                            <i class="fas fa-flask mr-2"></i>
+                            ${window.i18n?.t('common.trialMode') || 'Trial Mode / 模拟演示'}
+                        </div>
+                    `;
+                    displayHtml = badgeHtml + displayHtml;
+                }
+                answerText.innerHTML = displayHtml;
             }
             if (answerSection) {
                 answerSection.classList.remove('hidden');

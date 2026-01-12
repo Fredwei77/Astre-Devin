@@ -49,6 +49,8 @@
     <!-- Configuration and AI Service -->
     <script src="config.js"></script>
     <script src="api-config.js"></script>
+    <script src="i18n-handler.js?v=2"></script>
+    <script src="ai-service.js?v=2"></script>
     <script src="utils.js"></script>
     <script src="report-export.js"></script>
 
@@ -248,7 +250,8 @@
                                 class="text-moon-silver hover:text-mystic-gold transition-colors font-medium flex items-center gap-2">
                                 <span data-i18n="nav.login">登入</span>
                             </button>
-                            <a href="payment.html"
+                            <a href="#"
+                                onclick="if(window.statePreserver) window.statePreserver.saveCurrentPage(); window.location.href='payment.html'; return false;"
                                 class="bg-mystic-gold text-deep-navy px-4 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors"
                                 data-i18n="nav.upgrade">
                                 Upgrade
@@ -315,7 +318,8 @@
                                                 <span class="ml-3" data-i18n="nav.myReadings"></span>
                                             </a>
 
-                                            <a href="payment.html"
+                                            <a href="#"
+                                                onclick="if(window.statePreserver) window.statePreserver.saveCurrentPage(); window.location.href='payment.html'; return false;"
                                                 class="flex items-center px-4 py-3 text-moon-silver hover:text-mystic-gold hover:bg-mystic-gold/10 transition-all"
                                                 title="Upgrade">
                                                 <i class="fas fa-crown w-5"></i>
@@ -799,9 +803,9 @@
     <script src="config.js"></script>
     <!-- Stripe Payment Integration -->
     <script src="https://js.stripe.com/v3/"></script>
-    <script src="stripe-client-enhanced.js"></script>
-
-    <script src="subscription-manager.js"></script>
+    <script src="stripe-client-enhanced.js?v=2"></script>
+    <script src="subscription-manager.js?v=2"></script>
+    <script src="shop-service.js?v=2"></script>
     <script src="ai-service.js"></script>
     <script src="state-preserver.js"></script>
 

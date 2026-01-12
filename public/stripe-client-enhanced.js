@@ -91,7 +91,30 @@
         }
 
         try {
-            elements = stripe.elements();
+            // 获取当前系统语言并映射到 Stripe 支持的 locale
+            const currentLang = (window.i18n && window.i18n.currentLang) || localStorage.getItem('destinyai_language') || 'zh-CN';
+            const localeMap = {
+                'en': 'en',
+                'zh-CN': 'zh',
+                'zh-TW': 'zh-TW',
+                'es': 'es'
+            };
+            const stripeLocale = localeMap[currentLang] || 'auto';
+            console.log(`🌐 设置 Stripe 表单语言为: ${stripeLocale} (系统语言: ${currentLang})`);
+
+            // 如果已经存在 cardElement，先将其销毁以确保语言更新生效
+            if (cardElement) {
+                try {
+                    cardElement.unmount();
+                    cardElement.destroy();
+                } catch (e) {
+                    console.warn('清理旧 Card Element 时出错:', e);
+                }
+                cardElement = null;
+            }
+
+            // 使用指定的 locale 创建 elements 实例
+            elements = stripe.elements({ locale: stripeLocale });
 
             cardElement = elements.create('card', {
                 style: {

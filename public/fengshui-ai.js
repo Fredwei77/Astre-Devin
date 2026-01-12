@@ -121,40 +121,43 @@ class FengShuiAI {
         const analysisResults = document.getElementById('analysisResults');
         if (analysisResults) {
             analysisResults.classList.remove('hidden');
+
+            // 移除旧的 Mock 标记
+            const oldBadge = document.getElementById('fengshuiMockBadge');
+            if (oldBadge) oldBadge.remove();
+
+            // 如果是模拟数据，添加顶部标记
+            if (result.isMock) {
+                const badge = document.createElement('div');
+                badge.id = 'fengshuiMockBadge';
+                badge.className = 'mb-6 p-3 bg-mystic-gold/10 border border-mystic-gold/30 rounded-lg flex items-center justify-center text-mystic-gold';
+                badge.innerHTML = `
+                    <i class="fas fa-flask mr-2"></i>
+                    <span class="font-medium text-sm">
+                        ${window.i18n?.t('common.trialMode') || 'Trial Mode / 模拟演示'} - 
+                        <span class="text-moon-silver text-xs opacity-80 pl-1">
+                             ${window.i18n?.t('common.trialMessage') || 'Upgrade for real AI analysis'}
+                        </span>
+                    </span>
+                `;
+                analysisResults.insertBefore(badge, analysisResults.firstChild);
+            }
         }
 
         // 更新整体评分
         this.updateScore('energyScore', 'energyPercent', result.overallScore || 75);
 
-        // 更新五行平衡
-        if (result.elements) {
-            this.updateElementsDisplay(result.elements);
-        }
-
-        // 更新建议
-        if (result.recommendations) {
-            this.updateRecommendations(result.recommendations);
-        }
-
-        // 更新方位分析文本
+        // ... existing updates ...
+        if (result.elements) this.updateElementsDisplay(result.elements);
+        if (result.recommendations) this.updateRecommendations(result.recommendations);
         if (result.directionAnalysis) {
             const directionText = document.getElementById('directionAnalysisText');
-            if (directionText) {
-                directionText.textContent = result.directionAnalysis;
-            }
+            if (directionText) directionText.textContent = result.directionAnalysis;
         }
+        if (result.luckyItems) this.updateLuckyItems(result.luckyItems);
+        if (result.taboos) this.updateTaboos(result.taboos);
 
-        // 更新幸运物品
-        if (result.luckyItems) {
-            this.updateLuckyItems(result.luckyItems);
-        }
-
-        // 更新禁忌
-        if (result.taboos) {
-            this.updateTaboos(result.taboos);
-        }
-
-        // 初始化追问建议 (Consolidated)
+        // 初始化追问建议
         this.renderSuggestedQuestions(result);
     }
 
@@ -590,12 +593,31 @@ ${labels.analysis}:
 
             // 显示回答并应用打字机效果
             if (answerText) {
-                const formattedHtml = window.MarkdownFormatter ? window.MarkdownFormatter.parse(cleanResponse) : cleanResponse.replace(/\n/g, '<br>');
+                // 如果是模拟数据，添加提示徽章
+                let isMock = false;
+                if (typeof response === 'object' && response !== null && response.isMock) {
+                    isMock = true;
+                }
+
+                let displayHtml = cleanResponse.replace(/\n/g, '<br>');
+                if (window.MarkdownFormatter) {
+                    displayHtml = window.MarkdownFormatter.parse(cleanResponse);
+                }
+
+                if (isMock) {
+                    const badgeHtml = `
+                        <div class="mb-4 inline-flex items-center px-3 py-1 rounded-full bg-mystic-gold/10 border border-mystic-gold/30 text-mystic-gold text-xs font-medium">
+                            <i class="fas fa-flask mr-2"></i>
+                            ${window.i18n?.t('common.trialMode') || 'Trial Mode / 模拟演示'}
+                        </div>
+                    `;
+                    displayHtml = badgeHtml + displayHtml;
+                }
 
                 if (window.TypingEffect) {
-                    await window.TypingEffect.type(answerText, formattedHtml, 30);
+                    await window.TypingEffect.type(answerText, displayHtml, 30);
                 } else {
-                    answerText.innerHTML = formattedHtml;
+                    answerText.innerHTML = displayHtml;
                 }
                 answerDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }

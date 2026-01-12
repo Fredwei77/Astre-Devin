@@ -197,16 +197,18 @@
 
             // 尝试使用真实AI服务
             try {
-                if (!window.aiService && window.AIService) {
-                    window.aiService = new window.AIService();
+                let aiService = window.aiService;
+                if (!aiService && window.AIService) {
+                    console.log('🔄 尝试创建新的 AIService 实例...');
+                    aiService = new window.AIService();
                 }
 
-                if (!window.aiService) {
+                if (!aiService) {
                     throw new Error(window.i18n ? window.i18n.t('divination.followup.initError') : 'AI service not initialized');
                 }
 
                 console.log('🤖 使用真实AI服务进行分析');
-                const result = await window.aiService.analyzeDivination(userData);
+                const result = await aiService.analyzeDivination(userData);
 
                 // 重置失败计数
                 this.failureCount = 0;
