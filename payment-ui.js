@@ -108,8 +108,8 @@
         document.body.appendChild(modal);
 
         // 初始化 Stripe 元素
-        setTimeout(() => {
-            const cardElement = window.createPaymentElements('card-element');
+        setTimeout(async () => {
+            const cardElement = await window.createPaymentElements('card-element');
 
             if (cardElement) {
                 // 监听卡片输入错误
@@ -292,8 +292,8 @@
         document.body.appendChild(modal);
 
         // 初始化 Stripe 元素
-        setTimeout(() => {
-            const cardElement = window.createPaymentElements('card-element-product');
+        setTimeout(async () => {
+            const cardElement = await window.createPaymentElements('card-element-product');
 
             if (cardElement) {
                 cardElement.on('change', (event) => {

@@ -327,6 +327,13 @@ try {
     console.error('❌ Stripe 初始化失败:', error.message);
 }
 
+// 获取 Stripe 配置 (Frontend)
+app.get('/api/stripe/config', (req, res) => {
+    res.json({
+        publishableKey: process.env.STRIPE_PUBLISHABLE_KEY
+    });
+});
+
 // 创建支付意图
 app.post('/api/stripe/create-payment-intent', async (req, res) => {
     try {

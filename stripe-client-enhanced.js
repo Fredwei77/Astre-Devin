@@ -30,31 +30,16 @@
     // ⚠️ 在 Netlify 中配置环境变量：VITE_STRIPE_PUBLISHABLE_KEY
     // Stripe 可发布密钥 - 从环境变量加载
     // ⚠️ 在 Netlify 中配置环境变量：VITE_STRIPE_PUBLISHABLE_KEY
+    // Stripe 可发布密钥 - 从环境变量加载
     let STRIPE_PUBLISHABLE_KEY = '';
-
-    // 尝试从全局配置加载
     if (window.CONFIG && window.CONFIG.STRIPE_PUBLISHABLE_KEY) {
         STRIPE_PUBLISHABLE_KEY = window.CONFIG.STRIPE_PUBLISHABLE_KEY;
     } else if (window.ENV && window.ENV.STRIPE_PUBLISHABLE_KEY) {
         STRIPE_PUBLISHABLE_KEY = window.ENV.STRIPE_PUBLISHABLE_KEY;
     }
 
-    // 检查是否为占位符 (CI/CD 占位符通常包含重复的重复模式 q6I9i6)
-    const isPlaceholder = STRIPE_PUBLISHABLE_KEY &&
-        (STRIPE_PUBLISHABLE_KEY.includes('q6I9i6') ||
-            STRIPE_PUBLISHABLE_KEY.endsWith('...') ||
-            (STRIPE_PUBLISHABLE_KEY.startsWith('pk_live_51QYBqbP3r4cXOLlB') && STRIPE_PUBLISHABLE_KEY.length > 80 && STRIPE_PUBLISHABLE_KEY.includes('i6q6I9i6')));
-
-    if (isPlaceholder) {
-        console.warn('⚠️ 检测到占位符密钥模式，将重置为空以触发测试模式回退');
-        STRIPE_PUBLISHABLE_KEY = '';
-    }
-
-    // 最后的安全保障：如果仍然为空，则使用测试密钥
-    if (!STRIPE_PUBLISHABLE_KEY) {
-        STRIPE_PUBLISHABLE_KEY = 'pk_test_51QYBqbP3r4cXOLlBKCrJxqVGZqkMHGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqY';
-        console.warn('⚠️ Stripe 密钥加载失败或为占位符，已自动回退到测试密钥');
-    }
+    // 初始化 Promise 用于并发控制
+    let initializationPromise = null;
 
     // 初始化 Stripe
     let stripe = null;
@@ -75,27 +60,74 @@
     /**
      * 初始化 Stripe
      */
-    function initializeStripe() {
-        if (typeof Stripe === 'undefined') {
-            console.warn('⚠️ Stripe.js 未加载，将使用测试模式');
-            return false;
-        }
+    /**
+     * 初始化 Stripe (Async)
+     */
+    async function initializeStripe() {
+        if (initializationPromise) return initializationPromise;
 
-        try {
-            stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
-            console.log('✅ Stripe 客户端初始化成功');
-            return true;
-        } catch (error) {
-            console.error('❌ Stripe 初始化失败:', error);
-            console.log('🔄 切换到测试模式');
-            return false;
-        }
+        initializationPromise = (async () => {
+            // 如果当前 Key 无效 (为空或占位符)，尝试从后端获取
+            const isPlaceholder = !STRIPE_PUBLISHABLE_KEY ||
+                STRIPE_PUBLISHABLE_KEY.includes('q6I9i6') ||
+                STRIPE_PUBLISHABLE_KEY.endsWith('...') ||
+                (STRIPE_PUBLISHABLE_KEY.startsWith('pk_live_51QYBqbP3r4cXOLlB') && STRIPE_PUBLISHABLE_KEY.length > 80 && STRIPE_PUBLISHABLE_KEY.includes('i6q6I9i6'));
+
+            if (isPlaceholder) {
+                try {
+                    console.log('🔄 正在从后端获取 Stripe 配置...');
+                    const response = await fetch('/api/stripe/config');
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.publishableKey) {
+                            STRIPE_PUBLISHABLE_KEY = data.publishableKey;
+                            console.log('✅ 成功从后端获取 Stripe Key');
+                        }
+                    }
+                } catch (e) {
+                    console.warn('⚠️ 无法从后端获取 Stripe Key:', e);
+                }
+            }
+
+            // 二次检查 Key
+            const isInvalid = !STRIPE_PUBLISHABLE_KEY || (STRIPE_PUBLISHABLE_KEY.includes('q6I9i6') && STRIPE_PUBLISHABLE_KEY.length > 80);
+
+            if (isInvalid) {
+                console.warn('⚠️ Stripe 密钥加载失败或为占位符，已自动回退到测试密钥');
+                STRIPE_PUBLISHABLE_KEY = 'pk_test_51QYBqbP3r4cXOLlBKCrJxqVGZqkMHGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqY';
+            }
+
+            if (typeof Stripe === 'undefined') {
+                console.warn('⚠️ Stripe.js 未加载，将使用测试模式');
+                return false;
+            }
+
+            try {
+                stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+                console.log('✅ Stripe 客户端初始化成功');
+                return true;
+            } catch (error) {
+                console.error('❌ Stripe 初始化失败:', error);
+                console.log('🔄 切换到测试模式');
+                return false;
+            }
+        })();
+
+        return initializationPromise;
     }
 
     /**
      * 创建支付元素
      */
-    function createPaymentElements(containerId) {
+    /**
+     * 创建支付元素 (Async)
+     */
+    async function createPaymentElements(containerId) {
+        // 确保 Stripe 已初始化
+        if (!stripe) {
+            await initializeStripe();
+        }
+
         if (!stripe) {
             console.warn('Stripe 未初始化，跳过支付元素创建');
             return null;
@@ -188,6 +220,9 @@
          * 创建支付意图（商品购买）
          */
         async createPaymentIntent(amount, currency = 'usd', metadata = {}) {
+            // Ensure initialization before proceeding
+            if (!stripe) await initializeStripe();
+
             try {
                 // 测试模式
                 if (this.isTestMode()) {
@@ -259,6 +294,9 @@
          * 确认支付
          */
         async confirmPayment(clientSecret, billingDetails = {}) {
+            // Ensure initialization before proceeding
+            if (!stripe) await initializeStripe();
+
             // 测试模式
             if (this.isTestMode() || (clientSecret && clientSecret.includes('mock'))) {
                 console.log('🧪 测试模式：模拟确认支付');
@@ -319,6 +357,9 @@
          * 创建订阅（会员购买）
          */
         async createSubscription(priceId, billingDetails = {}) {
+            // Ensure initialization before proceeding
+            if (!stripe) await initializeStripe();
+
             try {
                 // 测试模式
                 if (this.isTestMode()) {
@@ -458,6 +499,9 @@
          * 商品购买（一次性支付）
          */
         async purchaseProduct(productId, quantity = 1, billingDetails = {}) {
+            // Ensure initialization
+            if (!stripe) await initializeStripe();
+
             try {
                 // 测试模式
                 if (this.isTestMode()) {
