@@ -50,11 +50,14 @@
      * 检查是否为测试模式
      */
     function isTestMode() {
+        // 允许通过 URL 参数强制测试模式
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('test_mode') === 'true') return true;
+
         return localStorage.getItem('payment_test_mode') === 'true' ||
             window.location.hostname === 'localhost' ||
             window.location.hostname === '127.0.0.1' ||
-            window.location.protocol === 'file:' ||
-            !navigator.onLine;
+            (!window.location.hostname.includes('netlify.app') && (window.location.protocol === 'file:' || !navigator.onLine));
     }
 
     /**
@@ -90,25 +93,30 @@
             }
 
             // 二次检查 Key
-            const isInvalid = !STRIPE_PUBLISHABLE_KEY || (STRIPE_PUBLISHABLE_KEY.includes('q6I9i6') && STRIPE_PUBLISHABLE_KEY.length > 80);
+            const isInvalid = !STRIPE_PUBLISHABLE_KEY || STRIPE_PUBLISHABLE_KEY.length < 20 || (STRIPE_PUBLISHABLE_KEY.includes('q6I9i6') && STRIPE_PUBLISHABLE_KEY.length > 80);
 
             if (isInvalid) {
-                console.warn('⚠️ Stripe 密钥加载失败或为占位符，已自动回退到测试密钥');
-                STRIPE_PUBLISHABLE_KEY = 'pk_test_51QYBqbP3r4cXOLlBKCrJxqVGZqkMHGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqY';
+                console.warn('⚠️ Stripe 密钥加载失败或为占位符');
+                if (isTestMode()) {
+                    console.log('🔄 测试模式下使用 Mock 密钥');
+                    STRIPE_PUBLISHABLE_KEY = 'pk_test_51QYBqbP3r4cXOLlBKCrJxqVGZqkMHGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqYGqH8sVZN3yYxQJxvXqY';
+                } else {
+                    console.error('❌ 生产环境缺少有效的 Stripe 密钥');
+                    return false;
+                }
             }
 
             if (typeof Stripe === 'undefined') {
-                console.warn('⚠️ Stripe.js 未加载，将使用测试模式');
+                console.warn('⚠️ Stripe.js 未加载');
                 return false;
             }
 
             try {
                 stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
-                console.log('✅ Stripe 客户端初始化成功');
+                console.log('✅ Stripe 客户端初始化成功' + (isTestMode() ? ' (测试模式)' : ''));
                 return true;
             } catch (error) {
                 console.error('❌ Stripe 初始化失败:', error);
-                console.log('🔄 切换到测试模式');
                 return false;
             }
         })();
@@ -249,7 +257,7 @@
                     })
                 });
 
-                const data = await response.json();
+                const data = await response.json().catch(() => ({ error: 'Invalid server response' }));
 
                 if (!response.ok) {
                     // 特殊处理认证错误
@@ -257,7 +265,7 @@
                         console.error('❌ 认证失败：请先登录');
                         throw new Error('请先登录后再进行支付');
                     }
-                    throw new Error(data.error || '创建支付意图失败');
+                    throw new Error(data.error || `Server error (${response.status})`);
                 }
 
                 return {
@@ -268,12 +276,9 @@
             } catch (error) {
                 console.error('创建支付意图失败:', error);
 
-                // 网络错误或后端未初始化时自动切换到测试模式
-                if (error.message.includes('fetch') ||
-                    error.message.includes('Failed to fetch') ||
-                    error.message.includes('Stripe 未初始化') ||
-                    error.message.includes('Stripe Not Initialized')) {
-                    console.warn('⚠️ 支付服务暂时不可用（后端未配置或网络错误），自动切换至模拟/测试模式');
+                // 在生产环境下，如果是网络问题，不要盲目回退到 Mock，除非明确是演示状态
+                if (isTestMode() && (error.message.includes('fetch') || error.message.includes('Failed to fetch'))) {
+                    console.warn('⚠️ 网络错误，测试模式自动回退');
                     await mockDelay();
                     return {
                         success: true,

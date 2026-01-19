@@ -103,8 +103,8 @@
                         'product_iching': { id: 'product_iching', price: 2.99, name: '易经智慧', name_en: 'I-Ching Wisdom' }
                     };
                     if (mockProducts[productId]) {
-                        console.log('Using recovery mock data for:', productId);
-                        return { success: true, data: mockProducts[productId] };
+                        console.log('✅ 数据库暂不可用，进入 Mock 模式:', productId);
+                        return { success: true, data: mockProducts[productId], mock: true };
                     }
                     return { success: false, error: error.message || 'Product not found' };
                 }

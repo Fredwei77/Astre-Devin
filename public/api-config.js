@@ -7,9 +7,9 @@ const API_CONFIG = {
     // 后端API基础URL -根据环境自动切换
     // 如果在Netlify上，使用Render部署的后端（需用户替换为实际Render URL）
     // 如果在本地，使用localhost:3000
-    BASE_URL: window.location.hostname.includes('netlify.app')
-        ? 'https://astre-devin.onrender.com' // 已更新为您的实际 Render 后端 URL
-        : (window.location.protocol === 'http:' || window.location.protocol === 'https:' ? '' : 'http://localhost:3000'),
+    BASE_URL: (window.location.hostname.includes('netlify.app')
+        ? 'https://astre-devin.onrender.com'
+        : (window.location.protocol === 'http:' || window.location.protocol === 'https:' ? '' : 'http://localhost:3000')).replace(/\/$/, ''),
 
     // API版本
     VERSION: '',
